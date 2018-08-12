@@ -54,7 +54,7 @@ public class EmployeeModel extends Connection {
                 String idCompany = rs.getString("id_company");
                 
                 this.desconectar();
-                //employee.setCompany(companyModel.getCompany(idCompany, relationship));
+                employee.setCompany(companyModel.getCompany(idCompany, false));
                 return employee;
             }
             
@@ -162,7 +162,8 @@ public class EmployeeModel extends Connection {
     public boolean deleteEmployee(int id) throws SQLException{
         try {
             int affectedRows = 0;
-            String sql = "SELECT * FROM employee WHERE id = ?";
+            //String sql = "SELECT * FROM employee WHERE id = ?";
+            String sql = "DELETE FROM employee WHERE id = ?";
             
             this.conectar();
             st = conexion.prepareStatement(sql);
