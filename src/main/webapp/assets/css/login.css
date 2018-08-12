@@ -1,0 +1,107 @@
+.input-field > label{
+    /*color: #ff8600 !important;*/
+}
+/* label focus color */
+.input-field input[type=text]:focus + label,
+.input-field input[type=number]:focus + label,
+.input-field input[type=date]:focus + label,
+.input-field input[type=tel]:focus + label,
+.input-field textarea.materialize-textarea:focus + label,
+.input-field input[type=email]:focus + label,
+.input-field input[type=password]:focus + label {
+    color: #ffc107 !important;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus,
+.input-field input[type=number]:focus,
+.input-field input[type=date]:focus,
+.input-field input[type=tel]:focus,
+.input-field textarea.materialize-textarea:focus,
+.input-field input[type=email]:focus,
+.input-field input[type=password]:focus {
+    border-bottom: 1px solid #ffc107 !important;
+    box-shadow: 0 1px 0 0 #ffc107 !important;
+}
+
+.back{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.back > img{
+    width: 50%;
+    height: 100%;
+    z-index: -1;
+}
+
+.front{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.front > .frmBody{
+    width: 50%;
+    height: 100vh;
+    float: right;
+    height: 100%;
+    padding: 5%;
+    z-index: 1;
+}
+
+form#frmLogin{
+    margin-top: 10%;
+}
+
+.submitBtns{
+    margin-top: 5%;
+    /*background: red;*/
+    display: flex;
+    justify-content: space-around;
+}
+
+.error-block{
+    font-size: 12px;
+    color: #ff5722;
+}
+
+[type="checkbox"].filled-in:checked+span:not(.lever):after {
+    border: 2px solid #ff9d00 !important;
+    background-color: #ff9d00 !important;
+}
+
+.datepicker-container .datepicker-date-display{
+    background: #ff9a36 !important;
+}
+.datepicker-container .datepicker-table td.is-selected {
+    background-color: #ff9a36 !important;
+}
+
+.datepicker-container .confirmation-btns button{
+    color: #ff9a36 !important;
+}
+
+.datepicker-container .datepicker-table td.is-today {
+    color: #ff9a36 !important;
+}
+
+.alert{
+    padding: 2%;
+    width: 75%;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.btn-cont{
+    display: flex;
+    justify-content: center;
+}
+
+.btn-cont > .btn{
+    margin: 0 1%;
+}

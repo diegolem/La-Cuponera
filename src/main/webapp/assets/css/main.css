@@ -1,0 +1,91 @@
+.sidenav li.waves-effect{
+    display: block !important;
+}
+
+.sidenav li.nav-item a{
+    padding: 0 16px !important; 
+}
+
+.sidenav li.active{
+    background-color: rgba(0,0,0,0.05) !important;
+    
+}
+
+.sidenav li.active a{
+    color: rgba(0,0,0,0.87) !important;
+}
+
+main{
+    margin: 5% auto 0 auto;
+    max-width: 95%;
+    width: 90%;
+}
+
+header, main, footer {
+    padding-left: 300px;
+}
+
+table.center td, table.center th{
+    text-align: center;
+}
+
+.alert{
+    padding: 2%;
+    width: 75%;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.btn-cont{
+    display: flex;
+    justify-content: center;
+}
+
+.btn-cont > .btn{
+    margin: 0 1%;
+}
+
+#toast-container{
+    z-index: 100002 !important;
+}
+
+@media only screen and (max-width : 992px) {
+    header, main, footer {
+        padding-left: 0;
+    }
+}
+
+.grid-sizer,
+.grid-item {
+    width: 33.333%;
+}
+
+.grid-item{
+    padding: 10px;
+}
+
+.grid-item.g2 {
+    width: 66.666%;
+}
+
+.grid-item img {
+    display: block;
+    max-width: 100%;
+}
+@media(max-width: 70em) and (min-width: 30em){
+    .grid-sizer,
+    .grid-item {
+        width: 50%;
+    }
+
+    .grid-item.g2{
+        width: 100%;
+    }
+}
+
+@media(max-width: 30em){
+    .grid-sizer,
+    .grid-item, .grid-item.g2 {
+        width: 100%;
+    }
+}
