@@ -40,7 +40,6 @@ public class CompanyType {
         this.type = "";
         this.companies = null;
     }
-    
     public CompanyType(int idCompanyType, String type){
         this.idCompanyType = idCompanyType;
         this.type = type;

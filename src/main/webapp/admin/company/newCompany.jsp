@@ -63,7 +63,6 @@
         <jsp:include page="../../cabecera.jsp"/>
     </head>
     <body>
-        <c:set var = "title" scope = "page" value = "Agregar Empresa"/>
         <jsp:include page="../../menus/menuAdmin.jsp"/>
         <main class="">
             <div class="row">
