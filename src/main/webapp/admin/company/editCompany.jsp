@@ -9,11 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Agregar Empresa</title>
+        <title>Modificar Empresa</title>
         <jsp:include page="../../cabecera.jsp"/>
     </head>
     <body>
-        <c:set var = "title" scope = "page" value = "Modificar Empresa"/>
         <jsp:include page="../../menus/menuAdmin.jsp"/>
         <main class="">
             <div class="row">
@@ -131,7 +130,7 @@
                         </c:if>
                     </div>
                     <div class="row center">
-                        <button class="btn waves-effect waves-light" type="submit" name="action">Registrar
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Modificar
                             <i class="material-icons right">send</i>
                         </button>
                     </div>

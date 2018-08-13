@@ -82,16 +82,16 @@ public class CompanyTypeModel extends Connection {
         }
     }
     
-    public boolean updateCompanyType(int id) throws SQLException{
+    public boolean updateCompanyType(CompanyType companyType) throws SQLException{
         try {
             int affectedRows = 0;
-            String sql = "SELECT * FROM company_type WHERE id = ?";
+            String sql = "UPDATE company_type SET type=? WHERE id=?";
             this.conectar();
             
             st = conexion.prepareStatement(sql);
-            st.setInt(1, id);
+            st.setString(1, companyType.getType());
+            st.setInt(2, companyType.getIdCompanyType());
             affectedRows = st.executeUpdate();
-
             this.desconectar();
             return affectedRows > 0;
         } catch (SQLException ex) {
@@ -101,14 +101,14 @@ public class CompanyTypeModel extends Connection {
         }
     }// Fin updateCompanyType
     
-    public boolean deleteCompanyType(int id) throws SQLException{
+    public boolean deleteCompanyType(CompanyType companyType) throws SQLException{
         try {
             int affectedRows = 0;
             String sql = "DELETE FROM company_type WHERE id = ?";
             
             this.conectar();
             st = conexion.prepareStatement(sql);
-            st.setInt(1, id);
+            st.setInt(1, companyType.getIdCompanyType());
             affectedRows = st.executeUpdate();
             
             this.desconectar();

@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.primefaces.json.JSONObject;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
 import sv.edu.udb.www.model.CompanyModel;
@@ -48,6 +49,9 @@ public class companyController extends HttpServlet {
                     break;
                 case "insert":
                     insert(request, response);
+                    break;
+                case "get":
+                    get(request,response);
                     break;
                 case "details":
                     details(request, response);
@@ -107,6 +111,7 @@ public class companyController extends HttpServlet {
     private void list(HttpServletRequest request, HttpServletResponse response) {
         try {
             request.setAttribute("companiesList", companyModel.getCompanies(true));
+            request.setAttribute("title", "Lista de Empresas");
             request.getRequestDispatcher("/admin/company/listCompanies.jsp").forward(request, response);
         } catch (SQLException | ServletException | IOException ex) {
             Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,6 +121,7 @@ public class companyController extends HttpServlet {
     private void add(HttpServletRequest request, HttpServletResponse response) {
         try {
             request.setAttribute("typesCompany", companyTypeModel.getCompanyTypes(false));
+            request.setAttribute("title", "Nueva Empresa");
             request.getRequestDispatcher("/admin/company/newCompany.jsp").forward(request, response);
         } catch (SQLException | ServletException | IOException ex) {
             Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,6 +215,7 @@ public class companyController extends HttpServlet {
                 Company company = companyModel.getCompany(request.getParameter("idCompany"), true);
                 if (company != null) {
                     request.setAttribute("company", company);
+                    request.setAttribute("title", "Detalles de la Empresa");
                     request.getRequestDispatcher("/admin/company/detailsCompany.jsp").forward(request, response);
                 } else {
                     request.getSession().setAttribute("error", "No se ha encontrado ninguna empresa");
@@ -231,8 +238,9 @@ public class companyController extends HttpServlet {
 
                 if (company != null) {
                     request.setAttribute("company", company);
+                    request.setAttribute("title", "Modificar Empresa");
                     request.setAttribute("typesCompany", companyTypeModel.getCompanyTypes(false));
-                    request.getRequestDispatcher("/company/editCompany.jsp").forward(request, response);
+                    request.getRequestDispatcher("/admin/company/editCompany.jsp").forward(request, response);
                 } else {
                     request.getSession().setAttribute("error", "No se ha encontrado ninguna empresa");
                     response.sendRedirect(request.getContextPath() + "/admin/company.do?op=list");
@@ -349,4 +357,25 @@ public class companyController extends HttpServlet {
             Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// Fin delete()
+    private void get(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            PrintWriter out = response.getWriter();
+            if (Validacion.esCodigoEmpresa(request.getParameter("idCompany"))) {
+                String idCompany = request.getParameter("idCompany");
+                Company company = companyModel.getCompany(idCompany, true);
+
+                if (company != null) {
+                    JSONObject json = new JSONObject();
+                    json.put("id", company.getIdCompany());
+                    out.print(json); 
+                } else {
+                    out.print("0");
+                }
+            } else {
+                out.print("0");
+            }
+        } catch (SQLException | IOException ex) {
+            Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//Fin get
 }
