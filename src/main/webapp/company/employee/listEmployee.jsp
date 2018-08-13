@@ -5,13 +5,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:if test="${sessionScope.logged != true}">
-    <%
-        if (!request.getRequestURI().equals(request.getContextPath() + "/login.jsp")) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
-        }
-    %>
-</c:if>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -25,7 +19,7 @@
         <jsp:include page="../../menus/menuCompany.jsp"/>
         <main class="">
             <div class="row">
-                <a href="${pageContext.request.contextPath}/employee.do?op=new" class="waves-effect waves-light btn-large"><i class="material-icons left centered">add</i>Agregar Empleado</a>
+                <a href="${pageContext.request.contextPath}/company/employee.do?op=new" class="waves-effect waves-light btn-large"><i class="material-icons left centered">add</i>Agregar Empleado</a>
                 <table class="centered responsive-table" id="tblEmployees">
                     <thead>
                         <tr>
@@ -44,8 +38,8 @@
                                 <td>${employee.email}</td>
                                 <td>${employee.company.name}</td>
                                 <td>
-                                    <a title="Detalles" href="${pageContext.request.contextPath}/employee.do?op=details&idEmployee=${employee.idEmployee}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
-                                    <a title="Editar" href="${pageContext.request.contextPath}/employee.do?op=edit&idEmployee=${employee.idEmployee}" class="waves-effect waves-light btn-small"><i class="material-icons centered">edit</i></a>
+                                    <a title="Detalles" href="${pageContext.request.contextPath}/company/employee.do?op=details&idEmployee=${employee.idEmployee}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
+                                    <a title="Editar" href="${pageContext.request.contextPath}/company/employee.do?op=edit&idEmployee=${employee.idEmployee}" class="waves-effect waves-light btn-small"><i class="material-icons centered">edit</i></a>
                                     <a id="a_${employee.idEmployee}" title="Eliminar" href="#" onclick="deleteEmploye(${employee.idEmployee}, 'tr_${employee.idEmployee}', 'a_${employee.idEmployee}');" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
                                 </td>
                             </tr>
@@ -69,7 +63,7 @@
             });
             function deleteEmploye(id, tr, a){
                 $.ajax({
-                    url: "${pageContext.request.contextPath}/employee.do?op=delete&idEmployee=" + id,
+                    url: "${pageContext.request.contextPath}/company/employee.do?op=delete&idEmployee=" + id,
                     type: "POST",
                     success: function(response){
                         if(response === "0"){

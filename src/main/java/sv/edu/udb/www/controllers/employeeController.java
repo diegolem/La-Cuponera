@@ -294,7 +294,7 @@ public class employeeController extends HttpServlet {
             if (employee != null) {
                 request.setAttribute("employeeList", employeeModel.getEmployees(true));
                 request.setAttribute("employee", employee);
-                request.getRequestDispatcher("/employee/detailsEmployee.jsp").forward(request, response);
+                request.getRequestDispatcher("/company/employee/detailsEmployee.jsp").forward(request, response);
             } else {
                 request.getSession().setAttribute("error", "No se ha encontrado ningun empleado");
                 response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
