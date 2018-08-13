@@ -12,7 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <c:out value = "${sessionScope.logged}"/>
         <a href="login.do?op=logout">Cerrar sesión</a>
         <h1>Empresa</h1>
     </body>

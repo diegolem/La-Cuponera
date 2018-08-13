@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Promotion;
+import sv.edu.udb.www.beans.PromotionState;
 import sv.edu.udb.www.model.PromotionModel;
 import sv.edu.udb.www.model.PromotionStateModel;
 import sv.edu.udb.www.utilities.Validacion;
@@ -43,6 +44,7 @@ public class promotionController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
         try (PrintWriter out = response.getWriter()) {
             String operation = request.getParameter("op");
 
@@ -56,10 +58,22 @@ public class promotionController extends HttpServlet {
                     list(request, response);
                     break;
                 case "new":
-                    response.sendRedirect(request.getContextPath() + "/company/promotion/newPromotion.jsp");
+                    add(request, response);
                     break;
                 case "insert":
                     insert(request, response);
+                    break;
+                case "details":
+                    details(request, response);
+                    break;
+                case "edit":
+                    edit(request, response);
+                    break;
+                case "update":
+                    update(request, response);
+                    break;
+                case "delete":
+                    delete(request, response);
                     break;
             }
         }
@@ -108,31 +122,29 @@ public class promotionController extends HttpServlet {
         try {
             String id = "";
             HttpSession _s = request.getSession(true);
-            
-            switch(_s.getAttribute("type").toString()){
+
+            switch (_s.getAttribute("type").toString()) {
                 case "company":
                     Company company = (Company) _s.getAttribute("user");
                     id = company.getIdCompany();
                     break;
             }
-            
+
             request.setAttribute("promotionsList", promotionModel.getPromotions(id, false));
             request.getRequestDispatcher("/company/promotion/listPromotions.jsp").forward(request, response);
-        } 
-        catch (ServletException | IOException | SQLException ex) {
+        } catch (ServletException | IOException | SQLException ex) {
             Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// fin list()
 
     private void insert(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-
             errorsList.clear();
             boolean verifyDates = true;
             Promotion promotion = new Promotion();
             String pathImage = getServletContext().getRealPath("/img");
-
             MultipartRequest multimedia = new MultipartRequest(request, pathImage, 1 * 1024 * 1024, new DefaultFileRenamePolicy());
+
             DateFormat initDate = new SimpleDateFormat("yyyy-MM-dd");
             DateFormat endDate = new SimpleDateFormat("yyyy-MM-dd");
             DateFormat limitDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -167,35 +179,51 @@ public class promotionController extends HttpServlet {
                 }
             }
 
-            try {
-                promotion.setInitDate(initDate.parse(multimedia.getParameter("initDate")));
-            } catch (ParseException ex) {
+            if (Validacion.isEmpty(multimedia.getParameter("initDate"))) {
+                errorsList.put("initDate", "La fecha de inicio es requerida");
                 verifyDates = false;
-                errorsList.put("iniDate", "La fecha de inicio no es válida");
+            } else {
+                try {
+                    promotion.setInitDate(initDate.parse(multimedia.getParameter("initDate")));
+                } catch (ParseException ex) {
+                    verifyDates = false;
+                    errorsList.put("initDate", "La fecha de inicio no es válida");
+                }
             }
 
-            try {
-                promotion.setEndDate(endDate.parse(multimedia.getParameter("endDate")));
-            } catch (ParseException ex) {
+            if (Validacion.isEmpty(multimedia.getParameter("initDate"))) {
+                errorsList.put("endDate", "La fecha final es requerida");
                 verifyDates = false;
-                errorsList.put("endDate", "La fecha final no es válida");
+            } else {
+                try {
+                    promotion.setEndDate(endDate.parse(multimedia.getParameter("endDate")));
+                } catch (ParseException ex) {
+                    verifyDates = false;
+                    errorsList.put("endDate", "La fecha final no es válida");
+                }
             }
 
-            try {
-                promotion.setLimitDate(limitDate.parse(multimedia.getParameter("limitDate")));
-            } catch (ParseException ex) {
+            if (Validacion.isEmpty(multimedia.getParameter("limitDate"))) {
+                errorsList.put("limitDate", "La fecha limite es requerida");
                 verifyDates = false;
-                errorsList.put("iniDate", "La limite no es válida");
+            } else {
+                try {
+                    promotion.setLimitDate(limitDate.parse(multimedia.getParameter("limitDate")));
+                } catch (ParseException ex) {
+                    verifyDates = false;
+                    errorsList.put("limitDate", "La limite no es válida");
+                }
             }
 
-            /*if(verifyDates){
-                if(!Validacion.verificarFechas(promotion.getInitDate(), promotion.getEndDate())){
+            if (verifyDates) {
+                if (!Validacion.verificarFechas(promotion.getInitDate(), promotion.getEndDate())) {
                     errorsList.put("initDate", "Fecha inicial debe ser menor a la final");
                 }
-                if(!Validacion.verificarFechas(promotion.getEndDate(), promotion.getLimitDate())){
+                if (!Validacion.verificarFechas(promotion.getEndDate(), promotion.getLimitDate())) {
                     errorsList.put("endDate", "Fecha final debe ser menor a la fecha limite");
                 }
-            }*/
+            }
+
             if (Validacion.isEmpty(multimedia.getParameter("description"))) {
                 errorsList.put("description", "La descripción es requerida");
             } else {
@@ -208,10 +236,14 @@ public class promotionController extends HttpServlet {
                 promotion.setOtherDetails(multimedia.getParameter("otherDetails"));
             }
 
-            if (Validacion.esEnteroPositivo(multimedia.getParameter("limitCant"))) {
-                errorsList.put("limitCant", "La cantidad limite no es válida");
+            if (Validacion.isEmpty(multimedia.getParameter("limitCant"))) {
+                errorsList.put("limitCant", "La cantidad limite minima debe ser 0");
             } else {
-                promotion.setLimitCant(Integer.parseInt(multimedia.getParameter("limitCant")));
+                if (Validacion.esEnteroPositivo(multimedia.getParameter("limitCant"))) {
+                    errorsList.put("limitCant", "La cantidad limite no es válida");
+                } else {
+                    promotion.setLimitCant(Integer.parseInt(multimedia.getParameter("limitCant")));
+                }
             }
 
             if (multimedia.getFile("img") == null) {
@@ -224,7 +256,8 @@ public class promotionController extends HttpServlet {
             if (errorsList.size() > 0) {
                 request.setAttribute("errorsList", errorsList);
                 request.setAttribute("promotion", promotion);
-                request.getRequestDispatcher("/company/promotion/newPromotion.jsp").forward(request, response);
+                request.getRequestDispatcher("/company/promotion.do?op=new").forward(request, response);
+                //add(request, response);
             } else {
                 HttpSession _s = request.getSession(true);
                 Company company = (Company) _s.getAttribute("user");
@@ -243,4 +276,258 @@ public class promotionController extends HttpServlet {
             Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// fin insert()
+
+    private void add(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            request.getRequestDispatcher("/company/promotion/newPromotion.jsp").forward(request, response);
+        } catch (IOException | ServletException ex) {
+            Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }// fin add()
+
+    private void details(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Promotion promotion = null;
+
+            if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
+                if (Integer.parseInt(request.getParameter("idPromotion")) > 0) {
+                    promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
+                }
+            }
+
+            if (promotion != null) {
+                request.setAttribute("promotion", promotion);
+                request.getRequestDispatcher("/company/promotion/detailsPromotion.jsp").forward(request, response);
+            } else {
+                request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
+            }
+        } catch (SQLException | ServletException | IOException ex) {
+            Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void edit(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            HttpSession _s = request.getSession(true);
+
+            switch (_s.getAttribute("type").toString()) {
+                case "company": //Para que una empresa modifique las ofertas estan debe estar en estado 3 (Rechazada)
+                    Promotion promotion = null;
+
+                    if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
+                        if (Integer.parseInt(request.getParameter("idPromotion")) > 0) {
+                            promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
+                        }
+                    }
+
+                    if (promotion != null) {
+                        if (promotion.getPromotionState().getState().toLowerCase().equals("rechazada")) {
+                            request.setAttribute("promotion", promotion);
+                            request.getRequestDispatcher("/company/promotion/editPromotion.jsp").forward(request, response);
+                        } else {
+                            request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
+                        }
+                    } else {
+                        request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
+                    }
+                    break;
+            }
+        } catch (SQLException | ServletException | IOException ex) {
+            Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    } // Fin edit
+
+    private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        try {
+            HttpSession _s = request.getSession(true);
+
+            switch (_s.getAttribute("type").toString()) {
+                case "company": //Para que una empresa modifique las ofertas estan debe estar en estado 3 (Rechazada)
+                    errorsList.clear();
+                    boolean verifyDates = true;
+                    Promotion promotion = new Promotion();
+                    String pathImage = getServletContext().getRealPath("/img");
+                    MultipartRequest multimedia = new MultipartRequest(request, pathImage, 1 * 1024 * 1024, new DefaultFileRenamePolicy());
+
+                    DateFormat initDate = new SimpleDateFormat("yyyy-MM-dd");
+                    DateFormat endDate = new SimpleDateFormat("yyyy-MM-dd");
+                    DateFormat limitDate = new SimpleDateFormat("yyyy-MM-dd");
+
+                    if (Validacion.isEmpty(multimedia.getParameter("title"))) {
+                        errorsList.put("title", "El nombre de la oferta es requerido");
+                    } else {
+                        promotion.setTitle(multimedia.getParameter("title"));
+                    }
+
+                    if (Validacion.esDecimalPositivo(multimedia.getParameter("regularPrice"))) {
+                        promotion.setRegularPrice(Double.parseDouble(multimedia.getParameter("regularPrice")));
+                        if (!(promotion.getRegularPrice() > 0)) {
+                            errorsList.put("regularPrice", "El precio regular debe ser mayor a 0");
+                        }
+                    } else {
+                        errorsList.put("regularPrice", "El precio regular debe ser un número decimal");
+                    }
+
+                    if (Validacion.esDecimalPositivo(multimedia.getParameter("ofertPrice"))) {
+                        promotion.setOfertPrice(Double.parseDouble(multimedia.getParameter("ofertPrice")));
+                        if (!(promotion.getRegularPrice() > 0)) {
+                            errorsList.put("ofertPrice", "El precio de oferta debe ser mayor a 0");
+                        }
+                    } else {
+                        errorsList.put("ofertPrice", "El precio de oferta debe ser un número decimal");
+                    }
+
+                    if ((promotion.getOfertPrice() > 0) && (promotion.getRegularPrice() > 0)) {
+                        if (!(promotion.getRegularPrice() > promotion.getOfertPrice())) {
+                            errorsList.put("ofertPrice", "El precio de oferta debe ser mayor al precio regular");
+                        }
+                    }
+
+                    if (Validacion.isEmpty(multimedia.getParameter("initDate"))) {
+                        errorsList.put("initDate", "La fecha de inicio es requerida");
+                        verifyDates = false;
+                    } else {
+                        try {
+                            promotion.setInitDate(initDate.parse(multimedia.getParameter("initDate")));
+                        } catch (ParseException ex) {
+                            verifyDates = false;
+                            errorsList.put("initDate", "La fecha de inicio no es válida");
+                        }
+                    }
+
+                    if (Validacion.isEmpty(multimedia.getParameter("initDate"))) {
+                        errorsList.put("endDate", "La fecha final es requerida");
+                        verifyDates = false;
+                    } else {
+                        try {
+                            promotion.setEndDate(endDate.parse(multimedia.getParameter("endDate")));
+                        } catch (ParseException ex) {
+                            verifyDates = false;
+                            errorsList.put("endDate", "La fecha final no es válida");
+                        }
+                    }
+
+                    if (Validacion.isEmpty(multimedia.getParameter("limitDate"))) {
+                        errorsList.put("limitDate", "La fecha limite es requerida");
+                        verifyDates = false;
+                    } else {
+                        try {
+                            promotion.setLimitDate(limitDate.parse(multimedia.getParameter("limitDate")));
+                        } catch (ParseException ex) {
+                            verifyDates = false;
+                            errorsList.put("limitDate", "La limite no es válida");
+                        }
+                    }
+
+                    if (verifyDates) {
+                        if (!Validacion.verificarFechas(promotion.getInitDate(), promotion.getEndDate())) {
+                            errorsList.put("initDate", "Fecha inicial debe ser menor a la final");
+                        }
+                        if (!Validacion.verificarFechas(promotion.getEndDate(), promotion.getLimitDate())) {
+                            errorsList.put("endDate", "Fecha final debe ser menor a la fecha limite");
+                        }
+                    }
+
+                    if (Validacion.isEmpty(multimedia.getParameter("description"))) {
+                        errorsList.put("description", "La descripción es requerida");
+                    } else {
+                        promotion.setDescription(multimedia.getParameter("description"));
+                    }
+
+                    if (Validacion.isEmpty(multimedia.getParameter("otherDetails"))) {
+                        errorsList.put("otherDetails", "Los detalles son requeridos");
+                    } else {
+                        promotion.setOtherDetails(multimedia.getParameter("otherDetails"));
+                    }
+
+                    if (Validacion.isEmpty(multimedia.getParameter("limitCant"))) {
+                        errorsList.put("limitCant", "La cantidad limite minima debe ser 0");
+                    } else {
+                        if (Validacion.esEnteroPositivo(multimedia.getParameter("limitCant"))) {
+                            errorsList.put("limitCant", "La cantidad limite no es válida");
+                        } else {
+                            promotion.setLimitCant(Integer.parseInt(multimedia.getParameter("limitCant")));
+                        }
+                    }
+
+                    if (multimedia.getFile("img") == null) {
+                        errorsList.put("img", "La imagen es obligatoria");
+                    } else {
+                        File fileTemp = multimedia.getFile("img");
+                        promotion.setImage(fileTemp.getName());
+                    }
+
+                    if (Validacion.esEnteroPositivo(multimedia.getParameter("idPromotion"))) {
+                        Promotion _p = promotionModel.getPromotion(Integer.parseInt(multimedia.getParameter("idPromotion")), false);
+                        if ((_p == null) || (_p.getPromotionState().getIdPromotionState() != 3)) {
+                            errorsList.put("idPromotion", "Promoción no válida para modificar");
+                        } else {
+                            promotion.setIdPromotion(Integer.parseInt(multimedia.getParameter("idPromotion")));
+                        }
+                    } else {
+                        errorsList.put("idPromotion", "ID es obligatorio");
+                    }
+
+                    if (errorsList.size() > 0) {
+                        request.setAttribute("errorsList", errorsList);
+                        request.setAttribute("promotion", promotion);
+                        request.getRequestDispatcher("/company/promotion/editPromotion.jsp").forward(request, response);
+                    } else {
+                        Company company = (Company) _s.getAttribute("user");
+                        promotion.setCompany(company);
+                        if (promotionModel.updatePromotion(promotion)) {
+                            request.getSession().setAttribute("success", "Oferta modificada");
+                            response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
+                            System.out.println("Oferta modificada");
+                        } else {
+                            request.getSession().setAttribute("success", "Oferta no modificada");
+                            response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
+                            System.out.println("Oferta no modificada");
+                        }
+                    }
+                    break;
+                default:
+                    response.sendRedirect(request.getContextPath() + "/login.jsp");
+                    break;
+            }
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }// fin update()
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            PrintWriter out = response.getWriter();
+            HttpSession _s = request.getSession(true);
+
+            switch (_s.getAttribute("type").toString()) {
+                case "company": //Para que una empresa elimine las ofertas estan debe estar en estado 3 (Rechazada)
+                    Promotion promotion = null;
+                    
+                    if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
+                        if (Integer.parseInt(request.getParameter("idPromotion")) > 0) {
+                            promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
+                        }
+                    }
+
+                    if (promotion != null) {
+                        if (promotion.getPromotionState().getState().toLowerCase().equals("rechazada")) {
+                            request.setAttribute("promotion", promotion);
+                            if(promotionModel.deletePromotion(Integer.parseInt(request.getParameter("idPromotion")))){
+                                out.print("1");
+                            }else{
+                                out.print("0");
+                            }
+                        } else {
+                            out.print("0");
+                        }
+                    } else {
+                        out.print("0");
+                    }
+                break;
+            }
+        } catch (SQLException | IOException ex) {
+            Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }// fin delete()
 }
