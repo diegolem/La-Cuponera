@@ -92,6 +92,22 @@
                 });
                 $('select').formSelect();
             });
+            function deletePromotion(id){
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/company/promotion.do?op=delete",
+                    type: "POST",
+                    data: {
+                        idPromotion: id
+                    },
+                    success: function(response){
+                        if(response === "0"){
+                            M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'})
+                        }else if(response === "1"){
+                            M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/company/promotion.do?op=list' }})
+                        }
+                    }
+                })
+            }
         </script>
     </body>
 </html>

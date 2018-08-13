@@ -4,56 +4,6 @@
     Author     : leonardo
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="java.util.Arrays"%>
-<%@page import="sv.edu.udb.www.beans.Employee"%>
-<%@page import="sv.edu.udb.www.beans.User"%>
-<%@page import="sv.edu.udb.www.beans.User"%>
-<%@page import="sv.edu.udb.www.beans.Company"%>
-<c:if test="${sessionScope.logged != true}">
-    <%
-        if (!request.getRequestURI().equals(request.getContextPath() + "/login.jsp")) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
-        }
-    %>
-</c:if>
-
-<c:if test="${sessionScope.logged == true}">
-    <c:set var="user" scope="session" value="${sessionScope.user}"></c:set>
-    <%
-        boolean flag = false;
-        String[] actualView = request.getRequestURI().split("/");
-        System.out.println(session.getAttribute("logged"));
-        switch (session.getAttribute("type").toString()) {
-            case "company":
-                Company user = (Company) session.getAttribute("user");
-                flag = (user != null);
-                break;
-            case "client":
-                User client = (User) session.getAttribute("user");
-                flag = (client != null);
-                break;
-            case "administrator":
-                User admin = (User) session.getAttribute("user");
-                flag = (admin != null);
-                break;
-            case "employee":
-                Employee employee = (Employee) session.getAttribute("user");
-                flag = (employee != null);
-                break;
-        }
-        
-        if(flag){
-            if (!Arrays.asList(actualView).contains(session.getAttribute("type").toString())) {
-                response.sendRedirect("/Cuponera/" + session.getAttribute("type").toString() + "/index.jsp");
-            } 
-        } else {
-            session.setAttribute("logged", false);
-            session.setAttribute("user", false);
-            session.setAttribute("type", false);
-            response.sendRedirect("/Cuponera/login.jsp");
-        }
-    %>  
-</c:if>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -63,7 +13,6 @@
         <jsp:include page="../../cabecera.jsp"/>
     </head>
     <body>
-        <c:set var = "title" scope = "page" value = "Agregar Empresa"/>
         <jsp:include page="../../menus/menuAdmin.jsp"/>
         <main class="">
             <div class="row">

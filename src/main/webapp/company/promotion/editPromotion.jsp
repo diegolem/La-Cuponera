@@ -1,28 +1,29 @@
 <%-- 
-    Document   : newPromotion
-    Created on : 08-11-2018, 11:44:10 AM
+    Document   : editPromotion
+    Created on : 08-12-2018, 03:55:52 PM
     Author     : leonardo
 --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Agregar Oferta</title>
+        <title>Modificar Oferta</title>
         <jsp:include page="../../cabecera.jsp"/>
     </head>
     <body>
-        <c:set var = "title" scope = "page" value = "Agregar Oferta"/>
+        <c:set var = "title" scope = "page" value = "Modificar Oferta"/>
         <jsp:include page="../../menus/menuCompany.jsp"/>
         <main class="">
             <div class="row">
                 <a href="${pageContext.request.contextPath}/company/promotion.do?op=list" class="waves-effect waves-light btn-large"><i class="material-icons left centered">line_weight</i>Lista de ofertas</a>
                 <br>
                 <br>
-                <form enctype="multipart/form-data" class="col s12" id="frmRegisterCompany" action="${pageContext.request.contextPath}/company/promotion.do?op=insert" method="POST">
-                    <input type="hidden" name="op" value="insert"/>
+                <form enctype="multipart/form-data" class="col s12" id="frmUpdatePromotion" action="${pageContext.request.contextPath}/company/promotion.do?op=update" method="POST">
+                    <input type="hidden" name="op" value="update"/>
+                    <input type="hidden" name="idPromotion" value="${promotion.idPromotion}"/>
                     <div class="row">
                         <div class="input-field col s12">
                             <input id="title" type="text" name="title" value="${promotion.title}">
@@ -62,7 +63,7 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input type="date" name="initDate" id="initDate" value="${promotion.initDate}">
+                            <input type="date" name="initDate" id="initDate" value="${company.initDate}">
                             <label for="initDate">Fecha de Inicio</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['initDate']}">
@@ -73,7 +74,7 @@
                             </c:if>
                         </div>
                         <div class="input-field col s6">
-                            <input type="date" name="endDate" id="endDate" value="${promotion.endDate}">
+                            <input type="date" name="endDate" id="endDate" value="${company.endDate}">
                             <label for="initDate">Fecha Final</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['endDate']}">
@@ -86,7 +87,7 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input type="date" name="limitDate" id="limitDate" value="${promotion.limitDate}">
+                            <input type="date" name="limitDate" id="limitDate" value="${company.limitDate}">
                             <label for="limitDate">Fecha Límite</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['limitDate']}">
@@ -137,7 +138,7 @@
                                 <input type="file" name="img">
                             </div>
                             <div class="file-path-wrapper">
-                                <input class="file-path" type="text">
+                                <input class="file-path" type="text" placeholder="Favor seleccionar de nuevo la imagen">
                             </div>
                         </div>
                         <c:if test="${not empty requestScope.errorsList}">
