@@ -20,6 +20,33 @@ import sv.edu.udb.www.beans.User;
  */
 public class SalesModel extends Connection {
     
+    public ArrayList<Sales> getSales(User user, SalesState saleState, boolean relationship) throws SQLException {
+        try {
+            ArrayList<Sales> sales = new ArrayList<Sales>();
+            ArrayList<Integer> id = new ArrayList<Integer>();
+            String sql = "SELECT id FROM sales WHERE client_id = ? AND sales_state = ?";
+            
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setInt(1, user.getIdUser());
+            st.setInt(2, saleState.getIdSalesState());
+            rs = st.executeQuery();
+            while (rs.next()) { 
+                id.add(rs.getInt("id")); 
+            }
+            this.desconectar();
+            
+            for(int i = 0; i < id.size(); i++){
+                sales.add(this.getSale(id.get(i), relationship)); 
+            }
+            return sales;
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }//Fin getSales()
+    
     public ArrayList<Sales> getSales(boolean relationship) throws SQLException {
         try {
             ArrayList<Sales> sales = new ArrayList<Sales>();

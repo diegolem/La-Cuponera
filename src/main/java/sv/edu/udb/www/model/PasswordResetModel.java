@@ -15,6 +15,14 @@ public class PasswordResetModel extends Connection{
     private static String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom RANDOM = new SecureRandom();
 
+    public static String generatePasswordWithoutEncrypt(){
+        String password = "";
+        for(int i = 0; i < 10; i++){
+            password += ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length()));
+        }
+        return password;
+    }//fin generatePasswordWithoutEncrypt()
+    
     public static String generatePassword(){
         String password = "";
         for(int i = 0; i < 10; i++){
