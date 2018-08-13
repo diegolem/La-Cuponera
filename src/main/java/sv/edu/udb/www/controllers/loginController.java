@@ -111,7 +111,7 @@ public class loginController extends HttpServlet {
                         case "administrator":
                             _s.setAttribute("user", user.getUser());
                             _s.setAttribute("redirect", request.getContextPath() + "/admin/index.jsp");
-                            _s.setAttribute("type", "administrator");
+                            _s.setAttribute("type", "admin");
                             break;
                         case "employee":
                             _s.setAttribute("user", user.getEmployee());

@@ -21,7 +21,7 @@
                 <a href="${pageContext.request.contextPath}/company/promotion.do?op=list" class="waves-effect waves-light btn-large"><i class="material-icons left centered">line_weight</i>Lista de ofertas</a>
                 <br>
                 <br>
-                <form enctype="multipart/form-data" class="col s12" id="frmRegisterCompany" action="${pageContext.request.contextPath}/company/promotion.do?op=insert" method="POST">
+                <form enctype="multipart/form-data" class="col s12" id="frmRegisterCompany" action="${pageContext.request.contextPath}/company/promotion.do" method="POST">
                     <input type="hidden" name="op" value="insert"/>
                     <div class="row">
                         <div class="input-field col s12">
@@ -156,5 +156,111 @@
                 </form>
             </div>
         </main>
+        <script>
+            $.validator.setDefaults({
+                errorClass: 'invalid',
+                validClass: 'none',
+                errorPlacement: function (error, element) {
+                    $(element).parent().find('span.error-block.red-text').remove();
+                    $(element).parent().find('span.helper-text').remove();
+                    $(element).parent().append("<span class='helper-text' data-error='" + error.text() + "'></span>");
+                }
+            });
+
+            $.validator.addMethod('validInitDate', function (value, element) {
+                console.log(value);
+                let initDate = new Date(value), now = new Date();
+                console.log(initDate.getTime());
+                console.log(now.getTime());
+                return this.optional(element) || (initDate.getTime() >= now.getTime());
+            }, 'Fecha Inicial debe ser mayor a la actual');
+
+            $.validator.addMethod('validEndDate', function (value, element) {
+                let endDate = new Date(value), initDate = new Date($('#initDate').val());
+                return this.optional(element) || (endDate.getTime() >= initDate.getTime());
+            }, 'Fecha final debe ser mayor a la inicial');
+
+            $.validator.addMethod('validLimitDate', function (value, element) {
+                let limitDate = new Date(value), endDate = new Date($('#endDate').val());
+                return this.optional(element) || (limitDate.getTime() >= endDate.getTime());
+            }, 'Fecha limite debe ser mayor a la final');
+
+            $('#frmRegisterCompany').validate({
+                rules: {
+                    title: {
+                        required: true
+                    },
+                    regularPrice: {
+                        required: true
+                    },
+                    ofertPrice: {
+                        required: true
+                    },
+                    initDate: {
+                        required: true,
+                        validInitDate: true
+                    },
+                    endDate: {
+                        required: true,
+                        validEndDate: true
+                    },
+                    limitDate: {
+                        required: true,
+                        validLimitDate: true
+                    },
+                    limitCant: {
+                        required: true
+                    },
+                    description: {
+                        required: true
+                    },
+                    otherDetails: {
+                        required: true
+                    },
+                    img: {
+                        required: true
+                    }
+                },
+                messages: {
+                    title: {
+                        required: 'El campo título es requerido'
+                    },
+                    regularPrice: {
+                        required: 'El campo precio regular es requerido'
+                    },
+                    ofertPrice: {
+                        required: 'El campo precio oferta es requerido'
+                    },
+                    initDate: {
+                        required: 'El campo fecha inicial es requerido'
+                    },
+                    endDate: {
+                        required: 'El campo fecha de finalización es requerido'
+                    },
+                    limitDate: {
+                        required: 'El campo fecha limite es requerido'
+                    },
+                    limitCant: {
+                        required: 'El campo cantidad limite es requerido (minímo 0)'
+                    },
+                    description: {
+                        required: 'El campo descripción es requerido'
+                    },
+                    otherDetails: {
+                        required: 'El campo otros detalles es requerido'
+                    },
+                    img: {
+                        required: 'El campo img es requerido',
+                        extension: "jpg|png|jpeg|gif"
+                    }
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+            $(document).ready(function () {
+                // $('select').formSelect();
+            });
+        </script>
     </body>
 </html>

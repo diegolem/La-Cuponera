@@ -20,6 +20,9 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
@@ -44,75 +47,57 @@ public class promotionController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        try (PrintWriter out = response.getWriter()) {
-            String operation = request.getParameter("op");
-
-            if (operation == null) {
-                list(request, response);
-                return;
-            }
-
-            switch (operation) {
-                case "list":
-                    list(request, response);
-                    break;
-                case "new":
-                    add(request, response);
-                    break;
-                case "insert":
-                    insert(request, response);
-                    break;
-                case "details":
-                    details(request, response);
-                    break;
-                case "edit":
-                    edit(request, response);
-                    break;
-                case "update":
-                    update(request, response);
-                    break;
-                case "delete":
-                    delete(request, response);
-                    break;
-            }
-        }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        String operation = request.getParameter("op");
+
+        if (operation == null) {
+            list(request, response);
+            return;
+        }
+
+        switch (operation) {
+            case "list":
+                list(request, response);
+                break;
+            case "new":
+                add(request, response);
+                break;
+            case "details":
+                details(request, response);
+                break;
+            case "edit":
+                edit(request, response);
+                break;
+            case "delete":
+                delete(request, response);
+                break;
+        }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+
+        String pathImage = getServletContext().getRealPath("/img");
+        MultipartRequest multimedia = new MultipartRequest(request, pathImage, 1 * 1024 * 1024, new DefaultFileRenamePolicy());
+        String operation = multimedia.getParameter("op");
+
+        switch (operation) {
+            case "insert":
+                insert(multimedia, request, response);
+                break;
+            case "update":
+                update(multimedia, request, response);
+                break;
+        }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
@@ -127,23 +112,22 @@ public class promotionController extends HttpServlet {
                 case "company":
                     Company company = (Company) _s.getAttribute("user");
                     id = company.getIdCompany();
+
+                    request.setAttribute("promotionsList", promotionModel.getPromotions(id, false));
+                    request.getRequestDispatcher("/company/promotion/listPromotions.jsp").forward(request, response);
                     break;
             }
 
-            request.setAttribute("promotionsList", promotionModel.getPromotions(id, false));
-            request.getRequestDispatcher("/company/promotion/listPromotions.jsp").forward(request, response);
         } catch (ServletException | IOException | SQLException ex) {
             Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// fin list()
 
-    private void insert(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void insert(MultipartRequest multimedia, HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             errorsList.clear();
             boolean verifyDates = true;
             Promotion promotion = new Promotion();
-            String pathImage = getServletContext().getRealPath("/img");
-            MultipartRequest multimedia = new MultipartRequest(request, pathImage, 1 * 1024 * 1024, new DefaultFileRenamePolicy());
 
             DateFormat initDate = new SimpleDateFormat("yyyy-MM-dd");
             DateFormat endDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -216,6 +200,11 @@ public class promotionController extends HttpServlet {
             }
 
             if (verifyDates) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date now = new Date();
+                if (!Validacion.verificarFechas(promotion.getInitDate(), now)) {
+                    errorsList.put("initDate", "Fecha inicial debe ser mayor a la actual");
+                }
                 if (!Validacion.verificarFechas(promotion.getInitDate(), promotion.getEndDate())) {
                     errorsList.put("initDate", "Fecha inicial debe ser menor a la final");
                 }
@@ -254,9 +243,13 @@ public class promotionController extends HttpServlet {
             }
 
             if (errorsList.size() > 0) {
+                if (multimedia.getFile("img") != null) {
+                    multimedia.getFile("img").delete();
+                }
+
                 request.setAttribute("errorsList", errorsList);
                 request.setAttribute("promotion", promotion);
-                request.getRequestDispatcher("/company/promotion.do?op=new").forward(request, response);
+                request.getRequestDispatcher("/company/promotion/newPromotion.jsp").forward(request, response);
                 //add(request, response);
             } else {
                 HttpSession _s = request.getSession(true);
@@ -267,6 +260,9 @@ public class promotionController extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/company/promotion/newPromotion.jsp");
                     System.out.println("Oferta registrada");
                 } else {
+                    if (multimedia.getFile("img") != null) {
+                        multimedia.getFile("img").delete();
+                    }
                     request.getSession().setAttribute("error", "Oferta no registrada");
                     response.sendRedirect(request.getContextPath() + "/company/promotion/newPromotion.jsp");
                     System.out.println("Oferta no regitrada");
@@ -337,7 +333,7 @@ public class promotionController extends HttpServlet {
         }
     } // Fin edit
 
-    private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    private void update(MultipartRequest multimedia, HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             HttpSession _s = request.getSession(true);
 
@@ -346,8 +342,6 @@ public class promotionController extends HttpServlet {
                     errorsList.clear();
                     boolean verifyDates = true;
                     Promotion promotion = new Promotion();
-                    String pathImage = getServletContext().getRealPath("/img");
-                    MultipartRequest multimedia = new MultipartRequest(request, pathImage, 1 * 1024 * 1024, new DefaultFileRenamePolicy());
 
                     DateFormat initDate = new SimpleDateFormat("yyyy-MM-dd");
                     DateFormat endDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -420,6 +414,11 @@ public class promotionController extends HttpServlet {
                     }
 
                     if (verifyDates) {
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                        Date now = new Date();
+                        if (!Validacion.verificarFechas(promotion.getInitDate(), now)) {
+                            errorsList.put("initDate", "Fecha inicial debe ser mayor a la actual");
+                        }
                         if (!Validacion.verificarFechas(promotion.getInitDate(), promotion.getEndDate())) {
                             errorsList.put("initDate", "Fecha inicial debe ser menor a la final");
                         }
@@ -469,6 +468,9 @@ public class promotionController extends HttpServlet {
                     }
 
                     if (errorsList.size() > 0) {
+                        if (multimedia.getFile("img") != null) {
+                            multimedia.getFile("img").delete();
+                        }
                         request.setAttribute("errorsList", errorsList);
                         request.setAttribute("promotion", promotion);
                         request.getRequestDispatcher("/company/promotion/editPromotion.jsp").forward(request, response);
@@ -480,6 +482,9 @@ public class promotionController extends HttpServlet {
                             response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
                             System.out.println("Oferta modificada");
                         } else {
+                            if (multimedia.getFile("img") != null) {
+                                multimedia.getFile("img").delete();
+                            }
                             request.getSession().setAttribute("success", "Oferta no modificada");
                             response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
                             System.out.println("Oferta no modificada");
@@ -503,7 +508,7 @@ public class promotionController extends HttpServlet {
             switch (_s.getAttribute("type").toString()) {
                 case "company": //Para que una empresa elimine las ofertas estan debe estar en estado 3 (Rechazada)
                     Promotion promotion = null;
-                    
+
                     if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
                         if (Integer.parseInt(request.getParameter("idPromotion")) > 0) {
                             promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
@@ -513,9 +518,9 @@ public class promotionController extends HttpServlet {
                     if (promotion != null) {
                         if (promotion.getPromotionState().getState().toLowerCase().equals("rechazada")) {
                             request.setAttribute("promotion", promotion);
-                            if(promotionModel.deletePromotion(Integer.parseInt(request.getParameter("idPromotion")))){
+                            if (promotionModel.deletePromotion(Integer.parseInt(request.getParameter("idPromotion")))) {
                                 out.print("1");
-                            }else{
+                            } else {
                                 out.print("0");
                             }
                         } else {
@@ -524,7 +529,7 @@ public class promotionController extends HttpServlet {
                     } else {
                         out.print("0");
                     }
-                break;
+                    break;
             }
         } catch (SQLException | IOException ex) {
             Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);

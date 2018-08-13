@@ -105,7 +105,7 @@ public class PromotionModel extends Connection {
                 PromotionStateModel promotionStateModel = new PromotionStateModel();
                 SalesModel salesModel = new SalesModel();
                 
-                Promotion promotion = new Promotion(rs.getInt("id"), rs.getString("title"), rs.getDouble("regular_price"), rs.getDouble("ofert_price"), rs.getDate("init_date"), rs.getDate("end_date"), rs.getDate("limit_date"), rs.getInt("limit_cant"), rs.getString("description"), rs.getString("other_details"), rs.getString("image"), rs.getInt("coupons_sold"), rs.getInt("coupons_available"), rs.getDouble("earnings"), rs.getDouble("charge_service"));
+                Promotion promotion = new Promotion(rs.getInt("id"), rs.getString("title"), rs.getDouble("regular_price"), rs.getDouble("ofert_price"), rs.getDate("init_date"), rs.getDate("end_date"), rs.getDate("limit_date"), rs.getInt("limit_cant"), rs.getString("description"), rs.getString("other_details"), rs.getString("image"), rs.getInt("coupons_sold"), rs.getInt("coupons_available"), rs.getDouble("earnings"), rs.getDouble("charge_service"), rs.getString("rejected_description"));
                 promotion.setCompany(companyModel.getCompany(rs.getString("id_company"), relationship));
                 promotion.setPromotionState(promotionStateModel.getPromotionState(rs.getInt("id_state"), false));
                 
@@ -157,7 +157,7 @@ public class PromotionModel extends Connection {
     public boolean updatePromotion(Promotion promotion) throws SQLException{
         try {
             int affectedRows = 0;
-            String sql = "UPDATE promotion SET title = ?, regular_price = ?, ofert_price = ?, init_date = ?, end_date = ?, limit_date = ?, limit_cant = ?, description = ?, other_details = ?, image = ?, id_company = ?, id_state = ?  WHERE id = ?";
+            String sql = "UPDATE promotion SET title = ?, regular_price = ?, ofert_price = ?, init_date = ?, end_date = ?, limit_date = ?, limit_cant = ?, description = ?, other_details = ?, image = ?, id_company = ?, id_state = ?, rejected_description = ?  WHERE id = ?";
             
             this.conectar();
             st = conexion.prepareStatement(sql);
@@ -173,7 +173,8 @@ public class PromotionModel extends Connection {
             st.setString(10, promotion.getImage());
             st.setString(11, promotion.getCompany().getIdCompany());
             st.setInt(12, 1); //Estado 1 - En espera de aprobacion
-            st.setInt(13, promotion.getIdPromotion());
+            st.setString(13, "");//Descripción vacía
+            st.setInt(14, promotion.getIdPromotion());
             affectedRows = st.executeUpdate();
             
             this.desconectar();

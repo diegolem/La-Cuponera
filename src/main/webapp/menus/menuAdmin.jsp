@@ -48,7 +48,7 @@
             <a class="subheader"></a>
         </li>
         <li  class="nav-item">
-            <a onclick="javascript:void(0)" href="#" title="login.do?op=logout"><i class="material-icons">exit_to_app</i>Cerrar sesión</a>
+            <a onclick="javascript:void(0)" href="login.do?op=logout" title=""><i class="material-icons">exit_to_app</i>Cerrar sesión</a>
         </li>
     </ul>
 </header>

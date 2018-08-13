@@ -95,7 +95,7 @@
             function deletePromotion(id){
                 $.ajax({
                     url: "${pageContext.request.contextPath}/company/promotion.do?op=delete",
-                    type: "POST",
+                    type: "GET",
                     data: {
                         idPromotion: id
                     },

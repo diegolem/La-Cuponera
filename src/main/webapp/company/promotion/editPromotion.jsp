@@ -21,7 +21,12 @@
                 <a href="${pageContext.request.contextPath}/company/promotion.do?op=list" class="waves-effect waves-light btn-large"><i class="material-icons left centered">line_weight</i>Lista de ofertas</a>
                 <br>
                 <br>
-                <form enctype="multipart/form-data" class="col s12" id="frmUpdatePromotion" action="${pageContext.request.contextPath}/company/promotion.do?op=update" method="POST">
+                <div style="display: flex; justify-content: center; font-size: 18px;">
+                    <ul>
+                        <li><b>Descripción de Rechazo: </b> ${promotion.rejectedDescription}</li>
+                    </ul>
+                </div>
+                <form enctype="multipart/form-data" class="col s12" id="frmUpdatePromotion" action="${pageContext.request.contextPath}/company/promotion.do" method="POST">
                     <input type="hidden" name="op" value="update"/>
                     <input type="hidden" name="idPromotion" value="${promotion.idPromotion}"/>
                     <div class="row">

@@ -28,6 +28,15 @@ public class Promotion {
     private int couponsAvailable;
     private double earnings;
     private double chargeService;
+    private String rejectedDescription;
+
+    public String getRejectedDescription() {
+        return rejectedDescription;
+    }
+
+    public void setRejectedDescription(String rejectedDescription) {
+        this.rejectedDescription = rejectedDescription;
+    }
 
     public int getCouponsSold() {
         return couponsSold;
@@ -195,6 +204,7 @@ public class Promotion {
         this.couponsAvailable = 0;
         this.earnings = 0;
         this.chargeService = 0;
+        this.rejectedDescription = "";
     }
     
     /*
@@ -213,11 +223,12 @@ public class Promotion {
         couponsAvailable,
         earnings,
         chargeService,
+        rejectedDescription,
         sales (List Sales),
         company (Object Company),
         promotionState (object PromotionState)
     */
-    public Promotion(String title, double regularPrice, double ofertPrice, Date initDate, Date endDate, Date limitDate, int limitCant, String description, String otherDetails, String image, Company company, PromotionState promotionState){
+    public Promotion(String title, double regularPrice, double ofertPrice, Date initDate, Date endDate, Date limitDate, int limitCant, String description, String otherDetails, String image, Company company, PromotionState promotionState, String rejectedDescription){
         this.idPromotion = 0;
         this.title = title;
         this.regularPrice = regularPrice;
@@ -236,6 +247,7 @@ public class Promotion {
         this.couponsAvailable = 0;
         this.earnings = 0;
         this.chargeService = 0;
+        this.rejectedDescription = rejectedDescription;
     }
     
     /*
@@ -253,9 +265,10 @@ public class Promotion {
         couponsSold,
         couponsAvailable,
         earnings,
-        chargeService
+        chargeService,
+        rejectedDescription
     */
-    public Promotion(int idPromotion, String title, double regularPrice, double ofertPrice, Date initDate, Date endDate, Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold, int couponsAvailable, double earnings, double chargeService){
+    public Promotion(int idPromotion, String title, double regularPrice, double ofertPrice, Date initDate, Date endDate, Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold, int couponsAvailable, double earnings, double chargeService, String rejectedDescription){
         this.idPromotion = idPromotion;
         this.title = title;
         this.regularPrice = regularPrice;
@@ -274,6 +287,7 @@ public class Promotion {
         this.couponsAvailable = couponsAvailable;
         this.earnings = earnings;
         this.chargeService = chargeService;
+        this.rejectedDescription = rejectedDescription;
     }
     
     /*
@@ -292,11 +306,12 @@ public class Promotion {
         couponsAvailable,
         earnings,
         chargeService,
+        rejectedDescription,
         sales (List Sales),
         company (Object Company),
         promotionState (object PromotionState)
     */
-    public Promotion(int idPromotion, String title, double regularPrice, double ofertPrice, Date initDate, Date endDate, Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold, int couponsAvailable, double earnings, double chargeService, List<Sales> sales, Company company, PromotionState promotionState){
+    public Promotion(int idPromotion, String title, double regularPrice, double ofertPrice, Date initDate, Date endDate, Date limitDate, int limitCant, String description, String otherDetails, String image, int couponsSold, int couponsAvailable, double earnings, double chargeService, String rejectedDescription, List<Sales> sales, Company company, PromotionState promotionState){
         this.idPromotion = idPromotion;
         this.title = title;
         this.regularPrice = regularPrice;
@@ -315,5 +330,6 @@ public class Promotion {
         this.couponsAvailable = couponsAvailable;
         this.earnings = earnings;
         this.chargeService = chargeService;
+        this.rejectedDescription = rejectedDescription;
     }
 }

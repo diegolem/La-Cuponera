@@ -147,7 +147,7 @@ public class CompanyModel extends Connection {
             cs.setString(3, company.getContactName());
             cs.setString(4, company.getTelephone());
             cs.setString(5, company.getEmail());
-            cs.setInt(6, company.getPctComission());
+            cs.setString(6, company.getName());
             affectedRows = cs.executeUpdate();
             
             this.desconectar();
