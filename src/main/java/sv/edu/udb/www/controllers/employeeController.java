@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import sv.edu.udb.www.beans.Employee;
 import sv.edu.udb.www.model.CompanyModel;
 import sv.edu.udb.www.model.EmployeeModel;
+import sv.edu.udb.www.model.PasswordResetModel;
 import sv.edu.udb.www.utilities.Mail;
 import sv.edu.udb.www.utilities.Validacion;
 
@@ -27,7 +28,7 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "employeeController", urlPatterns = {"/employee.do"})
+@WebServlet(name = "employeeController", urlPatterns = {"/employee.do", "/company/employee.do"})
 public class employeeController extends HttpServlet {
     CompanyModel companyModel = new CompanyModel();
     EmployeeModel employeeModel = new EmployeeModel();
@@ -143,11 +144,8 @@ public class employeeController extends HttpServlet {
         employee.setCompany(companyModel.getCompany(request.getParameter("company"), false));
         employee.setEmail(request.getParameter("email"));
         
-        String password = "";
-        for (int i = 0; i < randomRange(10, 30); i++) {
-            password += Character.toString((char) randomRange(65, 122));
-        }
-        employee.setPassword(password);
+        String password = PasswordResetModel.generatePasswordWithoutEncrypt();
+        employee.setPassword(PasswordResetModel.parsingPassword(password));
         
         errorsList.clear();
         
@@ -169,23 +167,23 @@ public class employeeController extends HttpServlet {
         if (errorsList.size() > 0) {
             request.setAttribute("errorsList", errorsList);
             request.setAttribute("employee", employee);
-            request.getRequestDispatcher("/employee.do?op=new").forward(request, response);
+            request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
         } else {
             Mail mail = new Mail();
         
             if (mail.sendEmail(employee.getEmail(), "Clave de usuario: " + password)){
                 if (employeeModel.insertEmployee(employee)) {
                     request.getSession().setAttribute("success", "Empleado registrado");
-                    response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 } else {
                     request.getSession().setAttribute("error", "El empleado no ha podido registrarse");
-                    response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 }
             } else {
                 errorsList.put("email", "El correo electronico no existe");
                 request.setAttribute("errorsList", errorsList);
                 request.setAttribute("employee", employee);
-                request.getRequestDispatcher("/employee.do?op=new").forward(request, response);
+                request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
             }
         }
     }
@@ -206,11 +204,11 @@ public class employeeController extends HttpServlet {
                 request.getRequestDispatcher("/company/employee/editEmployee.jsp").forward(request, response);
             } else {
                 request.getSession().setAttribute("error", "No se ha encontrado ningun empleado");
-                response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+                response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
             }
         } else {
             request.getSession().setAttribute("error", "No se ha encontrado ningun empleado");
-            response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+            response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
         }
     }
 
@@ -247,21 +245,21 @@ public class employeeController extends HttpServlet {
             if (errorsList.size() > 0) {
                 request.setAttribute("errorsList", errorsList);
                 request.setAttribute("employee", employee);
-                request.getRequestDispatcher("/employee.do?op=edit").forward(request, response);
+                request.getRequestDispatcher("/company/employee.do?op=edit").forward(request, response);
             } else {
                 Mail mail = new Mail();
                 if (employeeModel.updateEmployee(employee)) {
                     mail.sendEmail(employee.getEmail(), "Se ha actualizado ");
                     request.getSession().setAttribute("success", "Empleado modificado");
-                    response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 } else {
                     request.getSession().setAttribute("error", "No se ha podido modificar el usuario");
-                    response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 }
             }
         } else {
             request.getSession().setAttribute("error", "Empleado no registrado");
-            response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+            response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
         }
         
     }
@@ -299,11 +297,11 @@ public class employeeController extends HttpServlet {
                 request.getRequestDispatcher("/employee/detailsEmployee.jsp").forward(request, response);
             } else {
                 request.getSession().setAttribute("error", "No se ha encontrado ningun empleado");
-                response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+                response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
             }
         } else {
             request.getSession().setAttribute("error", "No se ha encontrado ningun empleado");
-            response.sendRedirect(request.getContextPath() + "/employee.do?op=list");
+            response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
         }
     }
 }

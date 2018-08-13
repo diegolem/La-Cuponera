@@ -4,6 +4,14 @@
     Author     : pc
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${sessionScope.logged != true}">
+    <%
+        if (!request.getRequestURI().equals(request.getContextPath() + "/login.jsp")) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+        }
+    %>
+</c:if>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
