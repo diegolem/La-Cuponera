@@ -137,7 +137,8 @@ CREATE TABLE `promotion` (
   `earnings` decimal(18,2) NOT NULL,
   `charge_service` decimal(18,2) NOT NULL,
   `id_company` varchar(6) COLLATE utf8_spanish2_ci NOT NULL,
-  `id_state` int(11) NOT NULL
+  `id_state` int(11) NOT NULL,
+  `rejected_description` varchar(300) COLLATE utf8_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
@@ -250,7 +251,7 @@ CREATE TABLE `user_type` (
 --
 
 INSERT INTO `user_type` (`id`, `type`) VALUES
-(1, 'Cliente');
+(1, 'client'), (2, 'administrator');
 
 --
 -- Índices para tablas volcadas
@@ -401,7 +402,7 @@ ALTER TABLE promotion ALTER earnings SET DEFAULT 0;
 ALTER TABLE promotion ALTER charge_service SET DEFAULT 0;
 ALTER TABLE sales ALTER verified SET DEFAULT 0;
 
---FOREIGN KEY
+-- FOREIGN KEY
 ALTER TABLE user
 ADD CONSTRAINT FK_UserType
 FOREIGN KEY(user_type) REFERENCES user_type(id);
@@ -500,7 +501,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE insert_promotion(IN _title VARCHAR(5
 BEGIN
 	DECLARE _coupons_available INTEGER;  
 	SET @_coupons_available = _limit_cant;
-    INSERT INTO promotion(title, regular_price, ofert_price, init_date, end_date, limit_date, limit_cant, description, other_details, image, coupons_available, id_company, id_state) VALUES(_title, _regular_price, _ofert_price, _init_date, _end_date, _limit_date, _limit_cant, _description, _other_details, _image, @_coupons_available, _id_company, 1);
+    INSERT INTO promotion(title, regular_price, ofert_price, init_date, end_date, limit_date, limit_cant, description, other_details, image, coupons_available, id_company, id_state, rejected_description) VALUES(_title, _regular_price, _ofert_price, _init_date, _end_date, _limit_date, _limit_cant, _description, _other_details, _image, @_coupons_available, _id_company, 1, "");
 END;;
 DELIMITER ;
 
@@ -525,9 +526,9 @@ DELIMITER ;
 DROP PROCEDURE update_company;
 -- Modificación en usuario(contraseña)
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE update_company(IN _id VARCHAR(6), IN _address VARCHAR(100), IN _contact_name VARCHAR(50), IN _telephone VARCHAR(9), IN _email VARCHAR(50), IN _pct_comission INTEGER)
+CREATE DEFINER=`root`@`localhost` PROCEDURE update_company(IN _id VARCHAR(6), IN _address VARCHAR(100), IN _contact_name VARCHAR(50), IN _telephone VARCHAR(9), IN _email VARCHAR(50), IN _name VARCHAR(50))
 BEGIN
-	UPDATE company SET address = _address, contact_name = _contact_name, telephone = _telephone, email = _email, pct_comission = _pct_comission WHERE id = _id;
+	UPDATE company SET address = _address, contact_name = _contact_name, telephone = _telephone, email = _email, name = _name WHERE id = _id;
 END;;
 DELIMITER ;
 
