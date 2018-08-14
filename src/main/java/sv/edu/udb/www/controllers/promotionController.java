@@ -113,6 +113,7 @@ public class promotionController extends HttpServlet {
                     Company company = (Company) _s.getAttribute("user");
                     id = company.getIdCompany();
 
+                    request.setAttribute("title", "Lista de ofertas");
                     request.setAttribute("promotionsList", promotionModel.getPromotions(id, false));
                     request.getRequestDispatcher("/company/promotion/listPromotions.jsp").forward(request, response);
                     break;
@@ -275,6 +276,7 @@ public class promotionController extends HttpServlet {
 
     private void add(HttpServletRequest request, HttpServletResponse response) {
         try {
+            request.setAttribute("title", "Agregar oferta");
             request.getRequestDispatcher("/company/promotion/newPromotion.jsp").forward(request, response);
         } catch (IOException | ServletException ex) {
             Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
@@ -292,6 +294,7 @@ public class promotionController extends HttpServlet {
             }
 
             if (promotion != null) {
+                request.setAttribute("title", "Detalles de oferta");
                 request.setAttribute("promotion", promotion);
                 request.getRequestDispatcher("/company/promotion/detailsPromotion.jsp").forward(request, response);
             } else {
@@ -318,6 +321,7 @@ public class promotionController extends HttpServlet {
 
                     if (promotion != null) {
                         if (promotion.getPromotionState().getState().toLowerCase().equals("rechazada")) {
+                            request.setAttribute("title", "Editar oferta");
                             request.setAttribute("promotion", promotion);
                             request.getRequestDispatcher("/company/promotion/editPromotion.jsp").forward(request, response);
                         } else {

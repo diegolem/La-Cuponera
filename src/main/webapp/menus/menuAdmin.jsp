@@ -8,7 +8,7 @@
             <div class="nav-wrapper"><a class="brand-logo center"><c:out value="${title}" default="Administrador" /></a></div>
         </div>
     </nav>
-
+    <c:set var = "user" scope = "session" value = "${user}"/>
     <ul id="user_nav" class="sidenav sidenav-fixed">
         <li>
             <div class="user-view">
@@ -21,10 +21,10 @@
                     <span class="white-text name">Administrador</span>
                 </a>
                 <a>
-                    <span style="font-weight: bold;" class="white-text email">Nombre</span>
+                    <span style="font-weight: bold;" class="white-text email">${user.name} ${user.lastName}</span>
                 </a>
                 <a>
-                    <span class="white-text email">Correo</span>
+                    <span class="white-text email">${user.email}</span>
                 </a>
             </div>
         </li>

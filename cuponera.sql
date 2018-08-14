@@ -57,7 +57,7 @@ CREATE TABLE `company` (
 --
 
 INSERT INTO `company` (`id`, `name`, `address`, `contact_name`, `telephone`, `email`, `type_company`, `pct_comission`, `password`) VALUES
-('ABC123', 'Prueba 1', 'San Salvador', 'Diego Lemus', '2222-4444', 'prueba@gmail.com', 1, 10, '1234');
+('ABC123', 'Prueba 1', 'San Salvador', 'Diego Lemus', '2222-4444', 'prueba@gmail.com', 1, 10, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 -- --------------------------------------------------------
 
@@ -100,7 +100,7 @@ CREATE TABLE `employee` (
 --
 
 INSERT INTO `employee` (`id`, `name`, `last_name`, `email`, `password`, `id_company`) VALUES
-(1, 'Carlos', 'Lemus', 'carlos@gmail.com', '123456', 'ABC123');
+(1, 'Carlos', 'Lemus', 'carlos@gmail.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ABC123');
 
 -- --------------------------------------------------------
 
@@ -234,7 +234,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `last_name`, `email`, `password`, `user_type`, `dui`, `nit`) VALUES
-(1, 'Alberto', 'Lemus', 'albeto@gmai.com', '123456', 1, '12345678-9', '1234-123456-123-1');
+(1, 'Alberto', 'Lemus', 'albeto@gmai.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, '12345678-9', '1234-123456-123-1');
 
 -- --------------------------------------------------------
 
