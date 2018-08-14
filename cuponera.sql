@@ -401,6 +401,39 @@ ALTER TABLE promotion ALTER earnings SET DEFAULT 0;
 ALTER TABLE promotion ALTER charge_service SET DEFAULT 0;
 ALTER TABLE sales ALTER verified SET DEFAULT 0;
 
+--FOREIGN KEY
+ALTER TABLE user
+ADD CONSTRAINT FK_UserType
+FOREIGN KEY(user_type) REFERENCES user_type(id);
+
+ALTER TABLE promotion
+ADD CONSTRAINT FK_PromotionState
+FOREIGN KEY(id_state) REFERENCES promotion_state(id);
+
+ALTER TABLE promotion
+ADD CONSTRAINT FK_PromotionCompany
+FOREIGN KEY(id_company) REFERENCES company(id);
+
+ALTER TABLE sales
+ADD CONSTRAINT FK_SalesPromotion
+FOREIGN KEY(promotion_id) REFERENCES promotion(id);
+
+ALTER TABLE sales
+ADD CONSTRAINT FK_ClientSales
+FOREIGN KEY(client_id) REFERENCES user(id);
+
+ALTER TABLE company
+ADD CONSTRAINT FK_CompanyType
+FOREIGN KEY(type_company) REFERENCES company_type(id);
+
+ALTER TABLE sales
+ADD CONSTRAINT FK_SalesState
+FOREIGN KEY(sales_state) REFERENCES sales_state(id);
+
+ALTER TABLE employee
+ADD CONSTRAINT FK_EmployeeCompany
+FOREIGN KEY(id_company) REFERENCES company(id);
+
 SHOW EVENTS;
 -- Evento que se ejecuta cada media noche y cambia el estado ha "pasado" cuando la fecha es menor a la actual
 SHOW VARIABLES LIKE 'event_scheduler';
