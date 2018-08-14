@@ -168,20 +168,25 @@
             });
 
             $.validator.addMethod('validInitDate', function (value, element) {
-                console.log(value);
+                //console.log(value);
                 let initDate = new Date(value), now = new Date();
-                console.log(initDate.getTime());
-                console.log(now.getTime());
+                now.setHours(0, 0, 0, 0);
+                initDate.setHours(0, 0, 0, 0);
+                //console.log(initDate.getDay());
                 return this.optional(element) || (initDate.getTime() >= now.getTime());
             }, 'Fecha Inicial debe ser mayor a la actual');
 
             $.validator.addMethod('validEndDate', function (value, element) {
                 let endDate = new Date(value), initDate = new Date($('#initDate').val());
+                endDate.setHours(0, 0, 0, 0);
+                initDate.setHours(0, 0, 0, 0);
                 return this.optional(element) || (endDate.getTime() >= initDate.getTime());
             }, 'Fecha final debe ser mayor a la inicial');
 
             $.validator.addMethod('validLimitDate', function (value, element) {
                 let limitDate = new Date(value), endDate = new Date($('#endDate').val());
+                limitDate.setHours(0, 0, 0, 0);
+                endDate.setHours(0, 0, 0, 0);
                 return this.optional(element) || (limitDate.getTime() >= endDate.getTime());
             }, 'Fecha limite debe ser mayor a la final');
 
