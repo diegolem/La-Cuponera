@@ -19,7 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `cuponera`
 --
-
+CREATE DATABASE cuponera;
+USE cuponera;
 -- --------------------------------------------------------
 
 --
@@ -439,7 +440,7 @@ SHOW EVENTS;
 -- Evento que se ejecuta cada media noche y cambia el estado ha "pasado" cuando la fecha es menor a la actual
 SHOW VARIABLES LIKE 'event_scheduler';
 SET GLOBAL event_scheduler = ON;
-DROP EVENT change_state_promotion;
+DROP EVENT IF EXISTS change_state_promotion;
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` EVENT IF NOT EXISTS change_state_promotion 
 ON SCHEDULE EVERY 1 DAY STARTS DATE_FORMAT(NOW(), '%Y-%m-%d 00:00:00') 
@@ -450,7 +451,7 @@ END//
 DELIMITER ;
 
 
-DROP TRIGGER update_promotion_data;
+DROP TRIGGER IF EXISTS update_promotion_data;
 -- Cambia los datos en las promociones despues del ingreso de una venta
 delimiter //
 CREATE DEFINER=`root`@`localhost` TRIGGER update_promotion_data BEFORE INSERT ON sales
@@ -469,7 +470,7 @@ BEGIN
 END;//
 delimiter ;
 
-DROP PROCEDURE insert_sales;
+DROP PROCEDURE IF EXISTS insert_sales;
 -- Ingreso de las ventas de cupones (con validación)
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE insert_sales(IN _coupon_code VARCHAR(13), IN _promotion INTEGER, IN _client INTEGER, _state INTEGER, OUT _affected_row INTEGER)
@@ -494,7 +495,7 @@ BEGIN
 END;;
 DELIMITER ;
 
-DROP PROCEDURE insert_promotion;
+DROP PROCEDURE IF EXISTS insert_promotion;
 -- Ingreso en promociones
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE insert_promotion(IN _title VARCHAR(50), IN _regular_price INTEGER, IN _ofert_price INTEGER, IN _init_date DATE, IN _end_date DATE,IN _limit_date DATE, IN _limit_cant INTEGER, IN _description VARCHAR(500), IN _other_details VARCHAR(500), IN _image VARCHAR(75), IN _id_company VARCHAR(6))
@@ -505,7 +506,7 @@ BEGIN
 END;;
 DELIMITER ;
 
-DROP PROCEDURE update_user;
+DROP PROCEDURE IF EXISTS update_user;
 -- Modificación en usuario
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE update_user(IN _id INTEGER, IN _name VARCHAR(50), IN _last_name VARCHAR(50), IN _email VARCHAR(50), IN _id_type INTEGER)
@@ -514,7 +515,7 @@ BEGIN
 END;;
 DELIMITER ;
 
-DROP PROCEDURE update_user_password;
+DROP PROCEDURE IF EXISTS update_user_password;
 -- Modificación en usuario(contraseña)
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE update_user_password(IN _id INTEGER, IN _password CHAR(64))
@@ -523,7 +524,7 @@ BEGIN
 END;;
 DELIMITER ;
 
-DROP PROCEDURE update_company;
+DROP PROCEDURE IF EXISTS update_company;
 -- Modificación en usuario(contraseña)
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE update_company(IN _id VARCHAR(6), IN _address VARCHAR(100), IN _contact_name VARCHAR(50), IN _telephone VARCHAR(9), IN _email VARCHAR(50), IN _name VARCHAR(50))
@@ -533,7 +534,7 @@ END;;
 DELIMITER ;
 
 
-DROP PROCEDURE update_company_password;
+DROP PROCEDURE IF EXISTS update_company_password;
 -- Modificación en usuario(contraseña)
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE update_company_password(IN _id VARCHAR(6), IN _password CHAR(64))
@@ -542,7 +543,7 @@ BEGIN
 END;;
 DELIMITER ;
 
-DROP PROCEDURE update_employee;
+DROP PROCEDURE IF EXISTS update_employee;
 -- Modificación en usuario(contraseña)
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE update_employee(IN _id INTEGER, IN _email VARCHAR(50), IN _name VARCHAR(50), IN _last_name VARCHAR(50))
@@ -551,7 +552,7 @@ BEGIN
 END;;
 DELIMITER ;
 
-DROP PROCEDURE update_employee_password;
+DROP PROCEDURE IF EXISTS update_employee_password;
 -- Modificación en usuario(contraseña)
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE update_employee_password(IN _id INTEGER, IN _password CHAR(64))
@@ -560,7 +561,7 @@ BEGIN
 END;;
 DELIMITER ;
 
-DROP PROCEDURE check_sale;
+DROP PROCEDURE IF EXISTS check_sale;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE check_sale(IN _coupon_code VARChAR(13), IN _dui VARCHAR(10)) 
 BEGIN
@@ -569,7 +570,7 @@ END;;
 DELIMITER ;
 use cuponera;
 -- Vista para login y para verificar si existe un usuario con un correo
-DROP VIEW all_users;
+DROP VIEW IF EXISTS all_users;
 CREATE VIEW all_users AS 
 SELECT email, password, 'employee' AS user_type, id FROM employee
 UNION SELECT email, password, 'company' AS user_type, id FROM company
