@@ -25,7 +25,7 @@ import sv.edu.udb.www.model.UserTypeModel;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "userController", urlPatterns = {"/user.do"})
+@WebServlet(name = "userController", urlPatterns = {"/user.do", "/admin/user.do"})
 public class userController extends HttpServlet {
 
     UserModel users = new UserModel();

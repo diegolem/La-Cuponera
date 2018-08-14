@@ -16,8 +16,6 @@
         <jsp:include page="../../cabecera.jsp"/>
     </head>
     <body>
-        
-        <c:set var = "title" scope = "page" value = "Editar empleado"/>
         <jsp:include page="../../menus/menuCompany.jsp"/>
         
         <main class="">

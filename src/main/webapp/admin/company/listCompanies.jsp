@@ -56,24 +56,24 @@
                     </tbody>
                 </table>
             </div>
-                <div id="modal" class="modal modal-fixed-footer">
-                    <div class="modal-content">
-                        <h4 id="header-modal"></h4>
-                        <div class="divider"></div> 
-                        
-                        <!--<div id="test4"> 
-                            <ul class="collection">
-                                <li class="collection-item" id="lvl1"></li>
-                                <li class="collection-item" id="lvl2"></li>
-                            </ul>
-                        </div>  Fin datos generales -->
-                        <input type="hidden" readonly="true" id="idCt"/>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="javascript:void(0)" onclick="deleteCompany($('#idCt').val())" class="waves-effect waves-light red darken-3 btn"><i class="material-icons left">delete</i>Eliminar</a>
-                        <a href="#!" class="modal-close waves-effect waves-light teal darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
-                    </div>
+            <div id="modal" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h4 id="header-modal"></h4>
+                    <div class="divider"></div> 
+
+                    <!--<div id="test4"> 
+                        <ul class="collection">
+                            <li class="collection-item" id="lvl1"></li>
+                            <li class="collection-item" id="lvl2"></li>
+                        </ul>
+                    </div>  Fin datos generales -->
+                    <input type="hidden" readonly="true" id="idCt"/>
                 </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0)" onclick="deleteCompany($('#idCt').val())" class="waves-effect waves-light red darken-3 btn"><i class="material-icons left">delete</i>Eliminar</a>
+                    <a href="#!" class="modal-close waves-effect waves-light teal darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
+                </div>
+            </div>
         </main>
         <script>
             $(document).ready(function () {
@@ -86,40 +86,41 @@
                     M.toast({html: '${error}'})
                     <c:set var="error" value="" scope="session"></c:set>
                 </c:if>
-                
             });
-            function setId(id){
-               $('#header-modal').text("¿Estas seguro que deseas eliminar esto?");
-               $.ajax({
-                   url: "${pageContext.request.contextPath}/admin/company.do?op=get",
-                   type: "POST",
-                   data: {
-                       idCompany: id
-                   },
-                   success: function(response){
-                     if(response === "0"){
+            function setId(id) {
+                $('#header-modal').text("¿Estas seguro que deseas eliminar esto?");
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/admin/company.do?op=get",
+                    type: "POST",
+                    data: {
+                        idCompany: id
+                    },
+                    success: function (response) {
+                        if (response === "0") {
                             M.toast({html: 'No existe una empresa con este codigo'})
-                     }else{
-                        let json = JSON.parse(response);
-                        //$('#test4 #lvl1').text("Codigo: " + json.id);
-                        //$('#test4 #lvl2').text("Nombre del rubro: " + json.type);
-                        $('#idCt').val(json.id);
-                     }
-                   }
-               });           
+                        } else {
+                            let json = JSON.parse(response);
+                            //$('#test4 #lvl1').text("Codigo: " + json.id);
+                            //$('#test4 #lvl2').text("Nombre del rubro: " + json.type);
+                            $('#idCt').val(json.id);
+                        }
+                    }
+                });
             }
-            function deleteCompany(id){
+            function deleteCompany(id) {
                 $.ajax({
                     url: "${pageContext.request.contextPath}/admin/company.do?op=delete",
                     type: "POST",
                     data: {
                         idCompany: id
                     },
-                    success: function(response){
-                        if(response === "0"){
+                    success: function (response) {
+                        if (response === "0") {
                             M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'})
-                        }else if(response === "1"){
-                            M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = 'company.do' }})
+                        } else if (response === "1") {
+                            M.toast({html: 'Eliminación exitosa', completeCallback: function () {
+                                    location.href = 'company.do'
+                                }})
                         }
                     }
                 })

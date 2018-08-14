@@ -37,7 +37,7 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "promotionController", urlPatterns = {"/promotion.do", "/company/promotion.do"})
+@WebServlet(name = "promotionController", urlPatterns = {"/company/promotion.do", "/admin/promotion.do"})
 public class promotionController extends HttpServlet {
 
     PromotionModel promotionModel = new PromotionModel();
@@ -75,6 +75,12 @@ public class promotionController extends HttpServlet {
                 break;
             case "delete":
                 delete(request, response);
+                break;
+            case "rejected":
+                rejected(request, response);
+                break;
+            case "accept":
+                accept(request, response);
                 break;
         }
     }
@@ -116,6 +122,11 @@ public class promotionController extends HttpServlet {
                     request.setAttribute("title", "Lista de ofertas");
                     request.setAttribute("promotionsList", promotionModel.getPromotions(id, false));
                     request.getRequestDispatcher("/company/promotion/listPromotions.jsp").forward(request, response);
+                    break;
+                case "admin":
+                    request.setAttribute("title", "Lista de ofertas");
+                    request.setAttribute("promotionsList", promotionModel.getPromotions(false));
+                    request.getRequestDispatcher("/admin/promotion/listPromotions.jsp").forward(request, response);
                     break;
             }
 
@@ -286,19 +297,35 @@ public class promotionController extends HttpServlet {
     private void details(HttpServletRequest request, HttpServletResponse response) {
         try {
             Promotion promotion = null;
-
+            String id = "";
+            boolean flagAdmin = true;
             if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
                 if (Integer.parseInt(request.getParameter("idPromotion")) > 0) {
-                    promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
+                    HttpSession _s = request.getSession(true);
+
+                    switch (_s.getAttribute("type").toString()) {
+                        case "company":
+                            flagAdmin = false;
+                            break;
+                    }
+                    promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), flagAdmin);
                 }
             }
 
             if (promotion != null) {
                 request.setAttribute("title", "Detalles de oferta");
                 request.setAttribute("promotion", promotion);
-                request.getRequestDispatcher("/company/promotion/detailsPromotion.jsp").forward(request, response);
+                if (flagAdmin) {
+                    request.getRequestDispatcher("/admin/promotion/detailsPromotion.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("/company/promotion/detailsPromotion.jsp").forward(request, response);
+                }
             } else {
-                request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
+                if (flagAdmin) {
+                    request.getRequestDispatcher("/admin/promotion/detailsPromotion.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("/company/promotion/detailsPromotion.jsp").forward(request, response);
+                }
             }
         } catch (SQLException | ServletException | IOException ex) {
             Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
@@ -539,4 +566,63 @@ public class promotionController extends HttpServlet {
             Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// fin delete()
+
+    private void rejected(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            PrintWriter out = response.getWriter();
+            Promotion promotion = null;
+            
+            if (!Validacion.isEmpty(request.getParameter("idPromotion"))) {
+                if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
+                    promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
+                }
+            }
+
+            if(promotion != null){
+                if(promotion.getPromotionState().getIdPromotionState() == 1){ //Estado (En espera de aprobación)
+                    promotion.setRejectedDescription(request.getParameter("rejectedDescription"));
+                    if(promotionModel.rejectedPromotion(promotion)){
+                        out.print("1");
+                    }else{
+                        out.print("0");
+                    }
+                }else{
+                    out.print("0");
+                }
+            }else{
+                out.print("0");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }// Fin rejected()
+
+    private void accept(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            PrintWriter out = response.getWriter();
+            Promotion promotion = null;
+            
+            if (!Validacion.isEmpty(request.getParameter("idPromotion"))) {
+                if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
+                    promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
+                }
+            }
+
+            if(promotion != null){
+                if(promotion.getPromotionState().getIdPromotionState() == 1){ //Estado (En espera de aprobación)
+                    if(promotionModel.acceptPromotion(promotion)){
+                        out.print("1");
+                    }else{
+                        out.print("0");
+                    }
+                }else{
+                    out.print("0");
+                }
+            }else{
+                out.print("0");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(promotionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }// Fin accept()
 }

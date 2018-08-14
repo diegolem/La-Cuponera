@@ -9,6 +9,5 @@
     </head>
     <body>
         <jsp:include page="../menus/menuAdmin.jsp"/>
-        <c:out value = "${sessionScope.logged}"/>
     </body>
 </html>

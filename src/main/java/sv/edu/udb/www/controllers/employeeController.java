@@ -125,6 +125,7 @@ public class employeeController extends HttpServlet {
     }// </editor-fold>
 
     private void add(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        request.setAttribute("title", "Agregar empleado");
         request.setAttribute("companies", companyModel.getCompanies(false));
         request.getRequestDispatcher("/company/employee/newEmployee.jsp").forward(request, response);
     }
@@ -189,6 +190,7 @@ public class employeeController extends HttpServlet {
     }
 
     private void list(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        request.setAttribute("title", "Lista de empleados");
         request.setAttribute("employeeList", employeeModel.getEmployees(true));
         request.getRequestDispatcher("/company/employee/listEmployee.jsp").forward(request, response);
     }
@@ -201,6 +203,7 @@ public class employeeController extends HttpServlet {
             if (employee != null) {
                 request.setAttribute("employee", employee);
                 request.setAttribute("companies", companyModel.getCompanies(false));
+                request.setAttribute("title", "Editar de empleados");
                 request.getRequestDispatcher("/company/employee/editEmployee.jsp").forward(request, response);
             } else {
                 request.getSession().setAttribute("error", "No se ha encontrado ningun empleado");

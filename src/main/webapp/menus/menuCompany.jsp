@@ -11,7 +11,7 @@
     <nav class="purple darken-4">
         <div class="container">
             <a href="#" data-target="user_nav" class="sidenav-trigger "><i class="material-icons">menu</i></a>
-            <div class="nav-wrapper"><a class="brand-logo center"><c:out value = "${title}"/></a></div>
+            <div class="nav-wrapper"><a class="brand-logo center"><c:out value="${title}" default="Empresa" /></a></div>
         </div>
     </nav>
     <c:set var = "user" scope = "session" value = "${user}"/>
@@ -21,32 +21,50 @@
                 <div class="background purple darken-4">
                 </div>
                 <a>
-                    <img class="circle" src="#">
-                </a>
-                <a>
-                    <span class="white-text name">Empresa</span>
-                </a>
-                <a>
-                    <span style="font-weight: bold;" class="white-text email">${user.name} ${user.lastName}</span>
+                    <span style="font-weight: bold;" class="white-text email"><b>Empresa: </b>${user.name}</span>
                 </a>
                 <a>
                     <span class="white-text email">${user.email}</span>
                 </a>
             </div>
         </li>
-        <li class="active nav-item">
-            <a href="menu.jsp">
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/company/index.jsp">
                 <i class="material-icons">home</i>Inicio</a>
         </li>
-        <li class="nav-item"><a href="#"><i class="material-icons">info</i>Mi cuenta</a></li> 
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li>
+                    <a class="collapsible-header"><i class="material-icons">person</i> Empleados</a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="${pageContext.request.contextPath}/company/employee.do?op=list">Mostrar <i class="material-icons left">remove_red_eye</i></a></li>
+                            <li><a href="${pageContext.request.contextPath}/company/employee.do?op=new">Registrar <i class="material-icons left">add</i></a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li>
+                    <a class="collapsible-header"><i class="material-icons">add_shopping_cart</i> Ofertas</a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="${pageContext.request.contextPath}/company/promotion.do?op=list">Mostrar <i class="material-icons left">remove_red_eye</i></a></li>
+                            <li><a href="${pageContext.request.contextPath}/company/promotion.do?op=new">Registrar <i class="material-icons left">add</i></a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
+        
         <li>
             <div class="divider"></div>
         </li>
-        <li>
-            <a class="subheader"></a>
-        </li>
+        <li class="nav-item"><a href="#"><i class="material-icons">settings</i>Mi cuenta</a></li> 
         <li  class="nav-item">
-            <a onclick="javascript:void(0)"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a>
+            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesión"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a>
         </li>
     </ul>
 </header>

@@ -29,6 +29,9 @@ public class Promotion {
     private double earnings;
     private double chargeService;
     private String rejectedDescription;
+    private Company company;
+    private List<Sales> sales;
+    private PromotionState promotionState;
 
     public String getRejectedDescription() {
         return rejectedDescription;
@@ -69,9 +72,6 @@ public class Promotion {
     public void setChargeService(double chargeService) {
         this.chargeService = chargeService;
     }
-    private Company company;
-    private List<Sales> sales;
-    private PromotionState promotionState;
     
     public int getIdPromotion() {
         return idPromotion;

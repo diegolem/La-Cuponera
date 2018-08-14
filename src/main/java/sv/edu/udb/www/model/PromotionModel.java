@@ -206,6 +206,47 @@ public class PromotionModel extends Connection {
         }
     }// changeStatePromotion()
     
+    public boolean rejectedPromotion(Promotion promotion) throws SQLException{
+        try {
+            int affectedRows = 0;
+            String sql = "UPDATE promotion SET id_state = ?, rejected_description = ? WHERE id = ?";
+            
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setInt(1, 3); //Rechazada
+            st.setString(2, promotion.getRejectedDescription());
+            st.setInt(3, promotion.getIdPromotion());
+            affectedRows = st.executeUpdate();
+            
+            this.desconectar();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(PromotionModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
+        }
+    }// Fin rejectedPromotion()
+    
+    public boolean acceptPromotion(Promotion promotion) throws SQLException{
+        try {
+            int affectedRows = 0;
+            String sql = "UPDATE promotion SET id_state = ? WHERE id = ?";
+            
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setInt(1, 2); //Aprobada
+            st.setInt(2, promotion.getIdPromotion());
+            affectedRows = st.executeUpdate();
+            
+            this.desconectar();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(PromotionModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
+        }
+    }// Fin rejectedPromotion()
+    
     public boolean deletePromotion(int id) throws SQLException{
         try {
             int affectedRows = 0;

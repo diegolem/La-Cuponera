@@ -9,10 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Empresa</title>
+        <jsp:include page="../cabecera.jsp"/>
     </head>
     <body>
-        <a href="login.do?op=logout">Cerrar sesión</a>
-        <h1>Empresa</h1>
+        <jsp:include page="../menus/menuCompany.jsp"/>
     </body>
 </html>
