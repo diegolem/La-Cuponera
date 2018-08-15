@@ -9,11 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Cliente</title>
+        <jsp:include page="../cabecera.jsp"/>
     </head>
     <body>
-        <c:out value = "${sessionScope.logged}"/>
-        <a href="login.do?op=logout">Cerrar sesión</a>
-        <h1>Cliente</h1>
+        <jsp:include page="../menus/menuClient.jsp"/>
     </body>
 </html>
