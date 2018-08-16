@@ -8,6 +8,7 @@ package sv.edu.udb.www.model;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sv.edu.udb.www.beans.User;
@@ -20,6 +21,44 @@ import sv.edu.udb.www.beans.UserType;
  */
 public class UserModel extends Connection {
 
+    public User getLastUser(boolean relationship) throws SQLException {
+        try {
+            String sql = "SELECT MAX(user.id) FROM user ORDER BY user.id DESC";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                int userType = rs.getInt("user_type");
+                SalesModel salesModel = new SalesModel();
+                UserTypeModel typeModel = new UserTypeModel();
+
+                User user = new User();
+                user.setIdUser(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setDui(rs.getString("dui"));
+                user.setNit(rs.getString("nit"));
+
+                this.desconectar();
+                user.setType(typeModel.getUserType(userType, false));
+                if (relationship) {
+                    user.setSales(salesModel.getSales(user, relationship));
+                }
+                return user;
+            }
+            this.desconectar();
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    } // Fin getLastUser()
+    
     public ArrayList<User> getUsers(boolean relationship) throws SQLException {
         try {
             ArrayList<User> users = new ArrayList<User>();
@@ -71,6 +110,47 @@ public class UserModel extends Connection {
         }
     }// Fin getUsers()
 
+    public User getUser(String id_confirmation, boolean relationship) throws SQLException {
+        try {
+            String sql = "SELECT * FROM user WHERE 	id_confirmation = ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, id_confirmation);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                int userType = rs.getInt("user_type");
+                SalesModel salesModel = new SalesModel();
+                UserTypeModel typeModel = new UserTypeModel();
+
+                User user = new User();
+                user.setIdUser(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setDui(rs.getString("dui"));
+                user.setNit(rs.getString("nit"));
+                user.setIdConfirmation(rs.getString("id_confirmation"));
+                user.setConfirmed(rs.getBoolean("confirmed"));
+
+                this.desconectar();
+                user.setType(typeModel.getUserType(userType, false));
+                if (relationship) {
+                    user.setSales(salesModel.getSales(user, relationship));
+                }
+                return user;
+            }
+            this.desconectar();
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }// Fin getUser()
+    
     public User getUser(int id, boolean relationship) throws SQLException {
         try {
             String sql = "SELECT * FROM user WHERE id = ?";
@@ -93,6 +173,8 @@ public class UserModel extends Connection {
                 user.setPassword(rs.getString("password"));
                 user.setDui(rs.getString("dui"));
                 user.setNit(rs.getString("nit"));
+                user.setIdConfirmation(rs.getString("id_confirmation"));
+                user.setConfirmed(rs.getBoolean("confirmed"));
 
                 this.desconectar();
                 user.setType(typeModel.getUserType(userType, false));
@@ -113,7 +195,7 @@ public class UserModel extends Connection {
     public boolean insertUser(User user) throws SQLException {
         try {
             int affectedRows = 0;
-            String sql = "INSERT INTO user(name, last_name, email, password, user_type, dui, nit) VALUES(?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO user(name, last_name, email, password, user_type, dui, nit, confirmed) VALUES(?, ?, ?, ?, ?, ?, ?, 1)";
 
             this.conectar();
             st = conexion.prepareStatement(sql);
@@ -124,6 +206,32 @@ public class UserModel extends Connection {
             st.setInt(5, user.getType().getIdUserType());
             st.setString(6, user.getDui());
             st.setString(7, user.getNit());
+            affectedRows = st.executeUpdate();
+
+            this.desconectar();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
+        }
+    }//Fin insertUser
+    
+    public boolean insertUserWithConfirmation(User user) throws SQLException {
+        try {
+            int affectedRows = 0;
+            String sql = "INSERT INTO user(name, last_name, email, password, user_type, dui, nit, confirmed, id_confirmation) VALUES(?, ?, ?, ?, ?, ?, ?, 0, ?)";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, user.getName());
+            st.setString(2, user.getLastName());
+            st.setString(3, user.getEmail());
+            st.setString(4, user.getPassword());
+            st.setInt(5, user.getType().getIdUserType());
+            st.setString(6, user.getDui());
+            st.setString(7, user.getNit());
+            st.setString(8, user.getIdConfirmation());
             affectedRows = st.executeUpdate();
 
             this.desconectar();
@@ -157,20 +265,26 @@ public class UserModel extends Connection {
             return false;
         }
     }// Fin updateUser()
-
-    public boolean updateUserPassword(User user) throws SQLException {
+    
+    public boolean confirmUser(User user) throws SQLException {
         try {
+            int idUsers = user.getIdUser();
+            
             int affectedRows = 0;
-            String sql = "CALL update_user_password(?, ?)";
+            String sql = "UPDATE user SET confirmed = 1, id_confirmation = '' where id_confirmation = ?";
 
             this.conectar();
             cs = conexion.prepareCall(sql);
-            cs.setInt(1, user.getIdUser());
-            cs.setString(2, user.getPassword());
+            cs.setString(1, user.getIdConfirmation());
             affectedRows = cs.executeUpdate();
 
             this.desconectar();
-            return affectedRows > 0;
+            boolean result = affectedRows > 0;
+            
+            if (result)
+                user = this.getUser(idUsers, true);
+            
+            return result;
         } catch (SQLException ex) {
             Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
             this.desconectar();
@@ -242,4 +356,8 @@ public class UserModel extends Connection {
             return false;
         }
     }// Fin deleteUser()
+    
+    public static String getIdConfirmation(){
+        return UUID.randomUUID().toString();
+    }
 }

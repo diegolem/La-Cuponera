@@ -15,6 +15,21 @@
     </head>
     <body>
         <div class="container">
+<li>${errorConfirmation}</li>
+            <c:if test="${not empty error}">
+                
+                <div class="row">
+                    <div class="col s12">
+                        <div class="card-panel red darken-1">
+                            <ul class="white-text">
+                                <li>${error}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+            </c:if>
+
             <div class="row">
 
                 <form class="col s12" method="POST" action="login.do">

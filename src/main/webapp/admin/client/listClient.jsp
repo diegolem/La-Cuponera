@@ -18,6 +18,10 @@
         <jsp:include page="../../menus/menuAdmin.jsp"/>
         
         <main class="">
+            <a href="${pageContext.request.contextPath}/admin/user.do?op=new_client" class="waves-effect waves-light btn-large"><i class="material-icons left centered">add</i>Añadir usuario</a>
+            <br>
+            <br>
+            
             <div class="row">
                 <table class="centered striped">
                     <thead>
@@ -65,6 +69,15 @@
         </div>
         
         <script>
+            
+            <c:if test="${not empty success}">
+                M.toast({html: '${success}'})
+                <c:set var="success" value="" scope="session"></c:set>
+            </c:if>
+            <c:if test="${not empty error}">
+                M.toast({html: '${error}'})
+                <c:set var="error" value="" scope="session"></c:set>
+            </c:if>
             
             function obtenerCupones(usuarioCod, usuario, tipoCupon){
                 var instance = M.Modal.getInstance($('#modal'));

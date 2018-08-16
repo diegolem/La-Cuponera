@@ -171,8 +171,11 @@ public class employeeController extends HttpServlet {
             request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
         } else {
             Mail mail = new Mail();
-        
-            if (mail.sendEmail(employee.getEmail(), "Clave de usuario: " + password)){
+            mail.setAddressee(employee.getEmail());
+            mail.setAffair("Reguistro en la cuponera");
+            mail.setMessage("Clave de usuario: <h1>" + password + "</h1>");
+            
+            if (mail.sendEmail()){
                 if (employeeModel.insertEmployee(employee)) {
                     request.getSession().setAttribute("success", "Empleado registrado");
                     response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
@@ -251,8 +254,12 @@ public class employeeController extends HttpServlet {
                 request.getRequestDispatcher("/company/employee.do?op=edit").forward(request, response);
             } else {
                 Mail mail = new Mail();
+                mail.setAddressee(employee.getEmail());
+                mail.setAffair("Reguistro en la cuponera");
+                mail.setMessage("Se han actualizado los datos de su cuenta");
+                
                 if (employeeModel.updateEmployee(employee)) {
-                    mail.sendEmail(employee.getEmail(), "Se ha actualizado ");
+                    mail.sendEmail();
                     request.getSession().setAttribute("success", "Empleado modificado");
                     response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 } else {

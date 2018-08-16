@@ -58,8 +58,8 @@
                     <a class="collapsible-header"><i class="material-icons">person</i> Usuarios</a>
                     <div class="collapsible-body">
                         <ul>
-                            <li><a href="#">Mostrar <i class="material-icons left">remove_red_eye</i></a></li>
-                            <li><a href="#">Registrar <i class="material-icons left">add</i></a></li>
+                            <li><a href="${pageContext.request.contextPath}/admin/user.do?op=list_client">Mostrar <i class="material-icons left">remove_red_eye</i></a></li>
+                            <li><a href="${pageContext.request.contextPath}/admin/user.do?op=new_client">Registrar <i class="material-icons left">add</i></a></li>
                         </ul>
                     </div>
                 </li>

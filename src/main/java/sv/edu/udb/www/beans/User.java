@@ -19,6 +19,8 @@ public class User {
     private String password;
     private String dui;
     private String nit;
+    private boolean confirmed;
+    private String idConfirmation;	
     private List<Sales> sales;
     private UserType type;
     
@@ -92,6 +94,22 @@ public class User {
 
     public void setType(UserType type) {
         this.type = type;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
+    }
+
+    public String getIdConfirmation() {
+        return idConfirmation;
+    }
+
+    public void setIdConfirmation(String idConfirmation) {
+        this.idConfirmation = idConfirmation;
     }
     
     // Constructores
