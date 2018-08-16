@@ -9,11 +9,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Sales;
 import sv.edu.udb.www.beans.SalesState;
 import sv.edu.udb.www.beans.User;
@@ -25,7 +28,7 @@ import sv.edu.udb.www.model.UserModel;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "salesController", urlPatterns = {"/sales.do"})
+@WebServlet(name = "salesController", urlPatterns = {"/sales.do","/client/sales.do"})
 public class salesController extends HttpServlet {
 
     SalesModel sales = new SalesModel();
@@ -50,6 +53,12 @@ public class salesController extends HttpServlet {
             switch(op){
                 case "obener_por_usuario":
                     obtenerPorUsuerio(request, response);
+                    break;
+                case "listC":
+                    tusCupones(request,response);
+                    break;
+                case "newC":
+                    newCupon(request,response);
                     break;
             }
             
@@ -138,6 +147,22 @@ public class salesController extends HttpServlet {
         json += "}";
         
         out.print(json);
+    }
+
+    private void tusCupones(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+        try {
+            HttpSession session = request.getSession();
+            //cosa estatica por el momento
+            request.setAttribute("salesList", sales.getSales(1, true));
+            request.setAttribute("title", "Lista de tus cupones");
+            request.getRequestDispatcher("/client/Sales/listSales.jsp").forward(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void newCupon(HttpServletRequest request, HttpServletResponse response) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
