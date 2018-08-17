@@ -15,7 +15,7 @@
     </head>
     <body>
         <div class="container">
-<li>${errorConfirmation}</li>
+
             <c:if test="${not empty error}">
                 
                 <div class="row">

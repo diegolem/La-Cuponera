@@ -12,6 +12,9 @@
 <script src="${pageContext.request.contextPath}/assets/js/datatables.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/assets/js/datatables.material.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/assets/js/init.js" type="text/javascript"></script>
+<link href="${pageContext.request.contextPath}/assets/css/alertify.core.css" rel="stylesheet" type="text/css"/>
+<link href="${pageContext.request.contextPath}/assets/css/alertify.default.css" rel="stylesheet" type="text/css"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/assets/js/alertify.js" type="text/javascript"></script>
 
 

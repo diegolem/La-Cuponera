@@ -359,5 +359,64 @@ public class UserModel extends Connection {
     
     public static String getIdConfirmation(){
         return UUID.randomUUID().toString();
+    }// Fin getIdConfirmation()
+    
+    public boolean mailExists(String email){
+        try {
+        
+            String sql = "SELECT * FROM `all_users` WHERE email = ?";
+            
+            this.conectar();
+            
+            this.st = conexion.prepareStatement(sql);
+            this.st.setString(1, email);
+            this.rs = this.st.executeQuery();
+            
+            boolean result = this.rs.next();
+            
+            this.desconectar();
+            
+            return result;
+            
+        } catch(Exception error) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, error);
+            try {
+                this.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
+    }
+    
+    public boolean mailExists(String email, String id){
+        try {
+        
+            String sql = "SELECT * FROM `all_users` WHERE email = ? AND id != ?";
+            
+            this.conectar();
+            
+            this.st = conexion.prepareStatement(sql);
+            
+            this.st.setString(1, email);
+            this.st.setString(2, id);
+            
+            this.rs = this.st.executeQuery();
+            
+            boolean result = this.rs.next();
+            
+            this.desconectar();
+            
+            return result;
+            
+        } catch(Exception error) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, error);
+            try {
+                this.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
     }
 }

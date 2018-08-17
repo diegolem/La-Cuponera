@@ -61,16 +61,20 @@
                 
             });
             function deleteEmploye(id, tr, a){
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/company/employee.do?op=delete&idEmployee=" + id,
-                    type: "POST",
-                    success: function(response){
-                        if(response === "0"){
-                            M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'});
-                        }else if(response === "1"){
-                            $( "#"+a ).remove();
-                            M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = 'employee.do?op=list' }});
-                        }
+                alertify.confirm('Desea eliminar el autor?', function(e){
+                    if (e) {
+                        $.ajax({
+                            url: "${pageContext.request.contextPath}/company/employee.do?op=delete&idEmployee=" + id,
+                            type: "POST",
+                            success: function(response){
+                                if(response === "0"){
+                                    M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'});
+                                }else if(response === "1"){
+                                    $( "#"+a ).remove();
+                                    M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = 'employee.do?op=list' }});
+                                }
+                            }
+                        });
                     }
                 });
             }

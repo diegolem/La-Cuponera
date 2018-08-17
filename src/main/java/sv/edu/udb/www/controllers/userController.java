@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
 import sv.edu.udb.www.beans.User;
@@ -168,7 +169,7 @@ public class userController extends HttpServlet {
             
             Mail gmail = new Mail();
             
-            String url = request.getRequestURL().toString() + "?op=confirmation&id="+user.getIdConfirmation();
+            String url = this.getServletContext().getContextPath() + "/user.do?op=confirmation&id="+user.getIdConfirmation();
             
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
@@ -199,26 +200,24 @@ public class userController extends HttpServlet {
         
         User user;
         
-        request.setAttribute("errorConfirmation", "El usuario no existe");
-        //response.sendRedirect(request.getContextPath() + "/login.jsp");
-        request.getRequestDispatcher("/login.jsp").forward(request, response);
-        
-        /*
         if ((user = this.users.getUser(idConfirmation, true)) != null) {
             
             if (users.confirmUser(user)) {
-                request.getSession().setAttribute("error", "Caca");
-                request.getRequestDispatcher(request.getContextPath() + "/login.jsp").forward(request, response);
+                HttpSession _s = request.getSession(true);
+                _s.setAttribute("logged", true);
+                _s.setAttribute("user", user);
+                _s.setAttribute("redirect", request.getContextPath() + "/client/index.jsp");
+                _s.setAttribute("type", "client");
+                response.sendRedirect(_s.getAttribute("redirect").toString());
             } else {
                 request.getSession().setAttribute("error", "No se ha pódido confirmar su cuenta");
-                request.getRequestDispatcher(request.getContextPath() + "/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
             }
             
         } else {
-            request.getSession().setAttribute("error", "El usuario no existe");
+            request.getSession().setAttribute("error", "El Id de confirmacion no existe");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
         }
-        */
     }
 
 }

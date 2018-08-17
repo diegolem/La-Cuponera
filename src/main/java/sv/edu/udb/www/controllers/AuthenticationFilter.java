@@ -53,6 +53,16 @@ public class AuthenticationFilter implements Filter {
                 flag = true;
             }
             
+            String url = req.getRequestURL().toString();
+            String queryString = req.getQueryString();
+            
+            if (queryString == null) queryString = "";
+            if (url == null) url = "";
+            
+            if (queryString.contains("op=confirmation") && url.contains("user.do") && queryString.contains("id") ) {
+                flag = false;
+            }
+            
             if(flag){
                 res.sendRedirect(req.getContextPath() + "/login.jsp");
             }else{
