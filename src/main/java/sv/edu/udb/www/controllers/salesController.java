@@ -31,9 +31,9 @@ import sv.edu.udb.www.model.UserModel;
 @WebServlet(name = "salesController", urlPatterns = {"/sales.do","/client/sales.do"})
 public class salesController extends HttpServlet {
 
-    SalesModel sales = new SalesModel();
-    UserModel users = new UserModel();
-    SalesStateModel salesStates = new SalesStateModel();
+SalesModel sales = new SalesModel();
+UserModel users = new UserModel();
+SalesStateModel salesStates = new SalesStateModel();
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

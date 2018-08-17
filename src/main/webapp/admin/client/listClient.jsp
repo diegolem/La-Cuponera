@@ -23,30 +23,33 @@
             <br>
             
             <div class="row">
-                <table class="centered striped">
+                <table id="tblClients" class="centered striped">
                     <thead>
                       <tr>
                           <th>ID</th>
                           <th>Nombre completo</th>
                           <th>E-mail</th>
-                          <th>DUI</th>
-                          <th>NIT</th>
+                          <th>Estado</th>
                           <th>Cupones</th>
+                          <th>Opciones</th>
                       </tr>
                     </thead>
 
                     <tbody>
                         <c:forEach items="${requestScope.users}" var="user" >
-                            <tr>
+                            <tr id="tr_${user.idUser}">
                                 <td>${user.idUser}</td>
                                 <td>${user.name} ${user.lastName}</td>
                                 <td>${user.email}</td>
-                                <td>${user.dui}</td>
-                                <td>${user.nit}</td>
+                                <td>${(user.confirmed)? "Habilitado" : "Esperando comprobacion"}</td>
                                 <td>
                                     <a title="Disponibles" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',1)"><i class="material-icons centered">new_releases</i></a>
                                     <a title="Canjeados" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',2)"><i class="material-icons centered">insert_emoticon</i></a>
                                     <a title="Vencidos" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',3)"><i class="material-icons centered">block</i></a>
+                                </td>
+                                <td>
+                                    <a title="Detalle" href="${pageContext.request.contextPath}/admin/user.do?op=details_client&id=${user.idUser}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
+                                    <a id="a_${user.idUser}" title="Eliminar" href="#" onclick="deleteClient(${user.idUser}, 'tr_${user.idUser}', 'a_${user.idUser}');" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -79,6 +82,25 @@
                 <c:set var="error" value="" scope="session"></c:set>
             </c:if>
             
+            function deleteClient(id, tr, a){
+                alertify.confirm('Desea eliminar el cliente?', function(e){
+                    if (e) {
+                        $.ajax({
+                            url: "${pageContext.request.contextPath}/admin/user.do?op=delete_client&id=" + id,
+                            type: "POST",
+                            success: function(response){
+                                if(response === "0"){
+                                    M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'});
+                                }else if(response === "1"){
+                                    $( "#"+a ).remove();
+                                    M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = 'user.do?op=list_client' }});
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+            
             function obtenerCupones(usuarioCod, usuario, tipoCupon){
                 var instance = M.Modal.getInstance($('#modal'));
                 instance.open();
@@ -106,6 +128,7 @@
             
             $(document).ready(function(){
                 $('.modal').modal();
+                $("#tblClients").DataTable();
             });
         </script>
     </body>

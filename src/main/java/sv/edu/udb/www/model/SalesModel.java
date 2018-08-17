@@ -324,4 +324,23 @@ public class SalesModel extends Connection {
             return false;
         }
     }// deleteSales()
+    
+    public boolean deleteSales(User user) throws SQLException {
+        try {
+            int affectedRows = 0;
+            String sql = "DELETE FROM sales WHERE client_id = ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setInt(1, user.getIdUser());
+            affectedRows = st.executeUpdate();
+
+            this.desconectar();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
+        }
+    }// deleteSales()
 }

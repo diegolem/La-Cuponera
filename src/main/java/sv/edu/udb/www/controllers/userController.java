@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -20,9 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
+import sv.edu.udb.www.beans.Sales;
+import sv.edu.udb.www.beans.SalesState;
 import sv.edu.udb.www.beans.User;
 import sv.edu.udb.www.beans.UserType;
 import sv.edu.udb.www.model.PasswordResetModel;
+import sv.edu.udb.www.model.SalesModel;
+import sv.edu.udb.www.model.SalesStateModel;
 import sv.edu.udb.www.model.UserModel;
 import sv.edu.udb.www.model.UserTypeModel;
 import sv.edu.udb.www.utilities.Mail;
@@ -35,7 +40,9 @@ import sv.edu.udb.www.utilities.Validacion;
 @WebServlet(name = "userController", urlPatterns = {"/user.do", "/admin/user.do"})
 public class userController extends HttpServlet {
 
+    SalesModel sales = new SalesModel();
     UserModel users = new UserModel();
+    SalesStateModel salesStates = new SalesStateModel();
     UserTypeModel typeUsers = new UserTypeModel();
     HashMap<String, String> errorsList = new HashMap<>();
     /**
@@ -68,6 +75,14 @@ public class userController extends HttpServlet {
                     
                 case "confirmation":
                     confirmation(request, response);
+                    break;
+                    
+                case "details_client":
+                    detailsClient(request, response);
+                    break;
+                    
+                case "delete_client":
+                    deleteClient(request, response);
                     break;
             }
         } catch (SQLException ex) {
@@ -217,6 +232,53 @@ public class userController extends HttpServlet {
         } else {
             request.getSession().setAttribute("error", "El Id de confirmacion no existe");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
+        }
+    }
+
+    private void detailsClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        
+        User user = users.getUser(id, true);
+        
+        if (user != null) {
+            List<Sales> cuponesDisponibles = sales.getSales(user, salesStates.getSalesState(1, false), true);
+            List<Sales> cuponesCanjeados= sales.getSales(user, salesStates.getSalesState(2, false), true);
+            List<Sales> cuponesVencidos = sales.getSales(user, salesStates.getSalesState(3, false), true);
+
+            request.setAttribute("client", user);
+            request.setAttribute("cuponesDisponibles", cuponesDisponibles);
+            request.setAttribute("cuponesCanjeados", cuponesCanjeados);
+            request.setAttribute("cuponesVencidos", cuponesVencidos);
+            request.getRequestDispatcher("/admin/client/detailsClient.jsp").forward(request, response);
+        } else {
+            request.getSession().setAttribute("error", "El usuario no existe");
+            response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
+        }
+    }
+
+    private void deleteClient(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+        PrintWriter out = response.getWriter();
+        
+        String idUser = request.getParameter("id");
+        
+        if (Validacion.esEnteroPositivo(idUser)) {
+            int id = Integer.parseInt(idUser);
+            User user = users.getUser(id, false);
+            if (user != null) {
+                if (sales.deleteSales(user)) {
+                    if (users.deleteUser(user.getIdUser())) {
+                        out.print("1");
+                    } else {
+                        out.print("0");
+                    }
+                } else {
+                    out.print("0");
+                }
+            } else {
+                out.print("0");
+            }
+        } else {
+            out.print("-1");
         }
     }
 

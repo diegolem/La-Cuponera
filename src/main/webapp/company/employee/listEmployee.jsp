@@ -61,7 +61,7 @@
                 
             });
             function deleteEmploye(id, tr, a){
-                alertify.confirm('Desea eliminar el autor?', function(e){
+                alertify.confirm('Desea eliminar el empleado?', function(e){
                     if (e) {
                         $.ajax({
                             url: "${pageContext.request.contextPath}/company/employee.do?op=delete&idEmployee=" + id,
