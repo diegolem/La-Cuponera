@@ -241,8 +241,8 @@ public class userController extends HttpServlet {
         User user = users.getUser(id, true);
         
         if (user != null) {
-            List<Sales> cuponesDisponibles = sales.getSales(user, salesStates.getSalesState(1, false), true);
-            List<Sales> cuponesCanjeados= sales.getSales(user, salesStates.getSalesState(2, false), true);
+            List<Sales> cuponesDisponibles = sales.getSales(user, salesStates.getSalesState(2, false), true);
+            List<Sales> cuponesCanjeados= sales.getSales(user, salesStates.getSalesState(1, false), true);
             List<Sales> cuponesVencidos = sales.getSales(user, salesStates.getSalesState(3, false), true);
 
             request.setAttribute("client", user);

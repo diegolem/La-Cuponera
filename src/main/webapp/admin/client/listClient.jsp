@@ -43,8 +43,8 @@
                                 <td>${user.email}</td>
                                 <td>${(user.confirmed)? "Habilitado" : "Esperando comprobacion"}</td>
                                 <td>
-                                    <a title="Disponibles" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',1)"><i class="material-icons centered">new_releases</i></a>
-                                    <a title="Canjeados" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',2)"><i class="material-icons centered">insert_emoticon</i></a>
+                                    <a title="Disponibles" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',2)"><i class="material-icons centered">new_releases</i></a>
+                                    <a title="Canjeados" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',3)"><i class="material-icons centered">insert_emoticon</i></a>
                                     <a title="Vencidos" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',3)"><i class="material-icons centered">block</i></a>
                                 </td>
                                 <td>
