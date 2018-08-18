@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -20,9 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
+import sv.edu.udb.www.beans.Sales;
+import sv.edu.udb.www.beans.SalesState;
 import sv.edu.udb.www.beans.User;
 import sv.edu.udb.www.beans.UserType;
 import sv.edu.udb.www.model.PasswordResetModel;
+import sv.edu.udb.www.model.SalesModel;
+import sv.edu.udb.www.model.SalesStateModel;
 import sv.edu.udb.www.model.UserModel;
 import sv.edu.udb.www.model.UserTypeModel;
 import sv.edu.udb.www.utilities.Mail;
@@ -35,7 +40,9 @@ import sv.edu.udb.www.utilities.Validacion;
 @WebServlet(name = "userController", urlPatterns = {"/user.do", "/admin/user.do"})
 public class userController extends HttpServlet {
 
+    SalesModel sales = new SalesModel();
     UserModel users = new UserModel();
+    SalesStateModel salesStates = new SalesStateModel();
     UserTypeModel typeUsers = new UserTypeModel();
     HashMap<String, String> errorsList = new HashMap<>();
 
@@ -66,6 +73,14 @@ public class userController extends HttpServlet {
 
                     case "insert_client":
                         insertClient(request, response);
+                        break;
+                    
+                    case "details_client":
+                        detailsClient(request, response);
+                        break;
+                    
+                    case "delete_client":
+                        deleteClient(request, response);
                         break;
                 }
             } else {
@@ -180,9 +195,9 @@ public class userController extends HttpServlet {
             user.setIdConfirmation(UserModel.getIdConfirmation());
 
             Mail gmail = new Mail();
-
-            String url = request.getRequestURL().toString() + "?op=confirmation&id=" + user.getIdConfirmation();
-
+            
+            String url = this.getServletContext().getContextPath() + "/user.do?op=confirmation&id="+user.getIdConfirmation();
+            
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
             gmail.setMessage("Bienvenido usuario <h3>" + user.getName() + " " + user.getLastName() + "</h3>"
@@ -211,27 +226,25 @@ public class userController extends HttpServlet {
         String idConfirmation = request.getParameter("id");
 
         User user;
-
-        request.setAttribute("errorConfirmation", "El usuario no existe");
-        //response.sendRedirect(request.getContextPath() + "/login.jsp");
-        request.getRequestDispatcher("/login.jsp").forward(request, response);
-
-        /*
+        
         if ((user = this.users.getUser(idConfirmation, true)) != null) {
             
             if (users.confirmUser(user)) {
-                request.getSession().setAttribute("error", "Caca");
-                request.getRequestDispatcher(request.getContextPath() + "/login.jsp").forward(request, response);
+                HttpSession _s = request.getSession(true);
+                _s.setAttribute("logged", true);
+                _s.setAttribute("user", user);
+                _s.setAttribute("redirect", request.getContextPath() + "/client/index.jsp");
+                _s.setAttribute("type", "client");
+                response.sendRedirect(_s.getAttribute("redirect").toString());
             } else {
                 request.getSession().setAttribute("error", "No se ha pódido confirmar su cuenta");
-                request.getRequestDispatcher(request.getContextPath() + "/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
             }
             
         } else {
-            request.getSession().setAttribute("error", "El usuario no existe");
+            request.getSession().setAttribute("error", "El Id de confirmacion no existe");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
         }
-         */
     }
 
     private void insertClientPublic(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException, ServletException {

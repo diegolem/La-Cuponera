@@ -20,7 +20,7 @@
         
         <main class="">
             <div class="row">
-                <a href="${pageContext.request.contextPath}/employee.do?op=list" class="purple lighten-2 waves-effect waves-purple btn-large"><i class="material-icons left centered">line_weight</i>Lista de empleados</a>
+                <a href="${pageContext.request.contextPath}/company/employee.do?op=list" class="purple lighten-2 waves-effect waves-purple btn-large"><i class="material-icons left centered">line_weight</i>Lista de empleados</a>
                 <br>
                 <br>
                 <form class="col s12" id="frmRegisterEmployee" action="${pageContext.request.contextPath}/employee.do" method="POST">
@@ -64,30 +64,6 @@
                             </c:if>
                         </div>
                     </div>
-                    
-                    <div class="input-field col s12">
-                        <select name="company">
-                            <option value="null" disabled selected>Seleccione una compañia</option>
-                            <c:forEach items="${requestScope.companies}" var="comp">
-                                <c:choose>
-                                    <c:when test="${comp.idCompany eq employee.company.idCompany}">
-                                        <option selected value="${comp.idCompany}">${comp.name}</option>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <option value="${comp.idCompany}">${comp.name}</option>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                        </select>
-                        <label>Compañia</label>
-                        <c:if test="${not empty requestScope.errorsList}">
-                            <c:if test = "${not empty requestScope.errorsList['company']}">
-                                <span class="error-block red-text">
-                                    <strong>${requestScope.errorsList['company']}</strong>
-                                </span>
-                            </c:if>
-                        </c:if>
-                    </div>
                                     
                     <div class="row center">
                         <button class="btn purple lighten-2 waves-effect waves-purple" type="submit" name="action">Registrar
@@ -126,23 +102,17 @@
                 email: {
                     required: true,
                     validEmail: true
-                },
-                company: {
-                    required: true
                 }
             },
             messages: {
                 name: {
                     required: 'El campo nombre es requerido'
                 },
-                last_name {
+                last_name: {
                     required: 'El campo apellido es requerido'
                 },
                 email: {
                     required: 'El campo email es requerido'
-                },
-                company: {
-                    required: 'El campo tipo de empresa es requerido'
                 }
             },
             submitHandler: function (form) {

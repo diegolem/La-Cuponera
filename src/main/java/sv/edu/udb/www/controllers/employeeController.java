@@ -17,10 +17,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Employee;
+import sv.edu.udb.www.beans.UserApp;
 import sv.edu.udb.www.model.CompanyModel;
 import sv.edu.udb.www.model.EmployeeModel;
 import sv.edu.udb.www.model.PasswordResetModel;
+import sv.edu.udb.www.model.UserModel;
 import sv.edu.udb.www.utilities.Mail;
 import sv.edu.udb.www.utilities.Validacion;
 
@@ -33,6 +37,7 @@ public class employeeController extends HttpServlet {
     CompanyModel companyModel = new CompanyModel();
     EmployeeModel employeeModel = new EmployeeModel();
     HashMap<String, String> errorsList = new HashMap<String, String>();
+    UserModel users = new UserModel();
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -129,20 +134,17 @@ public class employeeController extends HttpServlet {
         request.setAttribute("companies", companyModel.getCompanies(false));
         request.getRequestDispatcher("/company/employee/newEmployee.jsp").forward(request, response);
     }
-
-    public int randomRange(int min, int max)
-    {
-        Random random = new Random();
-        
-        return random.nextInt(max - min) + min;
-    }
     
     private void insert(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        HttpSession _s = request.getSession(true);
+        
+        Company company = (Company) _s.getAttribute("user");
+        
         Employee employee = new Employee();
         
         employee.setName(request.getParameter("name"));
         employee.setLastName(request.getParameter("last_name"));
-        employee.setCompany(companyModel.getCompany(request.getParameter("company"), false));
+        employee.setCompany(company);
         employee.setEmail(request.getParameter("email"));
         
         String password = PasswordResetModel.generatePasswordWithoutEncrypt();
@@ -161,9 +163,6 @@ public class employeeController extends HttpServlet {
         else if (!Validacion.esCorreo(employee.getEmail()))
             errorsList.put("email", "El correo electronico debe de ser valido");
         
-        if (employee.getCompany() == null)
-            errorsList.put("company", "Debe de seleccionar una compañia aceptable");
-        
         // Si hay errores
         if (errorsList.size() > 0) {
             request.setAttribute("errorsList", errorsList);
@@ -175,19 +174,26 @@ public class employeeController extends HttpServlet {
             mail.setAffair("Reguistro en la cuponera");
             mail.setMessage("Clave de usuario: <h1>" + password + "</h1>");
             
-            if (mail.sendEmail()){
-                if (employeeModel.insertEmployee(employee)) {
-                    request.getSession().setAttribute("success", "Empleado registrado");
-                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+            if (!users.mailExists(employee.getEmail())) {
+                if (mail.sendEmail()){
+                    if (employeeModel.insertEmployee(employee)) {
+                        request.getSession().setAttribute("success", "Empleado registrado");
+                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+                    } else {
+                        request.getSession().setAttribute("error", "El empleado no ha podido registrarse");
+                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+                    }
                 } else {
-                    request.getSession().setAttribute("error", "El empleado no ha podido registrarse");
-                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+                    errorsList.put("email", "El correo electronico no existe");
+                    request.setAttribute("errorsList", errorsList);
+                    request.setAttribute("employee", employee);
+                    request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
                 }
             } else {
-                errorsList.put("email", "El correo electronico no existe");
-                request.setAttribute("errorsList", errorsList);
-                request.setAttribute("employee", employee);
-                request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
+                    errorsList.put("email", "El correo ya ha sido registrado");
+                    request.setAttribute("errorsList", errorsList);
+                    request.setAttribute("employee", employee);
+                    request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
             }
         }
     }
@@ -224,10 +230,13 @@ public class employeeController extends HttpServlet {
         Employee employee = employeeModel.getEmployee(id, false);
         
         if (employee != null)  {
+            HttpSession _s = request.getSession(true);
+            Company company = (Company) _s.getAttribute("user");
+            
             employee.setIdEmployee(id);
             employee.setName(request.getParameter("name"));
             employee.setLastName(request.getParameter("last_name"));
-            employee.setCompany(companyModel.getCompany(request.getParameter("company"), false));
+            employee.setCompany(company);
             employee.setEmail(request.getParameter("email"));
             employee.setPassword(employee.getPassword());
 
@@ -244,27 +253,31 @@ public class employeeController extends HttpServlet {
             else if (!Validacion.esCorreo(employee.getEmail()))
                 errorsList.put("email", "El correo electronico debe de ser valido");
 
-            if (employee.getCompany() == null)
-                errorsList.put("company", "Debe de seleccionar una compañia aceptable");
-
             // Si hay errores
             if (errorsList.size() > 0) {
                 request.setAttribute("errorsList", errorsList);
                 request.setAttribute("employee", employee);
                 request.getRequestDispatcher("/company/employee.do?op=edit").forward(request, response);
             } else {
-                Mail mail = new Mail();
-                mail.setAddressee(employee.getEmail());
-                mail.setAffair("Reguistro en la cuponera");
-                mail.setMessage("Se han actualizado los datos de su cuenta");
-                
-                if (employeeModel.updateEmployee(employee)) {
-                    mail.sendEmail();
-                    request.getSession().setAttribute("success", "Empleado modificado");
-                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+                if (!users.mailExists(employee.getEmail(), "" + employee.getIdEmployee())) {
+                    Mail mail = new Mail();
+                    mail.setAddressee(employee.getEmail());
+                    mail.setAffair("Reguistro en la cuponera");
+                    mail.setMessage("Se han actualizado los datos de su cuenta");
+
+                    if (employeeModel.updateEmployee(employee)) {
+                        mail.sendEmail();
+                        request.getSession().setAttribute("success", "Empleado modificado");
+                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+                    } else {
+                        request.getSession().setAttribute("error", "No se ha podido modificar el usuario");
+                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+                    }
                 } else {
-                    request.getSession().setAttribute("error", "No se ha podido modificar el usuario");
-                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
+                    errorsList.put("email", "El correo electronico ya ha sido registrado");
+                    request.setAttribute("errorsList", errorsList);
+                    request.setAttribute("employee", employee);
+                    request.getRequestDispatcher("/company/employee.do?op=edit").forward(request, response);
                 }
             }
         } else {

@@ -1,5 +1,6 @@
 package sv.edu.udb.www.beans;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +12,7 @@ import sv.edu.udb.www.model.UserModel;
  *
  * @author leonardo
  */
-public class UserApp {
+public class UserApp implements Serializable {
     private String id;
     private String email;
     private String password;
