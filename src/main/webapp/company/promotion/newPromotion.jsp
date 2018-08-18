@@ -20,7 +20,7 @@
                 <a href="${pageContext.request.contextPath}/company/promotion.do?op=list" class="waves-effect waves-light btn-large"><i class="material-icons left centered">line_weight</i>Lista de ofertas</a>
                 <br>
                 <br>
-                <form enctype="multipart/form-data" class="col s12" id="frmRegisterCompany" action="${pageContext.request.contextPath}/company/promotion.do" method="POST">
+                <form enctype="multipart/form-data" class="col s12" id="frmRegisterPromotion" action="${pageContext.request.contextPath}/company/promotion.do" method="POST">
                     <input type="hidden" name="op" value="insert"/>
                     <div class="row">
                         <div class="input-field col s12">
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col s6">
+                        <div class="input-field col s12">
                             <input type="date" name="limitDate" id="limitDate" value="${promotion.limitDate}">
                             <label for="limitDate">Fecha Límite</label>
                             <c:if test="${not empty requestScope.errorsList}">
@@ -95,9 +95,11 @@
                                 </c:if>
                             </c:if>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="input-field col s6">
                             <input id="limitCant" type="number" min="0" name="limitCant" value="${promotion.limitCant}">
-                            <label for="limitCant">Cantidad límite [Ingrese 0 por defecto]</label>
+                            <label for="limitCant">Cantidad límite</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['limitCant']}">
                                     <span class="error-block red-text">
@@ -106,10 +108,26 @@
                                 </c:if>
                             </c:if>
                         </div>
+                        <div class="input-field col s6" style="display: flex;">
+                            <p>
+                                <label>
+                                    <input name="groupLimitCant" type="radio" checked value="false" />
+                                    <span>Ingresar Limite</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="groupLimitCant" type="radio" value="true"/>
+                                    <span>Cupones ilimitados</span>
+                                </label>
+                            </p>
+                        </div>
                     </div>
                     <div class="input-field col s12">
-                        <textarea id="description" name="description" class="materialize-textarea">${promotion.description}</textarea>
-                        <label for="description">Descripción</label>
+                        <p>Descripción</p>
+                        <div id="editor">
+                            ${promotion.description}
+                        </div>
                         <c:if test="${not empty requestScope.errorsList}">
                             <c:if test = "${not empty requestScope.errorsList['description']}">
                                 <span class="error-block red-text">
@@ -117,6 +135,9 @@
                                 </span>
                             </c:if>
                         </c:if>
+                    </div>
+                    <div class="input-field col s12" style="display: none;">
+                        <textarea id="description" name="description" class="materialize-textarea">${promotion.description}</textarea>
                     </div>
                     <div class="input-field col s12">
                         <textarea id="otherDetails" name="otherDetails" class="materialize-textarea">${promotion.otherDetails}</textarea>
@@ -189,7 +210,9 @@
                 return this.optional(element) || (limitDate.getTime() >= endDate.getTime());
             }, 'Fecha limite debe ser mayor a la final');
 
-            $('#frmRegisterCompany').validate({
+            $.validator.setDefaults({ignore: ".ql-editor"});
+
+            $('#frmRegisterPromotion').validate({
                 rules: {
                     title: {
                         required: true
@@ -259,11 +282,42 @@
                     }
                 },
                 submitHandler: function (form) {
+                    if ($('input[name=groupLimitCant]:checked').val() === 'true') {
+                        $('#limitCant').val(0);
+                    }
                     form.submit();
                 }
             });
             $(document).ready(function () {
-                // $('select').formSelect();
+                var toolbarOptions = [
+                    ['italic', 'underline', 'strike'], // toggled buttons
+                    ['blockquote'],
+                    [{'header': 1}, {'header': 2}], // custom button values
+                    [{'list': 'ordered'}, {'list': 'bullet'}],
+                    [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                    [{'font': []}],
+                    [{'align': []}],
+                    ['clean']
+                ];
+                var quill = new Quill('#editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: toolbarOptions
+                    },
+                });
+
+                quill.on('text-change', function (delta, oldDelta, source) {
+                    $('#description').val(quill.container.firstChild.innerHTML);
+                });
+
+                $('input[name=groupLimitCant]').change(function () {
+                    let value = (($(this).val() === 'true') ? true : false);
+                    $('#limitCant').attr('readonly', value);
+
+                    if (value) {
+                        $('#limitCant').val(0);
+                    }
+                });
             });
         </script>
     </body>

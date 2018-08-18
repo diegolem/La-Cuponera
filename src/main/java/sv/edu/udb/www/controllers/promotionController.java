@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -111,13 +112,12 @@ public class promotionController extends HttpServlet {
 
     private void list(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String id = "";
             HttpSession _s = request.getSession(true);
 
             switch (_s.getAttribute("type").toString()) {
                 case "company":
                     Company company = (Company) _s.getAttribute("user");
-                    id = company.getIdCompany();
+                    String id = company.getIdCompany();
 
                     request.setAttribute("title", "Lista de ofertas");
                     request.setAttribute("promotionsList", promotionModel.getPromotions(id, false));
@@ -212,15 +212,15 @@ public class promotionController extends HttpServlet {
             }
 
             if (verifyDates) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                Date now = new Date();
-                if (!Validacion.verificarFechas(promotion.getInitDate(), now)) {
+                LocalDate now = LocalDate.now();
+
+                if (!Validacion.verificarFechas(now, LocalDate.parse(multimedia.getParameter("initDate")))) {
                     errorsList.put("initDate", "Fecha inicial debe ser mayor a la actual");
                 }
-                if (!Validacion.verificarFechas(promotion.getInitDate(), promotion.getEndDate())) {
+                if (!Validacion.verificarFechas(LocalDate.parse(multimedia.getParameter("initDate")), LocalDate.parse(multimedia.getParameter("endDate")))) {
                     errorsList.put("initDate", "Fecha inicial debe ser menor a la final");
                 }
-                if (!Validacion.verificarFechas(promotion.getEndDate(), promotion.getLimitDate())) {
+                if (!Validacion.verificarFechas(LocalDate.parse(multimedia.getParameter("endDate")), LocalDate.parse(multimedia.getParameter("limitDate")))) {
                     errorsList.put("endDate", "Fecha final debe ser menor a la fecha limite");
                 }
             }
@@ -241,9 +241,9 @@ public class promotionController extends HttpServlet {
                 errorsList.put("limitCant", "La cantidad limite minima debe ser 0");
             } else {
                 if (Validacion.esEnteroPositivo(multimedia.getParameter("limitCant"))) {
-                    errorsList.put("limitCant", "La cantidad limite no es válida");
-                } else {
                     promotion.setLimitCant(Integer.parseInt(multimedia.getParameter("limitCant")));
+                } else {
+                    errorsList.put("limitCant", "La cantidad limite no es válida");
                 }
             }
 
@@ -445,15 +445,15 @@ public class promotionController extends HttpServlet {
                     }
 
                     if (verifyDates) {
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                        Date now = new Date();
-                        if (!Validacion.verificarFechas(promotion.getInitDate(), now)) {
+                        LocalDate now = LocalDate.now();
+
+                        if (!Validacion.verificarFechas(now, LocalDate.parse(multimedia.getParameter("initDate")))) {
                             errorsList.put("initDate", "Fecha inicial debe ser mayor a la actual");
                         }
-                        if (!Validacion.verificarFechas(promotion.getInitDate(), promotion.getEndDate())) {
+                        if (!Validacion.verificarFechas(LocalDate.parse(multimedia.getParameter("initDate")), LocalDate.parse(multimedia.getParameter("endDate")))) {
                             errorsList.put("initDate", "Fecha inicial debe ser menor a la final");
                         }
-                        if (!Validacion.verificarFechas(promotion.getEndDate(), promotion.getLimitDate())) {
+                        if (!Validacion.verificarFechas(LocalDate.parse(multimedia.getParameter("endDate")), LocalDate.parse(multimedia.getParameter("limitDate")))) {
                             errorsList.put("endDate", "Fecha final debe ser menor a la fecha limite");
                         }
                     }
@@ -474,9 +474,9 @@ public class promotionController extends HttpServlet {
                         errorsList.put("limitCant", "La cantidad limite minima debe ser 0");
                     } else {
                         if (Validacion.esEnteroPositivo(multimedia.getParameter("limitCant"))) {
-                            errorsList.put("limitCant", "La cantidad limite no es válida");
-                        } else {
                             promotion.setLimitCant(Integer.parseInt(multimedia.getParameter("limitCant")));
+                        } else {
+                            errorsList.put("limitCant", "La cantidad limite no es válida");
                         }
                     }
 
@@ -491,6 +491,7 @@ public class promotionController extends HttpServlet {
                         Promotion _p = promotionModel.getPromotion(Integer.parseInt(multimedia.getParameter("idPromotion")), false);
                         if ((_p == null) || (_p.getPromotionState().getIdPromotionState() != 3)) {
                             errorsList.put("idPromotion", "Promoción no válida para modificar");
+                            promotion.setDescription(_p.getDescription());
                         } else {
                             promotion.setIdPromotion(Integer.parseInt(multimedia.getParameter("idPromotion")));
                         }
@@ -571,25 +572,25 @@ public class promotionController extends HttpServlet {
         try {
             PrintWriter out = response.getWriter();
             Promotion promotion = null;
-            
+
             if (!Validacion.isEmpty(request.getParameter("idPromotion"))) {
                 if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
                     promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
                 }
             }
 
-            if(promotion != null){
-                if(promotion.getPromotionState().getIdPromotionState() == 1){ //Estado (En espera de aprobación)
+            if (promotion != null) {
+                if (promotion.getPromotionState().getIdPromotionState() == 1) { //Estado (En espera de aprobación)
                     promotion.setRejectedDescription(request.getParameter("rejectedDescription"));
-                    if(promotionModel.rejectedPromotion(promotion)){
+                    if (promotionModel.rejectedPromotion(promotion)) {
                         out.print("1");
-                    }else{
+                    } else {
                         out.print("0");
                     }
-                }else{
+                } else {
                     out.print("0");
                 }
-            }else{
+            } else {
                 out.print("0");
             }
         } catch (SQLException ex) {
@@ -601,24 +602,24 @@ public class promotionController extends HttpServlet {
         try {
             PrintWriter out = response.getWriter();
             Promotion promotion = null;
-            
+
             if (!Validacion.isEmpty(request.getParameter("idPromotion"))) {
                 if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
                     promotion = promotionModel.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), false);
                 }
             }
 
-            if(promotion != null){
-                if(promotion.getPromotionState().getIdPromotionState() == 1){ //Estado (En espera de aprobación)
-                    if(promotionModel.acceptPromotion(promotion)){
+            if (promotion != null) {
+                if (promotion.getPromotionState().getIdPromotionState() == 1) { //Estado (En espera de aprobación)
+                    if (promotionModel.acceptPromotion(promotion)) {
                         out.print("1");
-                    }else{
+                    } else {
                         out.print("0");
                     }
-                }else{
+                } else {
                     out.print("0");
                 }
-            }else{
+            } else {
                 out.print("0");
             }
         } catch (SQLException ex) {

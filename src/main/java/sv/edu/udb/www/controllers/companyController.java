@@ -17,6 +17,7 @@ import sv.edu.udb.www.beans.CompanyType;
 import sv.edu.udb.www.model.CompanyModel;
 import sv.edu.udb.www.model.CompanyTypeModel;
 import sv.edu.udb.www.model.PasswordResetModel;
+import sv.edu.udb.www.utilities.Mail;
 import sv.edu.udb.www.utilities.Validacion;
 
 /**
@@ -25,6 +26,7 @@ import sv.edu.udb.www.utilities.Validacion;
  */
 @WebServlet(name = "companyController", urlPatterns = {"/company.do", "/admin/company.do"})
 public class companyController extends HttpServlet {
+
     CompanyModel companyModel = new CompanyModel();
     CompanyTypeModel companyTypeModel = new CompanyTypeModel();
     HashMap<String, String> errorsList = new HashMap<>();
@@ -51,7 +53,7 @@ public class companyController extends HttpServlet {
                     insert(request, response);
                     break;
                 case "get":
-                    get(request,response);
+                    get(request, response);
                     break;
                 case "details":
                     details(request, response);
@@ -176,7 +178,11 @@ public class companyController extends HttpServlet {
             }
 
             if (Validacion.esCorreo(request.getParameter("email"))) {
-                company.setEmail(request.getParameter("email"));
+                if (!companyModel.checkEmail(request.getParameter("email"))) {
+                    company.setEmail(request.getParameter("email"));
+                } else {
+                    errorsList.put("email", "Favor agregar otra dirección de correo electrónico");
+                }
             } else {
                 errorsList.put("email", "El email no es válido [algo@server.com]");
             }
@@ -195,10 +201,26 @@ public class companyController extends HttpServlet {
                 request.setAttribute("company", company);
                 request.getRequestDispatcher("/company.do?op=new").forward(request, response);
             } else {
-                company.setPassword(PasswordResetModel.generatePassword());
+                String password = PasswordResetModel.generatePasswordWithoutEncrypt();
+                company.setPassword(PasswordResetModel.parsingPassword(password));
+
+                /* Creando el correo */
+                Mail mail = new Mail();
+                mail.setAddressee(company.getEmail());
+                mail.setAffair("Bienvenido a La Cuponera");
+                mail.setMessage("Bienvenido empresa <h3>" + company.getName() + "</h3>"
+                        + "<br><br>Se le informa que su clave es <h1>" + password + "</h1>");
+
                 if (companyModel.insertCompany(company)) { // Se insertó correctamente
-                    request.getSession().setAttribute("success", "Empresa registrada");
-                    response.sendRedirect(request.getContextPath() + "/admin/company.do?op=list");
+                    if (mail.sendEmail()) {
+                        request.getSession().setAttribute("success", "Empresa registrada");
+                        response.sendRedirect(request.getContextPath() + "/admin/company.do?op=list");
+                    } else {
+                        Company LastCompany = companyModel.getCompany(company.getIdCompany(), false);
+                        companyModel.deleteCompany(LastCompany.getIdCompany());
+                        request.getSession().setAttribute("error", "Empresa no registrada. Ingrese otro email");
+                        response.sendRedirect(request.getContextPath() + "/admin/company.do?op=list");
+                    }
                 } else {
                     request.getSession().setAttribute("error", "Empresa no registrada. Ingrese otro código");
                     response.sendRedirect(request.getContextPath() + "/admin/company.do?op=list");
@@ -303,7 +325,11 @@ public class companyController extends HttpServlet {
             }
 
             if (Validacion.esCorreo(request.getParameter("email"))) {
-                company.setEmail(request.getParameter("email"));
+                if (!companyModel.checkEmail(request.getParameter("email"))) {
+                    company.setEmail(request.getParameter("email"));
+                } else {
+                    errorsList.put("email", "Favor agregar otra dirección de correo electrónico");
+                }
             } else {
                 errorsList.put("email", "El email no es válido [algo@server.com]");
             }
@@ -337,7 +363,7 @@ public class companyController extends HttpServlet {
     }// Fin update()
 
     private void delete(HttpServletRequest request, HttpServletResponse response) {
-        try{
+        try {
             PrintWriter out = response.getWriter();
             if (Validacion.esCodigoEmpresa(request.getParameter("idCompany"))) {
                 Company company = companyModel.getCompany(request.getParameter("idCompany"), false);
@@ -357,6 +383,7 @@ public class companyController extends HttpServlet {
             Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// Fin delete()
+
     private void get(HttpServletRequest request, HttpServletResponse response) {
         try {
             PrintWriter out = response.getWriter();
@@ -367,7 +394,7 @@ public class companyController extends HttpServlet {
                 if (company != null) {
                     JSONObject json = new JSONObject();
                     json.put("id", company.getIdCompany());
-                    out.print(json); 
+                    out.print(json);
                 } else {
                     out.print("0");
                 }

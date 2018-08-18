@@ -15,7 +15,25 @@ public class UserApp {
     private String id;
     private String email;
     private String password;
+    private byte confirmed;
+    private String idConfirmation;
 
+    public String getIdConfirmation() {
+        return idConfirmation;
+    }
+
+    public void setIdConfirmation(String idConfirmation) {
+        this.idConfirmation = idConfirmation;
+    }
+    
+    public byte getConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(byte confirmed) {
+        this.confirmed = confirmed;
+    }
+    
     public String getId() {
         return id;
     }
@@ -54,13 +72,17 @@ public class UserApp {
         this.email = "";
         this.password = "";
         this.userType = "";
+        this.confirmed = 0;
+        this.idConfirmation = "";
     }
     
-    public UserApp(String id, String email, String password, String userType){
+    public UserApp(String id, String email, String password, String userType, byte confirmed, String idConfirmartion){
         this.id = id;
         this.email = email;
         this.password = password;
         this.userType = userType;
+        this.confirmed = confirmed;
+        this.idConfirmation = idConfirmartion;
     }
     
     public Company getCompany(){

@@ -46,11 +46,11 @@
                                 <td>
                                     <a title="Detalles" href="${pageContext.request.contextPath}/admin/promotion.do?op=details&idPromotion=${promotion.idPromotion}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                     <c:choose>
-                                        <c:when test="${promotion.promotionState.state eq 'Rechazada'}">
+                                        <c:when test="${promotion.promotionState.idPromotionState eq 3}">
                                             <a title="Aceptar Oferta" disabled href="#" class="waves-effect waves-light btn-small"><i class="material-icons centered">check</i></a>
                                             <a title="Rechazar Oferta" disabled href="#"  class="waves-effect waves-light btn-small"><i class="material-icons centered">clear</i></a>
                                         </c:when>
-                                        <c:when test="${promotion.promotionState.state eq 'En espera de aprobación'}">
+                                        <c:when test="${promotion.promotionState.idPromotionState eq 1}">
                                             <a title="Aceptar Oferta" onclick="acceptPromotion('${promotion.idPromotion}')" class="waves-effect waves-light btn-large"><i class="material-icons centered">check</i></a>
                                             <a title="Rechazar Oferta" onclick="setIdRejected('${promotion.idPromotion}')" href="#mdlRejected" class="modal-trigger waves-effect waves-light btn-large"><i class="material-icons centered">clear</i></a>
                                         </c:when>

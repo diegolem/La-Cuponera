@@ -44,11 +44,8 @@
                                 <td>${promotion.promotionState.state}</td>
                                 <td>
                                     <a title="Detalles" href="${pageContext.request.contextPath}/company/promotion.do?op=details&idPromotion=${promotion.idPromotion}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
-                                    <c:if test = "${promotion.promotionState.state eq 'Rechazada'}">
-                                        
-                                    </c:if>
                                     <c:choose>
-                                        <c:when test="${promotion.promotionState.state eq 'Rechazada'}">
+                                        <c:when test="${promotion.promotionState.idPromotionState eq 3}">
                                             <a title="Editar" href="${pageContext.request.contextPath}/company/promotion.do?op=edit&idPromotion=${promotion.idPromotion}" class="waves-effect waves-light btn-small"><i class="material-icons centered">edit</i></a>
                                             <a title="Eliminar" href="#" onclick="deletePromotion('${promotion.idPromotion}')" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
                                         </c:when>
@@ -67,6 +64,7 @@
         <script>
             $(document).ready(function () {
                 $("#tblPromotions").DataTable({
+                    "searching": false,
                     initComplete: function () {
                         let i = 0;
                         this.api().columns().every(function () {
