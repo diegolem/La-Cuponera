@@ -6,6 +6,7 @@
 package sv.edu.udb.www.utilities;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +45,7 @@ public class Validacion {
     public static boolean esEnteroPositivo(String cadena) {
         try {
             entero = Integer.parseInt(cadena);
-            return entero > 0;
+            return entero >= 0;
         } catch (NumberFormatException a) {
             return false;
         }
@@ -136,7 +137,7 @@ public class Validacion {
         return mat.matches();
     }
     
-    public static boolean verificarFechas(Date date1, Date date2){
-        return date1.before(date2);
+    public static boolean verificarFechas(LocalDate date1, LocalDate date2){
+        return date1.isBefore(date2) || date1.equals(date2);
     }
 }

@@ -1,5 +1,6 @@
 package sv.edu.udb.www.beans;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,11 +12,29 @@ import sv.edu.udb.www.model.UserModel;
  *
  * @author leonardo
  */
-public class UserApp {
+public class UserApp implements Serializable {
     private String id;
     private String email;
     private String password;
+    private byte confirmed;
+    private String idConfirmation;
 
+    public String getIdConfirmation() {
+        return idConfirmation;
+    }
+
+    public void setIdConfirmation(String idConfirmation) {
+        this.idConfirmation = idConfirmation;
+    }
+    
+    public byte getConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(byte confirmed) {
+        this.confirmed = confirmed;
+    }
+    
     public String getId() {
         return id;
     }
@@ -54,13 +73,17 @@ public class UserApp {
         this.email = "";
         this.password = "";
         this.userType = "";
+        this.confirmed = 0;
+        this.idConfirmation = "";
     }
     
-    public UserApp(String id, String email, String password, String userType){
+    public UserApp(String id, String email, String password, String userType, byte confirmed, String idConfirmartion){
         this.id = id;
         this.email = email;
         this.password = password;
         this.userType = userType;
+        this.confirmed = confirmed;
+        this.idConfirmation = idConfirmartion;
     }
     
     public Company getCompany(){

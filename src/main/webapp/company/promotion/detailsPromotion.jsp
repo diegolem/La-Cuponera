@@ -65,7 +65,15 @@
                         <li><b>Estado: </b>${promotion.promotionState.state}</li>
                     </ul>
                 </div>
+                <div class="center-align">
+                    <img class="materialboxed" width="650" src="img/${promotion.image}">
+                </div>    
             </div>
         </main>
+        <script>
+            $(document).ready(function () {
+                $('.materialboxed').materialbox();
+            });
+        </script>
     </body>
 </html>

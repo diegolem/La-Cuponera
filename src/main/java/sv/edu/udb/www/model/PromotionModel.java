@@ -157,7 +157,7 @@ public class PromotionModel extends Connection {
     public boolean updatePromotion(Promotion promotion) throws SQLException{
         try {
             int affectedRows = 0;
-            String sql = "UPDATE promotion SET title = ?, regular_price = ?, ofert_price = ?, init_date = ?, end_date = ?, limit_date = ?, limit_cant = ?, description = ?, other_details = ?, image = ?, id_company = ?, id_state = ?, rejected_description = ?  WHERE id = ?";
+            String sql = "UPDATE promotion SET title = ?, regular_price = ?, ofert_price = ?, init_date = ?, end_date = ?, limit_date = ?, limit_cant = ?, description = ?, other_details = ?, image = ?, id_state = ?, rejected_description = ?  WHERE id = ?";
             
             this.conectar();
             st = conexion.prepareStatement(sql);
@@ -171,10 +171,10 @@ public class PromotionModel extends Connection {
             st.setString(8, promotion.getDescription());
             st.setString(9, promotion.getOtherDetails());
             st.setString(10, promotion.getImage());
-            st.setString(11, promotion.getCompany().getIdCompany());
-            st.setInt(12, 1); //Estado 1 - En espera de aprobacion
-            st.setString(13, "");//Descripción vacía
-            st.setInt(14, promotion.getIdPromotion());
+            //st.setString(11, promotion.getCompany().getIdCompany());
+            st.setInt(11, 1); //Estado 1 - En espera de aprobacion
+            st.setString(12, "");//Descripción vacía
+            st.setInt(13, promotion.getIdPromotion());
             affectedRows = st.executeUpdate();
             
             this.desconectar();

@@ -4,6 +4,7 @@
     Author     : leonardo
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -17,30 +18,31 @@
         <main class="">
             <div class="row">
                 <a href="${pageContext.request.contextPath}/admin/company.do?op=list" class="waves-effect waves-light btn-large"><i class="material-icons left centered">line_weight</i>Lista de empresas</a>
-                <div class="card">
-                    <div class="card-content center">
-                        <p>${company.name}</p>
-                    </div>
-                    <div class="card-tabs">
-                        <ul class="tabs tabs-fixed-width">
-                            <li class="tab"><a class="active" href="#test4">Datos Generales</a></li>
-                            <li class="tab"><a  href="#test5">Empleados</a></li>
-                            <li class="tab"><a href="#test6">Promociones</a></li>
-                        </ul>
-                    </div>
-                    <div class="card-content grey lighten-4">
-                        <div id="test4"> <!-- Datos generales -->
-                            <ul class="collection">
-                                <li class="collection-item">Código: ${company.idCompany}</li>
-                                <li class="collection-item">Dirección: ${company.address}</li>
-                                <li class="collection-item">Nombre de contacto: ${company.contactName}</li>
-                                <li class="collection-item">Teléfono: ${company.telephone}</li>
-                                <li class="collection-item">Email: ${company.email}</li>
-                                <li class="collection-item">Rubro: ${company.companyType.type}</li>
-                                <li class="collection-item">Porcentaje de comisión: ${company.pctComission}%</li>
-                            </ul>
-                        </div> <!-- Fin datos generales -->
-                        <div id="test5"> <!-- Empleados -->
+                <br>
+                <br>
+                <div style="display: flex; justify-content: space-evenly; width: 70%; margin: auto">
+                    <a href="#mdlEmployees"  title="Empleados" class="modal-trigger btnSales waves-effect waves-light btn btn-large"><i class="large material-icons">contacts</i></a>
+                    <a href="#mdlPromotions"  title="Promociones" class="modal-trigger btnSales waves-effect waves-light btn btn-large"><i class="large material-icons">add_shopping_cart</i></a>
+                </div>
+
+                <div style="display: flex; justify-content: center; font-size: 18px;">
+                    <ul>
+                        <li class=""><b>Nombre:</b> ${company.name}</li>
+                        <li class=""><b>Código:</b> ${company.idCompany}</li>
+                        <li class=""><b>Dirección:</b> ${company.address}</li>
+                        <li class=""><b>Nombre de contacto: </b>${company.contactName}</li>
+                        <li class=""><b>Teléfono: </b>${company.telephone}</li>
+                        <li class=""><b>Email:</b> ${company.email}</li>
+                        <li class=""><b>Rubro:</b> ${company.companyType.type}</li>
+                        <li class=""><b>Porcentaje de comisión: </b>${company.pctComission}%</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="mdlEmployees" class="modal bottom-sheet">
+                <div class="modal-content">
+                    <h3 class="center deep-purple-text text-darken-4">Empleados</h3>
+                    <c:choose>
+                        <c:when test="${fn:length(company.employees) gt 0}">
                             <table class="centered responsive-table" id="tblEmployees">
                                 <thead>
                                     <tr>
@@ -59,8 +61,26 @@
                                     </c:forEach>
                                 </tbody>
                             </table>
-                        </div><!-- Fin empleados -->
-                        <div id="test6"> <!-- Promociones -->
+                        </c:when>
+                        <c:otherwise>
+                            No hay empleados
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cerrar</a>
+                </div>
+            </div>
+            <div id="mdlPromotions" class="modal bottom-sheet">
+                <div class="modal-content">
+                    <h3 class="center deep-purple-text text-darken-4">Promociones</h3>
+                    <c:choose>
+                        <c:when test="${fn:length(company.promotion) gt 0}">
+                            <div id="selectFiltered" class="center col s6 offset-s3">
+
+                            </div>
+                            <br>
+                            <br>
                             <table class="centered responsive-table" id="tblPromotions">
                                 <thead>
                                     <tr>
@@ -85,14 +105,51 @@
                                     </c:forEach>
                                 </tbody>
                             </table>
-                        </div> <!-- Fin promociones -->
-                    </div>
+                        </c:when>
+                        <c:otherwise>
+                            No hay Promociones
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cerrar</a>
                 </div>
             </div>
         </main>
         <script>
-            $("#tblEmployees").DataTable();
-            $("#tblPromotions").DataTable();
+            $(document).ready(function () {
+                if ($('#tblEmployees').length > 0) {
+                    $("#tblEmployees").DataTable();
+                }
+
+                if ($('#tblEmployees').length > 0) {
+                    $("#tblPromotions").DataTable({
+                        "searching": false,
+                        initComplete: function () {
+                            let i = 0;
+                            this.api().columns().every(function () {
+                                var column = this;
+                                if (i === 5) {
+
+                                    var select = $('<select><option value="" disabled selected>Filtrar por estado</option></select>')
+                                            .appendTo($('#selectFiltered').empty())
+                                            .on('change', function () {
+                                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                            })
+                                            ;
+
+                                    column.data().unique().sort().each(function (d, j) {
+                                        select.append('<option value="' + d + '">' + d + '</option>')
+                                    });
+                                }
+                                i++;
+                            });
+                        }
+                    });
+                    $('select').formSelect();
+                }
+            });
         </script>               
     </body>
 </html>

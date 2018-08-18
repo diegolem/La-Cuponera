@@ -23,7 +23,7 @@
                     <input type="hidden" name="op" value="update"/>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input id="idCompany" type="text" name="idCompany" value="${company.idCompany}">
+                            <input id="idCompany" readonly="true" type="text" name="idCompany" value="${company.idCompany}">
                             <label for="idCompany">Código</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['idCompany']}">
@@ -95,7 +95,7 @@
                             </c:if>
                         </div>
                         <div class="input-field col s6">
-                            <input id="comission" type="number" min="0" name="comission" value="${company.pctComission}">
+                            <input id="comission" type="number" readonly="true" min="0" name="comission" value="${company.pctComission}">
                             <label for="comission">Porcentaje de comisión</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['comission']}">

@@ -7,7 +7,6 @@ package sv.edu.udb.www.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +18,7 @@ import sv.edu.udb.www.beans.UserType;
  *
  * @author Diego Lemus
  */
-public class UserModel extends Connection {
+public class UserModel extends Connection{
 
     public User getLastUser(boolean relationship) throws SQLException {
         try {
@@ -347,7 +346,7 @@ public class UserModel extends Connection {
             rs = st.executeQuery();
 
             if (rs.next()) {
-                UserApp user = new UserApp(rs.getString("id"), rs.getString("email"), rs.getString("password"), rs.getString("user_type"));
+                UserApp user = new UserApp(rs.getString("id"), rs.getString("email"), rs.getString("password"), rs.getString("user_type"), rs.getByte("confirmed"), rs.getString("id_confirmation"));
                 this.desconectar();
                 return user;
             }
@@ -381,5 +380,87 @@ public class UserModel extends Connection {
     
     public static String getIdConfirmation(){
         return UUID.randomUUID().toString();
+    }// Fin getIdConfirmation()
+    
+    public boolean mailExists(String email){
+        try {
+        
+            String sql = "SELECT * FROM `all_users` WHERE email = ?";
+            
+            this.conectar();
+            
+            this.st = conexion.prepareStatement(sql);
+            this.st.setString(1, email);
+            this.rs = this.st.executeQuery();
+            
+            boolean result = this.rs.next();
+            
+            this.desconectar();
+            
+            return result;
+            
+        } catch(Exception error) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, error);
+            try {
+                this.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
     }
+    
+    public boolean mailExists(String email, String id){
+        try {
+        
+            String sql = "SELECT * FROM `all_users` WHERE email = ? AND id != ?";
+            
+            this.conectar();
+            
+            this.st = conexion.prepareStatement(sql);
+            
+            this.st.setString(1, email);
+            this.st.setString(2, id);
+            
+            this.rs = this.st.executeQuery();
+            
+            boolean result = this.rs.next();
+            
+            this.desconectar();
+            
+            return result;
+            
+        } catch(Exception error) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, error);
+            try {
+                this.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
+    }
+
+    public boolean checkEmail(String email) throws SQLException {
+        try {
+            String sql = "SELECT * FROM all_users WHERE email = ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, email);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                this.desconectar();
+                return true;
+            }
+            
+            this.desconectar();
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
+        }
+    }// Fin checkEmail()
 }

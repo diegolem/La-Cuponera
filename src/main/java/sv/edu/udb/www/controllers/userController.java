@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -17,11 +18,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
+import sv.edu.udb.www.beans.Sales;
+import sv.edu.udb.www.beans.SalesState;
 import sv.edu.udb.www.beans.User;
 import sv.edu.udb.www.beans.UserType;
 import sv.edu.udb.www.model.PasswordResetModel;
+import sv.edu.udb.www.model.SalesModel;
+import sv.edu.udb.www.model.SalesStateModel;
 import sv.edu.udb.www.model.UserModel;
 import sv.edu.udb.www.model.UserTypeModel;
 import sv.edu.udb.www.utilities.Mail;
@@ -34,9 +40,12 @@ import sv.edu.udb.www.utilities.Validacion;
 @WebServlet(name = "userController", urlPatterns = {"/user.do", "/admin/user.do"})
 public class userController extends HttpServlet {
 
+    SalesModel sales = new SalesModel();
     UserModel users = new UserModel();
+    SalesStateModel salesStates = new SalesStateModel();
     UserTypeModel typeUsers = new UserTypeModel();
     HashMap<String, String> errorsList = new HashMap<>();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -48,26 +57,41 @@ public class userController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-            
+
         try {
             String opcion = request.getParameter("op");
-            
-            switch(opcion){
-                case "list_client":
-                    listClient(request, response);
-                    break;
+            HttpSession _s = request.getSession(true);
+            if (_s.getAttribute("logged") != null) {
+                switch (opcion) {
+                    case "list_client":
+                        listClient(request, response);
+                        break;
+
+                    case "new_client":
+                        newClient(request, response);
+                        break;
+
+                    case "insert_client":
+                        insertClient(request, response);
+                        break;
                     
-                case "new_client":
-                    newClient(request, response);
-                    break;
+                    case "details_client":
+                        detailsClient(request, response);
+                        break;
                     
-                case "insert_client":
-                    insertClient(request, response);
-                    break;
-                    
-                case "confirmation":
-                    confirmation(request, response);
-                    break;
+                    case "delete_client":
+                        deleteClient(request, response);
+                        break;
+                }
+            } else {
+                switch (opcion) {
+                    case "insert_client_public":
+                        insertClientPublic(request, response);
+                        break;
+                    case "confirmation":
+                        confirmation(request, response);
+                        break;
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(userController.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,7 +140,7 @@ public class userController extends HttpServlet {
     private void listClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         UserType typeClient = typeUsers.getUserType(1, false);
         ArrayList<User> users = this.users.getUsers(typeClient, false);
-        
+
         request.setAttribute("users", users);
         request.getRequestDispatcher("/admin/user/listClient.jsp").forward(request, response);
     }
@@ -128,34 +152,38 @@ public class userController extends HttpServlet {
 
     private void insertClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         errorsList.clear();
-        
         User user = new User();
         user.setType(this.typeUsers.getUserType(1, false));
 
-        if (!Validacion.isEmpty(request.getParameter("name"))) 
+        if (!Validacion.isEmpty(request.getParameter("name"))) {
             user.setName(request.getParameter("name"));
-        else
+        } else {
             errorsList.put("name", "El nombre es un campo obligatorio");
+        }
 
-        if (!Validacion.isEmpty(request.getParameter("last_name"))) 
+        if (!Validacion.isEmpty(request.getParameter("last_name"))) {
             user.setLastName(request.getParameter("last_name"));
-        else
+        } else {
             errorsList.put("name", "El apellido es un campo obligatorio");
+        }
 
-        if (Validacion.esCorreo(request.getParameter("email")))
+        if (Validacion.esCorreo(request.getParameter("email"))) {
             user.setEmail(request.getParameter("email"));
-        else 
+        } else {
             errorsList.put("email", "El email no es válido [algo@server.com]");
-        
-        if (Validacion.esDui(request.getParameter("dui")))
+        }
+
+        if (Validacion.esDui(request.getParameter("dui"))) {
             user.setDui(request.getParameter("dui"));
-        else 
+        } else {
             errorsList.put("dui", "El dui no es válido");
-        
-        if (Validacion.esNit(request.getParameter("nit")))
+        }
+
+        if (Validacion.esNit(request.getParameter("nit"))) {
             user.setNit(request.getParameter("nit"));
-        else 
+        } else {
             errorsList.put("nit", "El nit no es válido");
+        }
 
         if (errorsList.size() > 0) {
             request.setAttribute("errorsList", errorsList);
@@ -164,24 +192,24 @@ public class userController extends HttpServlet {
         } else {
             String password = PasswordResetModel.generatePasswordWithoutEncrypt();
             user.setPassword(PasswordResetModel.parsingPassword(password));
-            
+
             user.setIdConfirmation(UserModel.getIdConfirmation());
-            
+
             Mail gmail = new Mail();
             
-            String url = request.getRequestURL().toString() + "?op=confirmation&id="+user.getIdConfirmation();
+            String url = this.getServletContext().getContextPath() + "/user.do?op=confirmation&id="+user.getIdConfirmation();
             
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
             gmail.setMessage("Bienvenido usuario <h3>" + user.getName() + " " + user.getLastName() + "</h3>"
                     + "<br><br>Se le informa que su clave es <h1>" + password + "</h1>"
                     + "<br><br>Sin embargo debe primero confirmar que es su cuenta confirme <a target='a_blank' href= '" + url + "'>aqui</a>");
-            
+
             if (users.insertUserWithConfirmation(user)) { // Se insertó correctamente
-                
+
                 if (gmail.sendEmail()) {
                     request.getSession().setAttribute("success", "Usuario registrado");
-                    response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");  
+                    response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
                 } else {
                     User last = this.users.getLastUser(false);
                     this.users.deleteUser(last.getIdUser());
@@ -197,29 +225,94 @@ public class userController extends HttpServlet {
 
     private void confirmation(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         String idConfirmation = request.getParameter("id");
-        
+
         User user;
         
-        request.setAttribute("errorConfirmation", "El usuario no existe");
-        //response.sendRedirect(request.getContextPath() + "/login.jsp");
-        request.getRequestDispatcher("/login.jsp").forward(request, response);
-        
-        /*
         if ((user = this.users.getUser(idConfirmation, true)) != null) {
             
             if (users.confirmUser(user)) {
-                request.getSession().setAttribute("error", "Caca");
-                request.getRequestDispatcher(request.getContextPath() + "/login.jsp").forward(request, response);
+                HttpSession _s = request.getSession(true);
+                _s.setAttribute("logged", true);
+                _s.setAttribute("user", user);
+                _s.setAttribute("redirect", request.getContextPath() + "/client/index.jsp");
+                _s.setAttribute("type", "client");
+                response.sendRedirect(_s.getAttribute("redirect").toString());
             } else {
                 request.getSession().setAttribute("error", "No se ha pódido confirmar su cuenta");
-                request.getRequestDispatcher(request.getContextPath() + "/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
             }
             
         } else {
-            request.getSession().setAttribute("error", "El usuario no existe");
+            request.getSession().setAttribute("error", "El Id de confirmacion no existe");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
         }
-        */
     }
 
+    private void insertClientPublic(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException, ServletException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        errorsList.clear();
+        User user = new User();
+        user.setType(this.typeUsers.getUserType(1, false));
+
+        if (!Validacion.isEmpty(request.getParameter("name"))) {
+            user.setName(request.getParameter("name"));
+        } else {
+            errorsList.put("name", "El nombre es un campo obligatorio");
+        }
+
+        if (!Validacion.isEmpty(request.getParameter("last_name"))) {
+            user.setLastName(request.getParameter("last_name"));
+        } else {
+            errorsList.put("name", "El apellido es un campo obligatorio");
+        }
+
+        if (Validacion.esCorreo(request.getParameter("email"))) {
+            user.setEmail(request.getParameter("email"));
+        } else {
+            errorsList.put("email", "El email no es válido [algo@server.com]");
+        }
+
+        if (Validacion.esDui(request.getParameter("dui"))) {
+            user.setDui(request.getParameter("dui"));
+        } else {
+            errorsList.put("dui", "El dui no es válido");
+        }
+
+        if (Validacion.esNit(request.getParameter("nit"))) {
+            user.setNit(request.getParameter("nit"));
+        } else {
+            errorsList.put("nit", "El nit no es válido");
+        }
+
+        if (errorsList.size() > 0) {
+            out.println("0");
+        } else {
+            String password = PasswordResetModel.generatePasswordWithoutEncrypt();
+            user.setPassword(PasswordResetModel.parsingPassword(password));
+
+            user.setIdConfirmation(UserModel.getIdConfirmation());
+            Mail gmail = new Mail();
+            String url = request.getRequestURL().toString() + "?op=confirmation&id=" + user.getIdConfirmation();
+
+            gmail.setAddressee(user.getEmail());
+            gmail.setAffair("Bienvenido a la cuponera");
+            gmail.setMessage("Bienvenido usuario <h3>" + user.getName() + " " + user.getLastName() + "</h3>"
+                    + "<br><br>Se le informa que su clave es <h1>" + password + "</h1>"
+                    + "<br><br>Sin embargo debe primero confirmar que es su cuenta confirme <a target='a_blank' href= '" + url + "'>aqui</a>");
+
+            if (users.insertUserWithConfirmation(user)) { // Se insertó correctamente
+                if (gmail.sendEmail()) {
+                    out.println("1");
+                } else {
+                    User last = this.users.getLastUser(false);
+                    this.users.deleteUser(last.getIdUser());
+                    out.println("-1");
+                }
+            } else {
+                out.println("-2");
+            }
+        }
+    } // Fin insertClientPublic()
 }

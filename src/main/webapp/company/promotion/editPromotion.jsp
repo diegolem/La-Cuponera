@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col s6">
+                        <div class="input-field col s2">
                             <input type="date" name="limitDate" id="limitDate" value="${company.limitDate}">
                             <label for="limitDate">Fecha Límite</label>
                             <c:if test="${not empty requestScope.errorsList}">
@@ -101,9 +101,11 @@
                                 </c:if>
                             </c:if>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="input-field col s6">
                             <input id="limitCant" type="number" min="0" name="limitCant" value="${promotion.limitCant}">
-                            <label for="limitCant">Cantidad límite [Ingrese 0 por defecto]</label>
+                            <label for="limitCant">Cantidad límite</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['limitCant']}">
                                     <span class="error-block red-text">
@@ -112,10 +114,26 @@
                                 </c:if>
                             </c:if>
                         </div>
+                        <div class="input-field col s6" style="display: flex;">
+                            <p>
+                                <label>
+                                    <input name="groupLimitCant" type="radio" checked value="false" />
+                                    <span>Ingresar Limite</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input name="groupLimitCant" type="radio" value="true"/>
+                                    <span>Cupones ilimitados</span>
+                                </label>
+                            </p>
+                        </div>
                     </div>
                     <div class="input-field col s12">
-                        <textarea id="description" name="description" class="materialize-textarea">${promotion.description}</textarea>
-                        <label for="description">Descripción</label>
+                        <p>Descripción</p>
+                        <div id="editor">
+                            ${promotion.description}
+                        </div>
                         <c:if test="${not empty requestScope.errorsList}">
                             <c:if test = "${not empty requestScope.errorsList['description']}">
                                 <span class="error-block red-text">
@@ -123,6 +141,9 @@
                                 </span>
                             </c:if>
                         </c:if>
+                    </div>
+                    <div class="input-field col s12" style="display: none;">
+                        <textarea id="description" name="description" class="materialize-textarea">${promotion.description}</textarea>
                     </div>
                     <div class="input-field col s12">
                         <textarea id="otherDetails" name="otherDetails" class="materialize-textarea">${promotion.otherDetails}</textarea>
@@ -161,5 +182,148 @@
                 </form>
             </div>
         </main>
+        <script>
+            $.validator.setDefaults({
+                errorClass: 'invalid',
+                validClass: 'none',
+                errorPlacement: function (error, element) {
+                    $(element).parent().find('span.error-block.red-text').remove();
+                    $(element).parent().find('span.helper-text').remove();
+                    $(element).parent().append("<span class='helper-text' data-error='" + error.text() + "'></span>");
+                }
+            });
+
+            $.validator.addMethod('validInitDate', function (value, element) {
+                //console.log(value);
+                let initDate = new Date(value), now = new Date();
+                now.setHours(0, 0, 0, 0);
+                initDate.setHours(0, 0, 0, 0);
+                //console.log(initDate.getDay());
+                return this.optional(element) || (initDate.getTime() >= now.getTime());
+            }, 'Fecha Inicial debe ser mayor a la actual');
+
+            $.validator.addMethod('validEndDate', function (value, element) {
+                let endDate = new Date(value), initDate = new Date($('#initDate').val());
+                endDate.setHours(0, 0, 0, 0);
+                initDate.setHours(0, 0, 0, 0);
+                return this.optional(element) || (endDate.getTime() >= initDate.getTime());
+            }, 'Fecha final debe ser mayor a la inicial');
+
+            $.validator.addMethod('validLimitDate', function (value, element) {
+                let limitDate = new Date(value), endDate = new Date($('#endDate').val());
+                limitDate.setHours(0, 0, 0, 0);
+                endDate.setHours(0, 0, 0, 0);
+                return this.optional(element) || (limitDate.getTime() >= endDate.getTime());
+            }, 'Fecha limite debe ser mayor a la final');
+
+            $.validator.setDefaults({ignore: ".ql-editor"});
+
+            $('#frmUpdatePromotion').validate({
+                rules: {
+                    title: {
+                        required: true
+                    },
+                    regularPrice: {
+                        required: true
+                    },
+                    ofertPrice: {
+                        required: true
+                    },
+                    initDate: {
+                        required: true,
+                        validInitDate: true
+                    },
+                    endDate: {
+                        required: true,
+                        validEndDate: true
+                    },
+                    limitDate: {
+                        required: true,
+                        validLimitDate: true
+                    },
+                    limitCant: {
+                        required: true
+                    },
+                    description: {
+                        required: true
+                    },
+                    otherDetails: {
+                        required: true
+                    },
+                    img: {
+                        required: true
+                    }
+                },
+                messages: {
+                    title: {
+                        required: 'El campo título es requerido'
+                    },
+                    regularPrice: {
+                        required: 'El campo precio regular es requerido'
+                    },
+                    ofertPrice: {
+                        required: 'El campo precio oferta es requerido'
+                    },
+                    initDate: {
+                        required: 'El campo fecha inicial es requerido'
+                    },
+                    endDate: {
+                        required: 'El campo fecha de finalización es requerido'
+                    },
+                    limitDate: {
+                        required: 'El campo fecha limite es requerido'
+                    },
+                    limitCant: {
+                        required: 'El campo cantidad limite es requerido (minímo 0)'
+                    },
+                    description: {
+                        required: 'El campo descripción es requerido'
+                    },
+                    otherDetails: {
+                        required: 'El campo otros detalles es requerido'
+                    },
+                    img: {
+                        required: 'El campo img es requerido',
+                        extension: "jpg|png|jpeg|gif"
+                    }
+                },
+                submitHandler: function (form) {
+                    if ($('input[name=groupLimitCant]:checked').val() === 'true') {
+                        $('#limitCant').val(0);
+                    }
+                    form.submit();
+                }
+            });
+            $(document).ready(function () {
+                var toolbarOptions = [
+                    ['italic', 'underline', 'strike'], // toggled buttons
+                    ['blockquote'],
+                    [{'header': 1}, {'header': 2}], // custom button values
+                    [{'list': 'ordered'}, {'list': 'bullet'}],
+                    [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                    [{'font': []}],
+                    [{'align': []}],
+                    ['clean']
+                ];
+                var quill = new Quill('#editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: toolbarOptions
+                    },
+                });
+
+                quill.on('text-change', function (delta, oldDelta, source) {
+                    $('#description').val(quill.container.firstChild.innerHTML);
+                });
+                $('input[name=groupLimitCant]').change(function () {
+                    let value = (($(this).val() === 'true') ? true : false);
+                    $('#limitCant').attr('readonly', value);
+
+                    if (!value) {
+                        $('#limitCant').val(0);
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

@@ -17,6 +17,7 @@ import sv.edu.udb.www.model.CompanyModel;
 import sv.edu.udb.www.model.EmployeeModel;
 import sv.edu.udb.www.model.PasswordResetModel;
 import sv.edu.udb.www.model.UserModel;
+import sv.edu.udb.www.utilities.Validacion;
 
 /**
  *
@@ -89,55 +90,84 @@ public class loginController extends HttpServlet {
         try {
             errorsList.clear();
             String email = request.getParameter("email"), password = request.getParameter("password");
-            UserApp user = userModel.login(email, PasswordResetModel.parsingPassword(password));
+
+            if (Validacion.isEmpty(email)) {
+                errorsList.put("email", "El campo email es requerido");
+            } else {
+                if (!Validacion.esCorreo(email)) {
+                    errorsList.put("email", "El campo email es válido");
+                }
+            }
+
+            if (Validacion.isEmpty(password)) {
+                errorsList.put("password", "El campo email password es requerido");
+            }
 
             if (errorsList.size() > 0) {
-                System.out.println("Errores");
+                request.setAttribute("email", email);
+                request.setAttribute("password", password);
+                request.setAttribute("errorsList", errorsList);
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
             } else {
+                UserApp user = userModel.login(email, PasswordResetModel.parsingPassword(password));
+
                 if (user != null) {
-                    HttpSession _s = request.getSession(true);
-                    _s.setAttribute("logged", true);
-                    switch (user.getUserType().toLowerCase()) {
-                        case "company":
-                            _s.setAttribute("user", user.getCompany());
-                            _s.setAttribute("redirect", request.getContextPath() + "/company/index.jsp");
-                            _s.setAttribute("type", "company");
-                            break;
-                        case "client":
-                            _s.setAttribute("user", user.getUser());
-                            _s.setAttribute("redirect", request.getContextPath() + "/client/index.jsp");
-                            _s.setAttribute("type", "client");
-                            break;
-                        case "administrator":
-                            _s.setAttribute("user", user.getUser());
-                            _s.setAttribute("redirect", request.getContextPath() + "/admin/index.jsp");
-                            _s.setAttribute("type", "admin");
-                            break;
-                        case "employee":
-                            _s.setAttribute("user", user.getEmployee());
-                            _s.setAttribute("redirect", request.getContextPath() + "/employee/index.jsp");
-                            _s.setAttribute("type", "employee");
-                            break;
+                    boolean flag = true;
+
+                    if (user.getUserType().toLowerCase().equals("client")) {
+                        flag = (user.getConfirmed() == 1);
                     }
-                    response.sendRedirect(_s.getAttribute("redirect").toString());
+
+                    if (flag) {
+                        HttpSession _s = request.getSession(true);
+                        _s.setAttribute("logged", true);
+
+                        switch (user.getUserType().toLowerCase()) {
+                            case "company":
+                                _s.setAttribute("user", user.getCompany());
+                                _s.setAttribute("redirect", request.getContextPath() + "/company/index.jsp");
+                                _s.setAttribute("type", "company");
+                                break;
+                            case "client":
+                                _s.setAttribute("user", user.getUser());
+                                _s.setAttribute("redirect", request.getContextPath() + "/client/index.jsp");
+                                _s.setAttribute("type", "client");
+                                break;
+                            case "administrator":
+                                _s.setAttribute("user", user.getUser());
+                                _s.setAttribute("redirect", request.getContextPath() + "/admin/index.jsp");
+                                _s.setAttribute("type", "admin");
+                                break;
+                            case "employee":
+                                _s.setAttribute("user", user.getEmployee());
+                                _s.setAttribute("redirect", request.getContextPath() + "/employee/index.jsp");
+                                _s.setAttribute("type", "employee");
+                                break;
+                        }
+                        response.sendRedirect(_s.getAttribute("redirect").toString());
+                    } else {
+                        request.setAttribute("invalid", "Favor confirma tú cuenta");
+                        request.getRequestDispatcher("/login.jsp").forward(request, response);
+                    }
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/login.jsp");
+                    request.setAttribute("invalid", "Cuenta no registrada");
+                    request.getRequestDispatcher("/login.jsp").forward(request, response);
                 }
-            } // Fin login()
-        } catch (IOException | SQLException ex) {
+            }
+        } catch (IOException | SQLException | ServletException ex) {
             Logger.getLogger(loginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }// Fin login()
 
     private void logout(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession _s = request.getSession(true);
-            if(_s.getAttribute("logged") != null){
+            if (_s.getAttribute("logged") != null) {
                 _s.invalidate();
             }
             response.sendRedirect(request.getContextPath() + "/login.jsp");
         } catch (IOException ex) {
             Logger.getLogger(loginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }// Fin logout()
 }
