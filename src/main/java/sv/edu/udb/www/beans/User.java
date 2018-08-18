@@ -122,6 +122,8 @@ public class User {
         this.dui = "";
         this.nit = "";
         this.sales = null;
+        this.confirmed = false;
+        this.idConfirmation = "";
     }
     
     /*

@@ -12,10 +12,11 @@
         <title>Login [Cuponera]</title>
         <jsp:include page="cabecera.jsp"/>
         <link href="${pageContext.request.contextPath}/assets/css/login.css" rel="stylesheet">
+        <!--<script src="${pageContext.request.contextPath}/js/login.js" type="text/javascript"></script>-->
     </head>
     <body>
         <div class="container">
-<li>${errorConfirmation}</li>
+            <li>${errorConfirmation}</li>
             <c:if test="${not empty error}">
                 
                 <div class="row">
@@ -53,7 +54,7 @@
                                 Iniciar sesión
                             </button>
 
-                            <a class="btn btn-link" href="">
+                            <a class="btn modal-trigger" href="#mdlRecover">
                                 Recuperar contraseña
                             </a>
                         </div>
@@ -61,5 +62,45 @@
                 </form>
             </div>
         </div>
+
+        <div id="mdlRecover" class="modal">
+            <div class="modal-content">
+                <h4>Modal Header</h4>
+                <p>A bunch of text</p>
+                <form name="frmRecover" class="frmAjax row">
+                    <div class="input-field col s12">
+                        <label for="recover_email" class="col-md-4 control-label">Correo Electrónico</label>
+                        <input id="recover_email" type="email" class="form-control" name="recover_email">
+                    </div>
+                    <div class="col s12 btn-cont">
+                        <button id="btnRecover" class="btn waves-effect">Enviar peticion<i class="material-icons right">send</i></button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+            </div>
+        </div>
+                                
     </body>
+    
+    <script>
+        $(frmRecover).submit(function () {
+            console.log('hola');
+            $.ajax({
+                url: `${pageContext.request.contextPath}/password.do`,
+                type: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    email: frmRecover.recover_email.value.trim()
+                },
+                success: function (r) {
+                    console.log(r);
+                }
+            });
+        });
+        
+    </script>
 </html>

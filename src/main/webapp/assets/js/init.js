@@ -44,6 +44,12 @@
     $(document).ready(function () {
 
         M.AutoInit();
+        
+        if($('.frmAjax').length > 0){
+            $('.frmAjax').submit(function(e){
+                e.preventDefault();
+            })
+        }
 
         if($('.datepicker').length > 0){
             var elem = document.querySelector('.datepicker');

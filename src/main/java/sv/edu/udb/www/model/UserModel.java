@@ -61,8 +61,8 @@ public class UserModel extends Connection {
     
     public ArrayList<User> getUsers(boolean relationship) throws SQLException {
         try {
-            ArrayList<User> users = new ArrayList<User>();
-            ArrayList<Integer> id = new ArrayList<Integer>();
+            ArrayList<User> users = new ArrayList<>();
+            ArrayList<Integer> id = new ArrayList<>();
             String sql = "SELECT id FROM user";
 
             this.conectar();
@@ -148,6 +148,28 @@ public class UserModel extends Connection {
             Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
             this.desconectar();
             return null;
+        }
+    }// Fin getUser()
+    
+    public boolean checkUserByEmail(String email) throws SQLException {
+        try {
+            String sql = "SELECT * FROM all_users WHERE email= ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, email);
+            rs = st.executeQuery();
+
+            if (rs.next()) {                
+                return true;
+            }
+            
+            this.desconectar();
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
         }
     }// Fin getUser()
     

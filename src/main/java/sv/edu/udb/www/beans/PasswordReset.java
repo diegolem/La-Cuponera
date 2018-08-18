@@ -1,5 +1,7 @@
 package sv.edu.udb.www.beans;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author leonardo
@@ -8,7 +10,8 @@ public class PasswordReset {
    private int id;
    private String email;
    private String token;
-   private boolean auth;
+   private LocalDateTime date;
+   private boolean expired;
 
     public int getId() {
         return id;
@@ -34,25 +37,37 @@ public class PasswordReset {
         this.token = token;
     }
 
-    public boolean isAuth() {
-        return auth;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setAuth(boolean auth) {
-        this.auth = auth;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
-   
-    public PasswordReset(){
-        this.id = 0;
-        this.email = "";
-        this.token = "";
-        this.auth = false;
+
+    public boolean isExpired() {
+        return expired;
     }
-    
-    public PasswordReset(int id, String email, String token, boolean auth){
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
+    public PasswordReset() {
+    }
+
+    public PasswordReset(String email, String token) {
+        this.email = email;
+        this.token = token;
+    }
+
+    public PasswordReset(int id, String email, String token, LocalDateTime date, boolean expired) {
         this.id = id;
         this.email = email;
         this.token = token;
-        this.auth = auth;
+        this.date = date;
+        this.expired = expired;
     }
+    
+    
 }

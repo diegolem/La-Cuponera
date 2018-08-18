@@ -118,11 +118,12 @@ public class userController extends HttpServlet {
         ArrayList<User> users = this.users.getUsers(typeClient, false);
         
         request.setAttribute("users", users);
-        request.getRequestDispatcher("/admin/client/listClient.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/user/listClient.jsp").forward(request, response);
     }
 
     private void newClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
-        request.getRequestDispatcher("/admin/client/newClient.jsp").forward(request, response);
+        request.setAttribute("title", "Agregar Cliente");
+        request.getRequestDispatcher("/admin/user/newClient.jsp").forward(request, response);
     }
 
     private void insertClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
