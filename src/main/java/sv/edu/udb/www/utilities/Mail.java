@@ -37,6 +37,7 @@ public class Mail {
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.port", 587);
         properties.put("mail.smtp.user", "elsalvadorprueba4@gmail.com");
+        properties.put("mail.smtp.password", "mekaku12");
         properties.put("mail.smtp.auth", "true");
         session = Session.getDefaultInstance(properties);
     }
@@ -64,7 +65,8 @@ public class Mail {
             gmail.setContent(message);
 
             Transport t = session.getTransport("smtp");
-            t.connect((String) properties.get("mail.smtp.user"), "mekaku12");
+            t.connect((String) properties.get("mail.smtp.user"), (String) properties.get("mail.smtp.password"));
+            
             t.sendMessage(gmail, gmail.getAllRecipients());
             t.close();
             
