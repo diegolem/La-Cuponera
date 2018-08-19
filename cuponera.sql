@@ -21,63 +21,30 @@ USE `cuponera`;
 -- Temporary view structure for view `all_users`
 --
 
-DROP VIEW IF EXISTS `all_users`;
+DROP TABLE IF EXISTS `all_users`;
 /*!50001 DROP VIEW IF EXISTS `all_users`*/;
 SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+SET character_set_client = utf8mb4;
 /*!50001 CREATE VIEW `all_users` AS SELECT 
  1 AS `email`,
  1 AS `password`,
  1 AS `user_type`,
- 1 AS `id`*/;
+ 1 AS `id`,
+ 1 AS `confirmed`,
+ 1 AS `id_confirmation`*/;
 SET character_set_client = @saved_cs_client;
-CREATE 
-  ALGORITHM = UNDEFINED 
-  DEFINER = `root`@`localhost` 
-  SQL SECURITY DEFINER
-VIEW `cuponera`.`all_users` AS
-  SELECT 
-    `cuponera`.`employee`.`email` AS `email`,
-    `cuponera`.`employee`.`password` AS `password`,
-    'employee' AS `user_type`,
-    `cuponera`.`employee`.`id` AS `id`,
-    '' AS `confirmed`,
-    '' AS `id_confirmation`
-  FROM `cuponera`.`employee` 
-  UNION SELECT 
-    `cuponera`.`company`.`email` AS `email`,
-    `cuponera`.`company`.`password` AS `password`,
-    'company' AS `user_type`,
-    `cuponera`.`company`.`id` AS `id`,
-    '' AS `confimed`,
-    '' AS `id_confirmation`
-  FROM `cuponera`.`company` 
-  UNION (
-    SELECT 
-      `U`.`email` AS `email`,
-      `U`.`password` AS `password`,
-      `T`.`type` AS `user_type`,
-      `U`.`id` AS `id`,
-      `U`.`confirmed` AS `confirmed`,
-      `U`.`id_confirmation` AS `id_confirmation`
-    FROM
-      (
-        `cuponera`.`user` `U`
-        JOIN `cuponera`.`user_type` `T` ON ((`U`.`user_type` = `T`.`id`))
-      )
-  )
-;
+
 --
 -- Table structure for table `authentication`
 --
 
 DROP TABLE IF EXISTS `authentication`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `authentication` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `auth` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
@@ -98,7 +65,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `company`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `company` (
   `id` varchar(6) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -132,7 +99,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `company_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `company_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -156,7 +123,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `employee`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `employee` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -187,7 +154,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `password_resets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `password_resets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -232,7 +199,7 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `promotion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `promotion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -276,7 +243,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `promotion_state`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `promotion_state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `state` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -300,7 +267,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sales`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `sales` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `coupon_code` varchar(13) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -361,7 +328,7 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `sales_state`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `sales_state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `state` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -385,7 +352,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -422,7 +389,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8 ;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `user_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
@@ -711,7 +678,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `all_users` AS select `employee`.`email` AS `email`,`employee`.`password` AS `password`,'employee' AS `user_type`,`employee`.`id` AS `id` from `employee` union select `company`.`email` AS `email`,`company`.`password` AS `password`,'company' AS `user_type`,`company`.`id` AS `id` from `company` union (select `u`.`email` AS `email`,`u`.`password` AS `password`,`t`.`type` AS `user_type`,`u`.`id` AS `id` from (`user` `u` join `user_type` `t` on((`u`.`user_type` = `t`.`id`)))) */;
+/*!50001 VIEW `all_users` AS select `employee`.`email` AS `email`,`employee`.`password` AS `password`,'employee' AS `user_type`,`employee`.`id` AS `id`,'' AS `confirmed`,'' AS `id_confirmation` from `employee` union select `company`.`email` AS `email`,`company`.`password` AS `password`,'company' AS `user_type`,`company`.`id` AS `id`,'' AS `confimed`,'' AS `id_confirmation` from `company` union (select `u`.`email` AS `email`,`u`.`password` AS `password`,`t`.`type` AS `user_type`,`u`.`id` AS `id`,`u`.`confirmed` AS `confirmed`,`u`.`id_confirmation` AS `id_confirmation` from (`user` `u` join `user_type` `t` on((`u`.`user_type` = `t`.`id`)))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -725,4 +692,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-18 14:42:19
+-- Dump completed on 2018-08-18 20:49:22

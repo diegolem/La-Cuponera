@@ -30,22 +30,37 @@
         </div>
         <br>
         <div class="container">
+            <br><br>
             <c:if test="${not empty requestScope.errorConfirmation}">
                 <div class="alert lighten-2 white-text red darken-4 center">
                     ${requestScope.errorConfirmation}
                 </div>
             </c:if>
-            <c:if test="${not empty sessionScope.error}">
-                <div class="alert lighten-2 white-text red darken-4 center">
-                    ${sessionScope.error}
+            <c:if test="${sessionScope.error != null}">
+                <div class="red text-lighten-3 center alert">
+                    <strong>${sessionScope.error}</strong>
                 </div>
-                <c:set var = "error" scope = "session" value = ""/>
+                <c:remove var="error" scope="session" />
             </c:if>
+
+            <c:if test="${sessionScope.msg != null}">
+                <div class="green text-lighten-3 center alert">
+                    <strong>${sessionScope.msg}</strong>
+                </div>
+                <c:remove var="msg" scope="session" />
+            </c:if>
+
             <c:if test="${not empty requestScope.invalid}">
                 <div class="alert lighten-2 white-text red darken-4 center">
                     ${requestScope.invalid}
                 </div>
             </c:if>
+            <c:if test="${not empty requestScope.error}">
+                <div class="alert lighten-2 white-text red darken-4 center">
+                    ${requestScope.error}
+                </div>
+            </c:if>
+            <br><br>
 
             <div class="row">
                 <form class="col s12" method="POST" action="login.do">
@@ -90,7 +105,6 @@
                 </form>
             </div>
         </div>
-<<<<<<< HEAD
 
         <div id="mdlRecover" class="modal">
             <div class="modal-content">
@@ -102,7 +116,7 @@
                         <input id="recover_email" type="email" class="form-control" name="recover_email">
                     </div>
                     <div class="col s12 btn-cont">
-                        <button id="btnRecover" class="btn waves-effect">Enviar peticion<i class="material-icons right">send</i></button>
+                        <button id="btnRecover" class="btnSubmitForm btn waves-effect">Enviar peticion<i class="material-icons right">send</i></button>
                     </div>
                 </form>
             </div>
@@ -111,9 +125,10 @@
             </div>
         </div>
                                 
-=======
         <script>
             $(document).ready(function () {
+                let loader = new Loader();
+
                 $.validator.setDefaults({
                     errorClass: 'invalid',
                     validClass: 'none',
@@ -154,28 +169,57 @@
                         form.submit();
                     }
                 });
+
+                $(frmRecover).submit(function () {
+                    loader.in();
+                    $.ajax({
+                        url: `${pageContext.request.contextPath}/password.do`,
+                        type: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: {
+                            op: 'request',
+                            email: frmRecover.recover_email.value.trim()
+                        },
+                        success: function (r) {
+                            let callback, classes;
+                            if(parseInt(r.code) === -1){
+                                classes = "red lighten-2"
+                                callback = function(){
+                                    frmRecover.recover_email.focus();
+                                }
+                            }else if(parseInt(r.code) === 1){
+                                classes = "green darken-2"
+                                callback = function(){
+                                    frmRecover.recover_email.value = "";
+                                    $(mdlRecover).modal("close");
+                                }
+                            }else if(parseInt(r.code) === 2){
+                                classes = "yello darken-1"
+                                callback = function(){
+                                    frmRecover.recover_email.focus();
+                                }
+                            }else if(parseInt(r.code) === 3){
+                                classes = "red lighten-1"
+                                callback = function(){
+                                    frmRecover.recover_email.focus();
+                                }
+                            }else if(parseInt(r.code) === 4){
+                                classes = "yellow darken-2"
+                                callback = function(){
+                                    frmRecover.recover_email.focus();
+                                }
+                            }
+
+                            M.toast({html: r.message, classes, displayLength: 1000, completeCallback: callback});
+                        }
+                    }).done(function(){
+                        loader.out();
+                        $("#btnRecover").removeAttr("disabled");
+                    });
+                });
             });
         </script>
->>>>>>> 4ec33e272eef87a80b03bb412b59663700a7f290
     </body>
-    
-    <script>
-        $(frmRecover).submit(function () {
-            console.log('hola');
-            $.ajax({
-                url: `${pageContext.request.contextPath}/password.do`,
-                type: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: {
-                    email: frmRecover.recover_email.value.trim()
-                },
-                success: function (r) {
-                    console.log(r);
-                }
-            });
-        });
-        
-    </script>
 </html>

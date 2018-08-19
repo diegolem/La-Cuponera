@@ -11,12 +11,9 @@ import java.util.List;
  *
  * @author Diego Lemus
  */
-public class User {
+public class User extends Entity{
     private int idUser;
-    private String name;
     private String lastName;
-    private String email;
-    private String password;
     private String dui;
     private String nit;
     private boolean confirmed;
@@ -32,36 +29,12 @@ public class User {
         this.idUser = idUser;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getDui() {
@@ -114,10 +87,9 @@ public class User {
     
     // Constructores
     public User(){
+        super();
         this.idUser = 0;
         this.lastName = "";
-        this.email = "";
-        this.password = "";
         this.type = null;
         this.dui = "";
         this.nit = "";
@@ -137,10 +109,9 @@ public class User {
         type (Object UserType)
     */
     public User(int idUser, String name, String lastName, String email, String password, String dui, String nit, UserType type){
+        super(name, email, password);
         this.idUser = idUser;
         this.lastName = lastName;
-        this.email = email;
-        this.password = password;
         this.type = type;
         this.dui = dui;
         this.nit = nit;
@@ -159,10 +130,9 @@ public class User {
         sales (List sales)
     */
     public User(int idUser, String name, String lastName, String email, String password, String dui, String nit, UserType type, List<Sales> sales){
+        super(name, email, password);
         this.idUser = idUser;
         this.lastName = lastName;
-        this.email = email;
-        this.password = password;
         this.type = type;
         this.dui = dui;
         this.nit = nit;

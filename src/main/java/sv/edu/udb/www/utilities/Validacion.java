@@ -52,7 +52,11 @@ public class Validacion {
     }
     
     public static boolean isEmpty(String mensaje) {
-        return mensaje.trim().equals("");
+        if(mensaje == null){
+            return true;
+        }else{
+            return mensaje.trim().equals("");
+        }
     }
     
     public static boolean esDecimal(String cadena) {

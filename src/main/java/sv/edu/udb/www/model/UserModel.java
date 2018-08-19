@@ -18,7 +18,7 @@ import sv.edu.udb.www.beans.UserType;
  *
  * @author Diego Lemus
  */
-public class UserModel extends Connection{
+public class UserModel extends Connection {
 
     public User getLastUser(boolean relationship) throws SQLException {
         try {
@@ -57,7 +57,7 @@ public class UserModel extends Connection{
             return null;
         }
     } // Fin getLastUser()
-    
+
     public ArrayList<User> getUsers(boolean relationship) throws SQLException {
         try {
             ArrayList<User> users = new ArrayList<>();
@@ -149,29 +149,7 @@ public class UserModel extends Connection{
             return null;
         }
     }// Fin getUser()
-    
-    public boolean checkUserByEmail(String email) throws SQLException {
-        try {
-            String sql = "SELECT * FROM all_users WHERE email= ?";
 
-            this.conectar();
-            st = conexion.prepareStatement(sql);
-            st.setString(1, email);
-            rs = st.executeQuery();
-
-            if (rs.next()) {                
-                return true;
-            }
-            
-            this.desconectar();
-            return false;
-        } catch (SQLException ex) {
-            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
-            this.desconectar();
-            return false;
-        }
-    }// Fin getUser()
-    
     public User getUser(int id, boolean relationship) throws SQLException {
         try {
             String sql = "SELECT * FROM user WHERE id = ?";
@@ -237,7 +215,7 @@ public class UserModel extends Connection{
             return false;
         }
     }//Fin insertUser
-    
+
     public boolean insertUserWithConfirmation(User user) throws SQLException {
         try {
             int affectedRows = 0;
@@ -286,11 +264,11 @@ public class UserModel extends Connection{
             return false;
         }
     }// Fin updateUser()
-    
+
     public boolean confirmUser(User user) throws SQLException {
         try {
             int idUsers = user.getIdUser();
-            
+
             int affectedRows = 0;
             String sql = "UPDATE user SET confirmed = 1, id_confirmation = '' where id_confirmation = ?";
 
@@ -301,10 +279,11 @@ public class UserModel extends Connection{
 
             this.desconectar();
             boolean result = affectedRows > 0;
-            
-            if (result)
+
+            if (result) {
                 user = this.getUser(idUsers, true);
-            
+            }
+
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
@@ -377,29 +356,29 @@ public class UserModel extends Connection{
             return false;
         }
     }// Fin deleteUser()
-    
-    public static String getIdConfirmation(){
+
+    public static String getIdConfirmation() {
         return UUID.randomUUID().toString();
     }// Fin getIdConfirmation()
-    
-    public boolean mailExists(String email){
+
+    public boolean mailExists(String email) {
         try {
-        
+
             String sql = "SELECT * FROM `all_users` WHERE email = ?";
-            
+
             this.conectar();
-            
+
             this.st = conexion.prepareStatement(sql);
             this.st.setString(1, email);
             this.rs = this.st.executeQuery();
-            
+
             boolean result = this.rs.next();
-            
+
             this.desconectar();
-            
+
             return result;
-            
-        } catch(Exception error) {
+
+        } catch (Exception error) {
             Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, error);
             try {
                 this.desconectar();
@@ -409,28 +388,28 @@ public class UserModel extends Connection{
             return false;
         }
     }
-    
-    public boolean mailExists(String email, String id){
+
+    public boolean mailExists(String email, String id) {
         try {
-        
+
             String sql = "SELECT * FROM `all_users` WHERE email = ? AND id != ?";
-            
+
             this.conectar();
-            
+
             this.st = conexion.prepareStatement(sql);
-            
+
             this.st.setString(1, email);
             this.st.setString(2, id);
-            
+
             this.rs = this.st.executeQuery();
-            
+
             boolean result = this.rs.next();
-            
+
             this.desconectar();
-            
+
             return result;
-            
-        } catch(Exception error) {
+
+        } catch (Exception error) {
             Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, error);
             try {
                 this.desconectar();
@@ -454,7 +433,7 @@ public class UserModel extends Connection{
                 this.desconectar();
                 return true;
             }
-            
+
             this.desconectar();
             return false;
         } catch (SQLException ex) {
@@ -463,4 +442,29 @@ public class UserModel extends Connection{
             return false;
         }
     }// Fin checkEmail()
+
+    public String getUserEntity(String email) throws SQLException {
+        String res = null;
+        try {
+
+            this.conectar();
+            st = conexion.prepareStatement("SELECT * FROM all_users WHERE email = ?");
+            st.setString(1, email);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                res = rs.getString("user_type");
+            }else{
+                res = null;
+            }
+
+            this.desconectar();
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            res = null;
+        }
+
+        return res;
+    }
 }

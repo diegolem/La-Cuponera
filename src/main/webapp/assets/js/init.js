@@ -51,6 +51,12 @@
             })
         }
 
+        if($(".btnSubmitForm").length > 0){
+            $(".btnSubmitForm").click(function(){
+                $(this).attr("disabled", true);
+            })
+        }
+
         if($('.datepicker').length > 0){
             var elem = document.querySelector('.datepicker');
             var instance = M.Datepicker.init(elem, {

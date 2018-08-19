@@ -11,15 +11,12 @@ import java.util.List;
  *
  * @author Diego Lemus
  */
-public class Company {
+public class Company extends Entity{
     private String idCompany;
-    private String name;
     private String address;
     private String contactName;
     private String telephone;
-    private String email;
     private int pctComission;
-    private String password;
     
     private List<Employee> employees;
     private CompanyType companyType;
@@ -73,14 +70,6 @@ public class Company {
         this.idCompany = idCompany;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -96,33 +85,15 @@ public class Company {
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
     
     // Constructores
     public Company(){
+        super();
         this.idCompany = "";
-        this.name = "";
         this.address = "";
         this.contactName = "";
         this.telephone = "";
-        this.email = "";
         this.pctComission = 0;
-        this.password = ""; 
         this.employees = null;
         this.promotions = null;
         this.companyType = null;
@@ -141,14 +112,12 @@ public class Company {
     */
     
     public Company(String idCompany, String name, String address, String contactName, String telephone, String email, int pctComission, String password, CompanyType companyType){
+        super(name, email, password);
         this.idCompany = idCompany;
-        this.name = name;
         this.address = address;
         this.contactName = contactName;
         this.telephone = telephone;
-        this.email = email;
         this.pctComission = pctComission;
-        this.password = password;    
         this.companyType = companyType;
     }
     
@@ -167,14 +136,12 @@ public class Company {
     */
     
     public Company(String idCompany, String name, String address, String contactName, String telephone, String email, int typeCompany, int pctComission, String password, List<Employee> employees, List<Promotion> promotions, CompanyType companyType){
+        super(name, email, password);
         this.idCompany = idCompany;
-        this.name = name;
         this.address = address;
         this.contactName = contactName;
         this.telephone = telephone;
-        this.email = email;
         this.pctComission = pctComission;
-        this.password = password;
         this.employees = employees;
         this.promotions = promotions;
         this.companyType = companyType;
