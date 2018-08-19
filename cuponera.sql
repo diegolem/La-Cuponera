@@ -21,7 +21,7 @@ USE `cuponera`;
 -- Temporary view structure for view `all_users`
 --
 
-DROP TABLE IF EXISTS `all_users`;
+DROP VIEW IF EXISTS `all_users`;
 /*!50001 DROP VIEW IF EXISTS `all_users`*/;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
@@ -31,7 +31,42 @@ SET character_set_client = utf8;
  1 AS `user_type`,
  1 AS `id`*/;
 SET character_set_client = @saved_cs_client;
-
+CREATE 
+  ALGORITHM = UNDEFINED 
+  DEFINER = `root`@`localhost` 
+  SQL SECURITY DEFINER
+VIEW `cuponera`.`all_users` AS
+  SELECT 
+    `cuponera`.`employee`.`email` AS `email`,
+    `cuponera`.`employee`.`password` AS `password`,
+    'employee' AS `user_type`,
+    `cuponera`.`employee`.`id` AS `id`,
+    '' AS `confirmed`,
+    '' AS `id_confirmation`
+  FROM `cuponera`.`employee` 
+  UNION SELECT 
+    `cuponera`.`company`.`email` AS `email`,
+    `cuponera`.`company`.`password` AS `password`,
+    'company' AS `user_type`,
+    `cuponera`.`company`.`id` AS `id`,
+    '' AS `confimed`,
+    '' AS `id_confirmation`
+  FROM `cuponera`.`company` 
+  UNION (
+    SELECT 
+      `U`.`email` AS `email`,
+      `U`.`password` AS `password`,
+      `T`.`type` AS `user_type`,
+      `U`.`id` AS `id`,
+      `U`.`confirmed` AS `confirmed`,
+      `U`.`id_confirmation` AS `id_confirmation`
+    FROM
+      (
+        `cuponera`.`user` `U`
+        JOIN `cuponera`.`user_type` `T` ON ((`U`.`user_type` = `T`.`id`))
+      )
+  )
+;
 --
 -- Table structure for table `authentication`
 --
