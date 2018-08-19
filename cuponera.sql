@@ -343,6 +343,8 @@ CREATE TABLE `sales_state` (
 LOCK TABLES `sales_state` WRITE;
 /*!40000 ALTER TABLE `sales_state` DISABLE KEYS */;
 INSERT INTO `sales_state` VALUES (1,'Canjeado');
+INSERT INTO `sales_state` VALUES (2,'Disponible');
+INSERT INTO `sales_state` VALUES (3,'Vencido');
 /*!40000 ALTER TABLE `sales_state` ENABLE KEYS */;
 UNLOCK TABLES;
 

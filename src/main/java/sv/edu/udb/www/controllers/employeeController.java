@@ -175,19 +175,13 @@ public class employeeController extends HttpServlet {
             mail.setMessage("Clave de usuario: <h1>" + password + "</h1>");
             
             if (!users.mailExists(employee.getEmail())) {
-                if (mail.sendEmail()){
-                    if (employeeModel.insertEmployee(employee)) {
-                        request.getSession().setAttribute("success", "Empleado registrado");
-                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
-                    } else {
-                        request.getSession().setAttribute("error", "El empleado no ha podido registrarse");
-                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
-                    }
+                if (employeeModel.insertEmployee(employee)) {
+                    mail.sendEmail();
+                    request.getSession().setAttribute("success", "Empleado registrado");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 } else {
-                    errorsList.put("email", "El correo electronico no existe");
-                    request.setAttribute("errorsList", errorsList);
-                    request.setAttribute("employee", employee);
-                    request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
+                    request.getSession().setAttribute("error", "El empleado no ha podido registrarse");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 }
             } else {
                     errorsList.put("email", "El correo ya ha sido registrado");
