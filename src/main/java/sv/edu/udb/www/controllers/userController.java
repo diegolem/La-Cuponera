@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
+import sv.edu.udb.www.beans.Employee;
 import sv.edu.udb.www.beans.Sales;
 import sv.edu.udb.www.beans.SalesState;
 import sv.edu.udb.www.beans.User;
@@ -315,4 +316,70 @@ public class userController extends HttpServlet {
             }
         }
     } // Fin insertClientPublic()
+
+    private void detailsClient(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException, ServletException {
+        String id = request.getParameter("id");
+        
+        if (!Validacion.isEmpty(id)) {
+            if (Validacion.esEnteroPositivo(id)) {
+                
+                int idClient = Integer.parseInt(id);
+                
+                User user = users.getUser(idClient, false);
+                
+                
+                if (user != null) {
+                    List<Sales> cuponesCanjeados = sales.getSales(user, salesStates.getSalesState(1, false), true);
+                    List<Sales> cuponesDisponibles = sales.getSales(user, salesStates.getSalesState(2, false), true);
+                    List<Sales> cuponesVencidos = sales.getSales(user, salesStates.getSalesState(3, false), true);
+                    
+                    request.setAttribute("client", user);
+                    
+                    request.setAttribute("cuponesCanjeados", cuponesCanjeados);
+                    request.setAttribute("cuponesDisponibles", cuponesDisponibles);
+                    request.setAttribute("cuponesVencidos", cuponesVencidos);
+                    request.getRequestDispatcher("/admin/user/detailsClient.jsp").forward(request, response);
+                } else {
+                    request.getSession().setAttribute("error", "No se ha podido encontrar");
+                    response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
+                }
+                
+            } else {
+                request.getSession().setAttribute("error", "El id del usuario es equivocado");
+                response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
+            }
+        } else {
+            request.getSession().setAttribute("error", "Debe de usar un ID para cliente");
+            response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
+        }
+    }
+
+    private void deleteClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        PrintWriter out = response.getWriter();
+        String id = request.getParameter("id");
+        
+        if (!Validacion.isEmpty(id)) {
+            if (Validacion.esEnteroPositivo(id)) {
+                int idClient = Integer.parseInt(id);
+                
+                User client;
+                
+                if ((client = users.getUser(idClient, true)) != null) {
+                    boolean next = true;
+                    
+                    if (!client.getSales().isEmpty() && !sales.deleteSales(client)) {
+                        next = false;
+                        out.print("0");
+                    }
+                    
+                    if (next && users.deleteUser(idClient)) 
+                        out.print("1");
+                    
+                } else
+                    out.print("0");
+            } else
+                out.print("0");
+        } else
+            out.print("-1");
+    }
 }
