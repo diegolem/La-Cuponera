@@ -26,7 +26,6 @@ import sv.edu.udb.www.model.UserModel;
 import sv.edu.udb.www.beans.Promotion;
 import sv.edu.udb.www.model.PromotionModel;
 
-
 /**
  *
  * @author Diego Lemus
@@ -34,11 +33,11 @@ import sv.edu.udb.www.model.PromotionModel;
 @WebServlet(name = "salesController", urlPatterns = {"/client/sales.do"})
 public class salesController extends HttpServlet {
 
-SalesModel sales = new SalesModel();
-UserModel users = new UserModel();
-SalesStateModel salesStates = new SalesStateModel();
-PromotionModel promotions = new PromotionModel();
-    
+    SalesModel sales = new SalesModel();
+    UserModel users = new UserModel();
+    SalesStateModel salesStates = new SalesStateModel();
+    PromotionModel promotions = new PromotionModel();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -48,28 +47,32 @@ PromotionModel promotions = new PromotionModel();
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { 
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            
+
             String op = request.getParameter("op");
-            
-            switch(op){
-                case "obener_por_usuario":
-                    obtenerPorUsuerio(request, response);
-                    break;
-                case "listC":
-                    tusCupones(request,response);
-                    break;
-                case "newC":
-                    newCupon(request,response);
-                    break;
+            HttpSession _s = request.getSession(true);
+
+            if (_s.getAttribute("logged") != null) {
+                switch (op) {
+                    case "obener_por_usuario":
+                        obtenerPorUsuerio(request, response);
+                        break;
+                    case "listC":
+                        tusCupones(request, response);
+                        break;
+                    case "newC":
+                        newCupon(request, response);
+                        break;
+                }
+            } else {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
             }
-            
-        } catch(Exception error){
-        
+        } catch (Exception error) {
+
         } finally {
-            
+
         }
     }
 
@@ -115,41 +118,41 @@ PromotionModel promotions = new PromotionModel();
     private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int idUsuario = Integer.parseInt(request.getParameter("usuario"));
         int idEstado = Integer.parseInt(request.getParameter("estado"));
-        
+
         User usuario = users.getUser(idUsuario, false);
         SalesState salesState = salesStates.getSalesState(idEstado, false);
-        
+
         List<Sales> cupones = sales.getSales(usuario, salesState, true);
-        
+
         PrintWriter out = response.getWriter();
-        
+
         String json = "{";
         boolean primero = true;
-        
-        for(Sales sale : cupones){
-            
-            json += (primero)? "" : ",";
-            
+
+        for (Sales sale : cupones) {
+
+            json += (primero) ? "" : ",";
+
             String code = sale.getCouponCode();
             String descripcion = sale.getPromotion().getDescription();
             String image = sale.getPromotion().getImage();
             String titulo = sale.getPromotion().getTitle();
             String fechaLimite = sale.getPromotion().getLimitDate().toString();
-            
-            json += "\""+code+"\":{";
-            
+
+            json += "\"" + code + "\":{";
+
             json += "\"titulo\":\"" + titulo + "\",";
             json += "\"image\":\"" + image + "\",";
             json += "\"descripcion\":\"" + descripcion + "\",";
             json += "\"fechaLimite\":\"" + fechaLimite + "\"";
-            
+
             json += "}";
-            
+
             primero = false;
         }
-        
+
         json += "}";
-        
+
         out.print(json);
     }
 
@@ -157,7 +160,7 @@ PromotionModel promotions = new PromotionModel();
         try {
             HttpSession session = request.getSession(true);
             User user = (User) session.getAttribute("user");
-            request.setAttribute("salesList", sales.getSales(user.getIdUser() , true));
+            request.setAttribute("salesList", sales.getSales(user.getIdUser(), true));
             request.setAttribute("title", "Lista de tus cupones");
             request.getRequestDispatcher("/client/Sales/listSales.jsp").forward(request, response);
         } catch (ServletException | IOException ex) {
@@ -168,7 +171,7 @@ PromotionModel promotions = new PromotionModel();
     private void newCupon(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         try {
             request.setAttribute("title", "Comprar Cupon");
-            request.setAttribute("promotions",promotions.getPromotionsA("Aprobados",true));
+            request.setAttribute("promotions", promotions.getPromotionsA("Aprobados", true));
             request.getRequestDispatcher("/client/Sales/newSales.jsp").forward(request, response);
         } catch (ServletException | IOException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);

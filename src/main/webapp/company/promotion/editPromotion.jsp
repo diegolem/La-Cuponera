@@ -4,8 +4,10 @@
     Author     : leonardo
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<c:if test="${empty promotion}">
+    <c:redirect url = "/company/promotion.do?op=list"/>
+</c:if>
 <!DOCTYPE html>
 <html>
     <head>

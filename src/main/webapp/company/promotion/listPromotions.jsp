@@ -63,6 +63,14 @@
         </main>
         <script>
             $(document).ready(function () {
+                <c:if test="${not empty success}">
+                    M.toast({html: '${success}'})
+                    <c:set var="success" value="" scope="session"></c:set>
+                </c:if>
+                <c:if test="${not empty error}">
+                    M.toast({html: '${error}'})
+                    <c:set var="error" value="" scope="session"></c:set>
+                </c:if>
                 $("#tblPromotions").DataTable({
                     "searching": false,
                     initComplete: function () {
@@ -89,18 +97,20 @@
                 });
                 $('select').formSelect();
             });
-            function deletePromotion(id){
+            function deletePromotion(id) {
                 $.ajax({
                     url: "${pageContext.request.contextPath}/company/promotion.do?op=delete",
                     type: "GET",
                     data: {
                         idPromotion: id
                     },
-                    success: function(response){
-                        if(response === "0"){
+                    success: function (response) {
+                        if (response === "0") {
                             M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'})
-                        }else if(response === "1"){
-                            M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/company/promotion.do?op=list' }})
+                        } else if (response === "1") {
+                            M.toast({html: 'Eliminación exitosa', completeCallback: function () {
+                                    location.href = '${pageContext.request.contextPath}/company/promotion.do?op=list'
+                                }})
                         }
                     }
                 })

@@ -53,42 +53,46 @@ public class employeeController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String op = request.getParameter("op");
+        HttpSession _s = request.getSession(true);
+        
+        if (_s.getAttribute("logged") != null) {
+            try {
+                switch (op) {
+                    case "new":
+                        add(request, response);
+                        break;
 
-        try {
-            switch (op) {
-                case "new":
-                    add(request, response);
-                    break;
+                    case "insert":
+                        insert(request, response);
+                        break;
 
-                case "insert":
-                    insert(request, response);
-                    break;
+                    case "list":
+                        list(request, response);
+                        break;
 
-                case "list":
-                    list(request, response);
-                    break;
+                    case "edit":
+                        edit(request, response);
+                        break;
+                    case "update":
+                        update(request, response);
+                        break;
 
-                case "edit":
-                    edit(request, response);
-                    break;
-                case "update":
-                    update(request, response);
-                    break;
+                    case "delete":
+                        delete(request, response);
+                        break;
 
-                case "delete":
-                    delete(request, response);
-                    break;
+                    case "details":
+                        details(request, response);
+                        break;
+                }
+            } catch (Exception error) {
+                Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, error);
+            } finally {
 
-                case "details":
-                    details(request, response);
-                    break;
             }
-        } catch (Exception error) {
-            Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, error);
-        } finally {
-
+        }else{
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

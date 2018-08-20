@@ -55,34 +55,39 @@ public class promotionController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String operation = request.getParameter("op");
+        HttpSession _s = request.getSession(true);
 
         if (operation == null) {
             list(request, response);
             return;
         }
 
-        switch (operation) {
-            case "list":
-                list(request, response);
-                break;
-            case "new":
-                add(request, response);
-                break;
-            case "details":
-                details(request, response);
-                break;
-            case "edit":
-                edit(request, response);
-                break;
-            case "delete":
-                delete(request, response);
-                break;
-            case "rejected":
-                rejected(request, response);
-                break;
-            case "accept":
-                accept(request, response);
-                break;
+        if (_s.getAttribute("logged") != null) {
+            switch (operation) {
+                case "list":
+                    list(request, response);
+                    break;
+                case "new":
+                    add(request, response);
+                    break;
+                case "details":
+                    details(request, response);
+                    break;
+                case "edit":
+                    edit(request, response);
+                    break;
+                case "delete":
+                    delete(request, response);
+                    break;
+                case "rejected":
+                    rejected(request, response);
+                    break;
+                case "accept":
+                    accept(request, response);
+                    break;
+            }
+        } else {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
         }
     }
 
@@ -269,15 +274,13 @@ public class promotionController extends HttpServlet {
                 promotion.setCompany(company);
                 if (promotionModel.insertPromotion(promotion)) {
                     request.getSession().setAttribute("success", "Oferta registrada");
-                    response.sendRedirect(request.getContextPath() + "/company/promotion/newPromotion.jsp");
-                    System.out.println("Oferta registrada");
+                    response.sendRedirect(request.getContextPath() + "/company/promtion.do?op=list");
                 } else {
                     if (multimedia.getFile("img") != null) {
                         multimedia.getFile("img").delete();
                     }
                     request.getSession().setAttribute("error", "Oferta no registrada");
-                    response.sendRedirect(request.getContextPath() + "/company/promotion/newPromotion.jsp");
-                    System.out.println("Oferta no regitrada");
+                    response.sendRedirect(request.getContextPath() + "/company/promtion.do?op=list");
                 }
             }
         } catch (SQLException | ServletException ex) {
@@ -347,11 +350,16 @@ public class promotionController extends HttpServlet {
                     }
 
                     if (promotion != null) {
-                        if (promotion.getPromotionState().getState().toLowerCase().equals("rechazada")) {
-                            request.setAttribute("title", "Editar oferta");
-                            request.setAttribute("promotion", promotion);
-                            request.getRequestDispatcher("/company/promotion/editPromotion.jsp").forward(request, response);
-                        } else {
+                        Company currentCompany = (Company) _s.getAttribute("user");
+                        if(promotion.getCompany().getIdCompany().equals(currentCompany.getIdCompany())){
+                            if (promotion.getPromotionState().getState().toLowerCase().equals("rechazada")) {
+                                request.setAttribute("title", "Editar oferta");
+                                request.setAttribute("promotion", promotion);
+                                request.getRequestDispatcher("/company/promotion/editPromotion.jsp").forward(request, response);
+                            } else {
+                                request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
+                            }
+                        }else{
                             request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
                         }
                     } else {
@@ -512,14 +520,12 @@ public class promotionController extends HttpServlet {
                         if (promotionModel.updatePromotion(promotion)) {
                             request.getSession().setAttribute("success", "Oferta modificada");
                             response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
-                            System.out.println("Oferta modificada");
                         } else {
                             if (multimedia.getFile("img") != null) {
                                 multimedia.getFile("img").delete();
                             }
                             request.getSession().setAttribute("success", "Oferta no modificada");
                             response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
-                            System.out.println("Oferta no modificada");
                         }
                     }
                     break;
