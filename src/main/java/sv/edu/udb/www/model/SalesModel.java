@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Promotion;
 import sv.edu.udb.www.beans.Sales;
 import sv.edu.udb.www.beans.SalesState;
@@ -19,6 +20,35 @@ import sv.edu.udb.www.beans.User;
  * @author Diego Lemus
  */
 public class SalesModel extends Connection {
+    
+    public ArrayList<Sales> getSales(User user, SalesState saleState, Company company, boolean relationship) throws SQLException {
+        try {
+            ArrayList<Sales> sales = new ArrayList<Sales>();
+            ArrayList<Integer> id = new ArrayList<Integer>();
+            
+            String sql = "SELECT * FROM sales INNER JOIN promotion on sales.promotion_id = promotion.id WHERE promotion.id_company = ? AND sales.client_id = ? AND sales.sales_state = ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, company.getIdCompany());
+            st.setInt(2, user.getIdUser());
+            st.setInt(3, saleState.getIdSalesState());
+            rs = st.executeQuery();
+            while (rs.next()) {
+                id.add(rs.getInt("id"));
+            }
+            this.desconectar();
+
+            for (int i = 0; i < id.size(); i++) {
+                sales.add(this.getSale(id.get(i), relationship));
+            }
+            return sales;
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }//Fin getSales()
 
     public ArrayList<Sales> getSales(User user, SalesState saleState, boolean relationship) throws SQLException {
         try {
@@ -281,6 +311,26 @@ public class SalesModel extends Connection {
         }
     }// changeState
 
+    public boolean changeState(int id, SalesState salesState) throws SQLException {
+        try {
+            int affectedRows = 0;
+            String sql = "UPDATE sales SET sales_state = ? WHERE id = ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setInt(1, salesState.getIdSalesState());
+            st.setInt(2, id);
+            affectedRows = st.executeUpdate();
+
+            this.desconectar();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
+        }
+    }// changeState
+    
     /*
     public boolean updateSales(Sales sales) throws SQLException{
         try {

@@ -109,7 +109,7 @@ public class UserApp implements Serializable {
     public Employee getEmployee(){
         try {
             EmployeeModel model = new EmployeeModel();
-            return model.getEmployee(Integer.parseInt(this.id), false);
+            return model.getEmployee(Integer.parseInt(this.id), true);
         } catch (SQLException ex) {
             Logger.getLogger(UserApp.class.getName()).log(Level.SEVERE, null, ex);
             return null;

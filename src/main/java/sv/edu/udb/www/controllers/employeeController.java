@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,12 +19,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.primefaces.json.JSONArray;
+import org.primefaces.json.JSONObject;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Employee;
+import sv.edu.udb.www.beans.Sales;
+import sv.edu.udb.www.beans.User;
 import sv.edu.udb.www.beans.UserApp;
 import sv.edu.udb.www.model.CompanyModel;
 import sv.edu.udb.www.model.EmployeeModel;
 import sv.edu.udb.www.model.PasswordResetModel;
+import sv.edu.udb.www.model.SalesModel;
+import sv.edu.udb.www.model.SalesStateModel;
 import sv.edu.udb.www.model.UserModel;
 import sv.edu.udb.www.utilities.Mail;
 import sv.edu.udb.www.utilities.Validacion;
@@ -34,10 +41,12 @@ import sv.edu.udb.www.utilities.Validacion;
  */
 @WebServlet(name = "employeeController", urlPatterns = {"/employee.do", "/company/employee.do"})
 public class employeeController extends HttpServlet {
+    SalesModel sales = new SalesModel();
     CompanyModel companyModel = new CompanyModel();
     EmployeeModel employeeModel = new EmployeeModel();
     HashMap<String, String> errorsList = new HashMap<String, String>();
     UserModel users = new UserModel();
+    SalesStateModel salesStates = new SalesStateModel();
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -80,6 +89,14 @@ public class employeeController extends HttpServlet {
                     
                 case "details":
                     details(request, response);
+                    break;
+                    
+                case "client_sales":
+                        clientSales(request, response);
+                        break;
+                        
+                case "redeem":
+                    redeem(request, response);
                     break;
             }
         } catch(Exception error) {
@@ -321,4 +338,95 @@ public class employeeController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
         }
     }
+    
+    private JSONObject messgaeJson(String key, String value){
+        JSONObject obj = new JSONObject();
+        obj.put(key, value);
+        return obj;
+    }
+    
+    private JSONArray getSalesForType(int type, User user, Company company) throws SQLException{
+        JSONArray cupones = new JSONArray();
+        for (Sales cupon : sales.getSales(user, salesStates.getSalesState(type, false), company, true)) {
+            JSONObject item = new JSONObject();
+            item.put("id", cupon.getIdSales());
+            item.put("codigo", cupon.getCouponCode());
+            item.put("titulo", cupon.getPromotion().getTitle());
+            item.put("imagen", cupon.getPromotion().getImage());
+            item.put("descripcion", cupon.getPromotion().getDescription());
+            item.put("fecha_inicio", cupon.getPromotion().getInitDate().toString());
+            item.put("fecha_vencimiento", cupon.getPromotion().getLimitDate().toString());
+            
+            cupones.put(item);
+        }
+        return cupones;
+    }
+    
+    private void clientSales(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        HttpSession _s = request.getSession(true);
+        Employee employee = (Employee) _s.getAttribute("user");
+        
+        PrintWriter out = response.getWriter();
+        
+        String dui = request.getParameter("dui");
+        
+        Object msg = new Object();
+        
+        if (!Validacion.isEmpty(dui)) {
+            if (Validacion.esDui(dui)) {
+                User user;
+
+                if ((user = users.getUserClientDui(dui, true)) != null) {
+
+                    if (user.isConfirmed()) {
+
+                        JSONObject client = new JSONObject();
+
+                        client.put("id", user.getIdUser());
+                        client.put("name", user.getName());
+                        client.put("last_name", user.getLastName());
+                        client.put("email", user.getEmail());
+                        client.put("dui", user.getDui());
+                        client.put("nit", user.getNit());
+
+                        client.put("cupones_disponibles", getSalesForType(2, user, employee.getCompany()));
+
+                        msg = client;
+
+                    } else 
+                        msg = messgaeJson("error", "La cuenta no esta habiltada.");
+
+                } else 
+                    msg = messgaeJson("error", "No existe el cliente.");
+            } else
+                msg = messgaeJson("error", "El dui no es valido.");
+        } else
+            msg = messgaeJson("error", "El campo DUI es obligatorio.");
+        
+        out.print(msg.toString());
+    }
+
+    private void redeem(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+        String id = request.getParameter("id");
+        
+        PrintWriter out = response.getWriter();
+        Object msg = new Object();
+        
+        if (!Validacion.isEmpty(id)) {
+            if (Validacion.esEnteroPositivo(id)) {
+                Integer idSales = Integer.parseInt(id);
+                
+                if (sales.changeState(idSales, salesStates.getSalesState(1, false)))
+                    msg = messgaeJson("exito", "Se ha canjeado con exito el cupon.");
+                else
+                    msg = messgaeJson("error", "No se ha podido canjear el cupon.");
+                
+            } else
+                msg = messgaeJson("error", "El campo id no es el apropiado.");
+        } else
+            msg = messgaeJson("error", "El campo id es obligatorio.");
+        
+        out.print(msg.toString());
+    }
+
 }

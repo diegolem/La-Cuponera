@@ -28,7 +28,7 @@ import sv.edu.udb.www.model.UserModel;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "salesController", urlPatterns = {"/sales.do","/client/sales.do"})
+@WebServlet(name = "salesController", urlPatterns = {"/sales.do","/client/sales.do", "/employee/sales.do"})
 public class salesController extends HttpServlet {
 
 SalesModel sales = new SalesModel();
@@ -59,6 +59,10 @@ SalesStateModel salesStates = new SalesStateModel();
                     break;
                 case "newC":
                     newCupon(request,response);
+                    break;
+                
+                case "exchange":
+                    exchange(request,response);
                     break;
             }
             
@@ -163,6 +167,11 @@ SalesStateModel salesStates = new SalesStateModel();
 
     private void newCupon(HttpServletRequest request, HttpServletResponse response) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void exchange(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+        request.setAttribute("sales", sales.getSales(true));
+        request.getRequestDispatcher("/employee/sale/redeemCoupons.jsp").forward(request, response);
     }
 
 }

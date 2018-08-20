@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.primefaces.json.JSONArray;
+import org.primefaces.json.JSONObject;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
 import sv.edu.udb.www.beans.Employee;
@@ -198,7 +200,7 @@ public class userController extends HttpServlet {
 
             Mail gmail = new Mail();
             
-            String url = this.getServletContext().getContextPath() + "/user.do?op=confirmation&id="+user.getIdConfirmation();
+            String url = request.getRequestURL().toString() + "?op=confirmation&id=" + user.getIdConfirmation();
             
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
