@@ -113,7 +113,7 @@ CREATE TABLE `company_type` (
 
 LOCK TABLES `company_type` WRITE;
 /*!40000 ALTER TABLE `company_type` DISABLE KEYS */;
-INSERT INTO `company_type` VALUES (1,'Restaurante'),(2,'Transportes'),(3,'Taller'),(4,'Salon de Belleza');
+INSERT INTO `company_type` VALUES (1,'Restaurante'),(2,'Transportes'),(3,'Taller'),(4,'Salón de Belleza');
 /*!40000 ALTER TABLE `company_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,7 +163,7 @@ CREATE TABLE `password_resets` (
   `expired` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `token_UNIQUE` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +172,7 @@ CREATE TABLE `password_resets` (
 
 LOCK TABLES `password_resets` WRITE;
 /*!40000 ALTER TABLE `password_resets` DISABLE KEYS */;
-INSERT INTO `password_resets` VALUES (1,'Test@gmail.com','sdasdasdadwedawdd','2018-08-18 12:07:32',0),(2,'fas','dafs','2018-08-17 12:30:11',1);
+INSERT INTO `password_resets` VALUES (3,'prueba@gmail.com','e1d57c2d-9cfb-45c2-9f75-2d2bb87acc45','2018-08-18 20:54:05',1),(4,'prueba@gmail.com','d6bcc824-df3e-4158-bc8c-32c036636b6d','2018-08-18 21:08:45',1),(5,'prueba@gmail.com','d158d64e-a544-4be4-8ddd-29264cd77c61','2018-08-18 21:12:36',1),(6,'prueba@gmail.com','ca67c54d-ad80-4d42-8bd5-bb23f6c2d8ca','2018-08-18 21:22:46',1),(7,'prueba@gmail.com','c7f01b85-9182-48f9-8fb4-0602a28dafc2','2018-08-18 21:26:30',1);
 /*!40000 ALTER TABLE `password_resets` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -224,7 +224,7 @@ CREATE TABLE `promotion` (
   KEY `id_estado` (`id_state`),
   CONSTRAINT `FK_PromotionCompany` FOREIGN KEY (`id_company`) REFERENCES `company` (`id`),
   CONSTRAINT `FK_PromotionState` FOREIGN KEY (`id_state`) REFERENCES `promotion_state` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,7 +233,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1,'Hay cocteles amor',4.50,4.45,'2018-08-10','2018-08-11','2018-08-11',10,'No te pierdas estos ricos cocteles amor','Especialidad la que usted quiera amor','coctel.png',0,0,5.95,4.00,'ABC123',1,'');
+INSERT INTO `promotion` VALUES (1,'Hay cocteles amor',4.50,4.45,'2018-08-10','2018-08-11','2018-08-11',10,'No te pierdas estos ricos cocteles amor','Especialidad la que usted quiera amor','coctel.png',0,0,5.95,4.00,'ABC123',1,''),(2,'asd',10.00,2.00,'2018-08-21','2018-08-22','2018-08-24',1,'<p>213</p>','asd','WIN_20180815_17_47_04_Pro.jpg',0,1,0.00,0.00,'ABC123',1,'');
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -257,7 +257,7 @@ CREATE TABLE `promotion_state` (
 
 LOCK TABLES `promotion_state` WRITE;
 /*!40000 ALTER TABLE `promotion_state` DISABLE KEYS */;
-INSERT INTO `promotion_state` VALUES (1,'En espera de aprobaciÃ³n'),(2,'Aprobada'),(3,'Rechazada'),(4,'Descartada'),(5,'Activa'),(6,'Pasada');
+INSERT INTO `promotion_state` VALUES (1,'En espera de aprobación'),(2,'Aprobada'),(3,'Rechazada'),(4,'Descartada'),(5,'Activa'),(6,'Pasada');
 /*!40000 ALTER TABLE `promotion_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -343,8 +343,6 @@ CREATE TABLE `sales_state` (
 LOCK TABLES `sales_state` WRITE;
 /*!40000 ALTER TABLE `sales_state` DISABLE KEYS */;
 INSERT INTO `sales_state` VALUES (1,'Canjeado');
-INSERT INTO `sales_state` VALUES (2,'Disponible');
-INSERT INTO `sales_state` VALUES (3,'Vencido');
 /*!40000 ALTER TABLE `sales_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -694,4 +692,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-18 20:49:22
+-- Dump completed on 2018-08-20 16:30:44
