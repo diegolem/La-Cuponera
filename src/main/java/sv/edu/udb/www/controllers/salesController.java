@@ -31,7 +31,7 @@ import sv.edu.udb.www.model.PromotionModel;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "salesController", urlPatterns = {"/sales.do","/client/sales.do"})
+@WebServlet(name = "salesController", urlPatterns = {"/client/sales.do"})
 public class salesController extends HttpServlet {
 
 SalesModel sales = new SalesModel();
