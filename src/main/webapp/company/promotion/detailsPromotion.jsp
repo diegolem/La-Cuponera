@@ -66,7 +66,7 @@
                     </ul>
                 </div>
                 <div class="center-align">
-                    <img class="materialboxed" width="650" src="img/${promotion.image}">
+                    <img class="materialboxed" width="650" src="${pageContext.request.contextPath}/img/${promotion.image}">
                 </div>    
             </div>
         </main>
