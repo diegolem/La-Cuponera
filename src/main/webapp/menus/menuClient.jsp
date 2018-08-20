@@ -39,7 +39,7 @@
                     <div class="collapsible-body">
                         <ul>
                             <li><a href="${pageContext.request.contextPath}/client/sales.do?op=listC">Mostrar <i class="material-icons left">remove_red_eye</i></a></li>
-                            <li><a href="${pageContext.request.contextPath}/client/sales.do?op=newC">Registrar <i class="material-icons left">add</i></a></li>
+                            <li><a href="${pageContext.request.contextPath}/client/sales.do?op=newC">Comprar <i class="material-icons left">add</i></a></li>
                         </ul>
                     </div>
                 </li>

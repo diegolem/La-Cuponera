@@ -32,13 +32,14 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "employeeController", urlPatterns = {"/employee.do", "/company/employee.do"})
+@WebServlet(name = "employeeController", urlPatterns = {"/company/employee.do"})
 public class employeeController extends HttpServlet {
+
     CompanyModel companyModel = new CompanyModel();
     EmployeeModel employeeModel = new EmployeeModel();
     HashMap<String, String> errorsList = new HashMap<String, String>();
     UserModel users = new UserModel();
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -50,44 +51,44 @@ public class employeeController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         String op = request.getParameter("op");
-        
+
         try {
-            switch(op){
+            switch (op) {
                 case "new":
                     add(request, response);
                     break;
-                    
+
                 case "insert":
                     insert(request, response);
                     break;
-                    
+
                 case "list":
                     list(request, response);
                     break;
-                    
+
                 case "edit":
                     edit(request, response);
                     break;
                 case "update":
                     update(request, response);
                     break;
-                    
+
                 case "delete":
                     delete(request, response);
                     break;
-                    
+
                 case "details":
                     details(request, response);
                     break;
             }
-        } catch(Exception error) {
+        } catch (Exception error) {
             Logger.getLogger(companyController.class.getName()).log(Level.SEVERE, null, error);
         } finally {
-        
+
         }
-        
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -134,35 +135,45 @@ public class employeeController extends HttpServlet {
         request.setAttribute("companies", companyModel.getCompanies(false));
         request.getRequestDispatcher("/company/employee/newEmployee.jsp").forward(request, response);
     }
-    
+
     private void insert(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         HttpSession _s = request.getSession(true);
-        
+
         Company company = (Company) _s.getAttribute("user");
-        
+
         Employee employee = new Employee();
-        
+
         employee.setName(request.getParameter("name"));
         employee.setLastName(request.getParameter("last_name"));
         employee.setCompany(company);
         employee.setEmail(request.getParameter("email"));
-        
+
         String password = PasswordResetModel.generatePasswordWithoutEncrypt();
         employee.setPassword(PasswordResetModel.parsingPassword(password));
-        
+
         errorsList.clear();
-        
-        if (Validacion.isEmpty(employee.getName()))
+
+        if (Validacion.isEmpty(employee.getName())) {
             errorsList.put("name", "El campo Nombre es un campo obligatorio");
-        
-        if (Validacion.isEmpty(employee.getLastName()))
+        }
+
+        if (Validacion.isEmpty(employee.getLastName())) {
             errorsList.put("last_name", "El campo Apellido es un campo obligatorio");
-        
-        if (Validacion.isEmpty(employee.getEmail()))
+        }
+
+        if (Validacion.esCorreo(employee.getEmail())) {
+            if (employeeModel.checkEmail(employee.getEmail())) {
+                errorsList.put("email", "Favor agregar otra dirección de correo electrónico");
+            }
+        } else {
+            errorsList.put("email", "El email no es válido [algo@server.com]");
+        }
+        /*if (Validacion.isEmpty(employee.getEmail())) {
             errorsList.put("email", "El campo E-mail es un campo obligatorio");
-        else if (!Validacion.esCorreo(employee.getEmail()))
+        } else if (!Validacion.esCorreo(employee.getEmail())) {
             errorsList.put("email", "El correo electronico debe de ser valido");
-        
+        }*/
+
         // Si hay errores
         if (errorsList.size() > 0) {
             request.setAttribute("errorsList", errorsList);
@@ -173,27 +184,21 @@ public class employeeController extends HttpServlet {
             mail.setAddressee(employee.getEmail());
             mail.setAffair("Reguistro en la cuponera");
             mail.setMessage("Clave de usuario: <h1>" + password + "</h1>");
-            
+
             if (!users.mailExists(employee.getEmail())) {
-                if (mail.sendEmail()){
-                    if (employeeModel.insertEmployee(employee)) {
-                        request.getSession().setAttribute("success", "Empleado registrado");
-                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
-                    } else {
-                        request.getSession().setAttribute("error", "El empleado no ha podido registrarse");
-                        response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
-                    }
+                if (employeeModel.insertEmployee(employee)) {
+                    mail.sendEmail();
+                    request.getSession().setAttribute("success", "Empleado registrado");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 } else {
-                    errorsList.put("email", "El correo electronico no existe");
-                    request.setAttribute("errorsList", errorsList);
-                    request.setAttribute("employee", employee);
-                    request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
+                    request.getSession().setAttribute("error", "El empleado no ha podido registrarse");
+                    response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
                 }
             } else {
-                    errorsList.put("email", "El correo ya ha sido registrado");
-                    request.setAttribute("errorsList", errorsList);
-                    request.setAttribute("employee", employee);
-                    request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
+                errorsList.put("email", "El correo ya ha sido registrado");
+                request.setAttribute("errorsList", errorsList);
+                request.setAttribute("employee", employee);
+                request.getRequestDispatcher("/company/employee.do?op=new").forward(request, response);
             }
         }
     }
@@ -226,13 +231,13 @@ public class employeeController extends HttpServlet {
 
     private void update(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("idEmployee"));
-        
+
         Employee employee = employeeModel.getEmployee(id, false);
-        
-        if (employee != null)  {
+
+        if (employee != null) {
             HttpSession _s = request.getSession(true);
             Company company = (Company) _s.getAttribute("user");
-            
+
             employee.setIdEmployee(id);
             employee.setName(request.getParameter("name"));
             employee.setLastName(request.getParameter("last_name"));
@@ -242,16 +247,19 @@ public class employeeController extends HttpServlet {
 
             errorsList.clear();
 
-            if (Validacion.isEmpty(employee.getName()))
+            if (Validacion.isEmpty(employee.getName())) {
                 errorsList.put("name", "El campo Nombre es un campo obligatorio");
+            }
 
-            if (Validacion.isEmpty(employee.getLastName()))
+            if (Validacion.isEmpty(employee.getLastName())) {
                 errorsList.put("last_name", "El campo Apellido es un campo obligatorio");
+            }
 
-            if (Validacion.isEmpty(employee.getEmail()))
+            if (Validacion.isEmpty(employee.getEmail())) {
                 errorsList.put("email", "El campo E-mail es un campo obligatorio");
-            else if (!Validacion.esCorreo(employee.getEmail()))
+            } else if (!Validacion.esCorreo(employee.getEmail())) {
                 errorsList.put("email", "El correo electronico debe de ser valido");
+            }
 
             // Si hay errores
             if (errorsList.size() > 0) {
@@ -284,14 +292,14 @@ public class employeeController extends HttpServlet {
             request.getSession().setAttribute("error", "Empleado no registrado");
             response.sendRedirect(request.getContextPath() + "/company/employee.do?op=list");
         }
-        
+
     }
 
     private void delete(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         PrintWriter out = response.getWriter();
-        
+
         String idEmployee = request.getParameter("idEmployee");
-        
+
         if (Validacion.esEnteroPositivo(idEmployee)) {
             int id = Integer.parseInt(idEmployee);
             Employee employee = employeeModel.getEmployee(id, false);

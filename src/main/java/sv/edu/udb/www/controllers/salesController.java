@@ -23,17 +23,21 @@ import sv.edu.udb.www.beans.User;
 import sv.edu.udb.www.model.SalesModel;
 import sv.edu.udb.www.model.SalesStateModel;
 import sv.edu.udb.www.model.UserModel;
+import sv.edu.udb.www.beans.Promotion;
+import sv.edu.udb.www.model.PromotionModel;
+
 
 /**
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "salesController", urlPatterns = {"/sales.do","/client/sales.do"})
+@WebServlet(name = "salesController", urlPatterns = {"/client/sales.do"})
 public class salesController extends HttpServlet {
 
 SalesModel sales = new SalesModel();
 UserModel users = new UserModel();
 SalesStateModel salesStates = new SalesStateModel();
+PromotionModel promotions = new PromotionModel();
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -151,9 +155,9 @@ SalesStateModel salesStates = new SalesStateModel();
 
     private void tusCupones(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         try {
-            HttpSession session = request.getSession();
-            //cosa estatica por el momento
-            request.setAttribute("salesList", sales.getSales(1, true));
+            HttpSession session = request.getSession(true);
+            User user = (User) session.getAttribute("user");
+            request.setAttribute("salesList", sales.getSales(user.getIdUser() , true));
             request.setAttribute("title", "Lista de tus cupones");
             request.getRequestDispatcher("/client/Sales/listSales.jsp").forward(request, response);
         } catch (ServletException | IOException ex) {
@@ -161,8 +165,14 @@ SalesStateModel salesStates = new SalesStateModel();
         }
     }
 
-    private void newCupon(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void newCupon(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+        try {
+            request.setAttribute("title", "Comprar Cupon");
+            request.setAttribute("promotions",promotions.getPromotionsA("Aprobados",true));
+            request.getRequestDispatcher("/client/Sales/newSales.jsp").forward(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

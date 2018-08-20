@@ -26,7 +26,7 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "companyTypeController", urlPatterns = {"/companyType.do", "/admin/companiesType.do"})
+@WebServlet(name = "companyTypeController", urlPatterns = {"/admin/companiesType.do"})
 public class companyTypeController extends HttpServlet {
     CompanyModel companyModel = new CompanyModel();
     CompanyTypeModel companyTypeModel = new CompanyTypeModel();

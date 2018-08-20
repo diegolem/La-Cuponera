@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
+import sv.edu.udb.www.beans.Employee;
 import sv.edu.udb.www.beans.Sales;
 import sv.edu.udb.www.beans.SalesState;
 import sv.edu.udb.www.beans.User;
@@ -74,11 +75,11 @@ public class userController extends HttpServlet {
                     case "insert_client":
                         insertClient(request, response);
                         break;
-                    
+
                     case "details_client":
                         detailsClient(request, response);
                         break;
-                    
+
                     case "delete_client":
                         deleteClient(request, response);
                         break;
@@ -169,6 +170,11 @@ public class userController extends HttpServlet {
 
         if (Validacion.esCorreo(request.getParameter("email"))) {
             user.setEmail(request.getParameter("email"));
+            if (!users.checkEmail(request.getParameter("email"))) {
+                user.setEmail(request.getParameter("email"));
+            } else {
+                errorsList.put("email", "Favor agregar otra dirección de correo electrónico");
+            }
         } else {
             errorsList.put("email", "El email no es válido [algo@server.com]");
         }
@@ -196,9 +202,9 @@ public class userController extends HttpServlet {
             user.setIdConfirmation(UserModel.getIdConfirmation());
 
             Mail gmail = new Mail();
-            
-            String url = this.getServletContext().getContextPath() + "/user.do?op=confirmation&id="+user.getIdConfirmation();
-            
+
+            String url = this.getServletContext().getContextPath() + "/user.do?op=confirmation&id=" + user.getIdConfirmation();
+
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
             gmail.setMessage("Bienvenido usuario <h3>" + user.getName() + " " + user.getLastName() + "</h3>"
@@ -227,9 +233,9 @@ public class userController extends HttpServlet {
         String idConfirmation = request.getParameter("id");
 
         User user;
-        
+
         if ((user = this.users.getUser(idConfirmation, true)) != null) {
-            
+
             if (users.confirmUser(user)) {
                 HttpSession _s = request.getSession(true);
                 _s.setAttribute("logged", true);
@@ -241,7 +247,7 @@ public class userController extends HttpServlet {
                 request.getSession().setAttribute("error", "No se ha pódido confirmar su cuenta");
                 request.getRequestDispatcher("/login.jsp").forward(request, response);
             }
-            
+
         } else {
             request.getSession().setAttribute("error", "El Id de confirmacion no existe");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -270,6 +276,11 @@ public class userController extends HttpServlet {
 
         if (Validacion.esCorreo(request.getParameter("email"))) {
             user.setEmail(request.getParameter("email"));
+            if (!users.checkEmail(request.getParameter("email"))) {
+                user.setEmail(request.getParameter("email"));
+            } else {
+                errorsList.put("email", "Favor agregar otra dirección de correo electrónico");
+            }
         } else {
             errorsList.put("email", "El email no es válido [algo@server.com]");
         }
@@ -315,4 +326,73 @@ public class userController extends HttpServlet {
             }
         }
     } // Fin insertClientPublic()
+
+    private void detailsClient(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException, ServletException {
+        String id = request.getParameter("id");
+
+        if (!Validacion.isEmpty(id)) {
+            if (Validacion.esEnteroPositivo(id)) {
+
+                int idClient = Integer.parseInt(id);
+
+                User user = users.getUser(idClient, false);
+
+                if (user != null) {
+                    List<Sales> cuponesCanjeados = sales.getSales(user, salesStates.getSalesState(1, false), true);
+                    List<Sales> cuponesDisponibles = sales.getSales(user, salesStates.getSalesState(2, false), true);
+                    List<Sales> cuponesVencidos = sales.getSales(user, salesStates.getSalesState(3, false), true);
+
+                    request.setAttribute("client", user);
+
+                    request.setAttribute("cuponesCanjeados", cuponesCanjeados);
+                    request.setAttribute("cuponesDisponibles", cuponesDisponibles);
+                    request.setAttribute("cuponesVencidos", cuponesVencidos);
+                    request.getRequestDispatcher("/admin/user/detailsClient.jsp").forward(request, response);
+                } else {
+                    request.getSession().setAttribute("error", "No se ha podido encontrar");
+                    response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
+                }
+
+            } else {
+                request.getSession().setAttribute("error", "El id del usuario es equivocado");
+                response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
+            }
+        } else {
+            request.getSession().setAttribute("error", "Debe de usar un ID para cliente");
+            response.sendRedirect(request.getContextPath() + "/admin/user.do?op=list_client");
+        }
+    }
+
+    private void deleteClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        PrintWriter out = response.getWriter();
+        String id = request.getParameter("id");
+
+        if (!Validacion.isEmpty(id)) {
+            if (Validacion.esEnteroPositivo(id)) {
+                int idClient = Integer.parseInt(id);
+
+                User client;
+
+                if ((client = users.getUser(idClient, true)) != null) {
+                    boolean next = true;
+
+                    if (!client.getSales().isEmpty() && !sales.deleteSales(client)) {
+                        next = false;
+                        out.print("0");
+                    }
+
+                    if (next && users.deleteUser(idClient)) {
+                        out.print("1");
+                    }
+
+                } else {
+                    out.print("0");
+                }
+            } else {
+                out.print("0");
+            }
+        } else {
+            out.print("-1");
+        }
+    }
 }
