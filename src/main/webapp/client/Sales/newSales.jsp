@@ -41,7 +41,7 @@
                                                 </span>
 
                                                 <p class='center-align'>
-                                                    <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion})">Comprar</a>
+                                                    <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion},${promotion.idCompany})">Comprar</a>
                                                 </p>
                                             </div>
                                             <div class="card-reveal">
@@ -69,17 +69,22 @@
                                 <div class="row">
                                     <div class="input-field col s6">
                                         <input type="hidden" readonly="true" id="idCt"/>
+                                        <input type="hidden" readonly="true" id="idCom"/>
                                         <label for="numCu">Por favor especifique el número de cupones:</label>
-                                        <input type="number" max="10" min="1" id="numCu" autocomplete="false"/>
-                                        <span class="error-block red-text">
-                                            <strong id="error-txt"></strong>
-                                        </span>
+                                        <input type="number" max="10" min="1" id="numCu" value="${cantidad}" autocomplete="false"/>
+                                        <c:if test="${not empty requestScope.errorsList}">
+                                            <c:if test = "${not empty requestScope.errorsList['cantidad']}">
+                                                <span class="error-block red-text">
+                                                    <strong id="error-txt">${requestScope.errorsList['cantidad']}</strong>
+                                                </span>
+                                            </c:if>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <a href="javascript:void(0)" class="modal-close waves-effect waves-light red darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
-                                <a href="#!" onclick="buyPromotion($('#idCt').val(),$('#numCu').val())" class="waves-effect waves-light green darken-3 btn"><i class="material-icons left">attach_money</i>Comprar</a>
+                                <a href="#!" onclick="buyPromotion($('#idCt').val(),$('#numCu').val(),$('#idCom').val())" class="waves-effect waves-light green darken-3 btn"><i class="material-icons left">attach_money</i>Comprar</a>
                             </div>
                         </div>
                     </div>
@@ -95,16 +100,18 @@
                 columnWidth: 200
             });
         });
-        function setId(id){
+        function setId(id,idC){
                 $('#idCt').val(id);
+                $('#idCom').val(idC);
             }
-        function buyPromotion(id,cant){
+        function buyPromotion(id,cant,idC){
             $.ajax({
                 url: "${pageContext.request.contextPath}/client/sales.do?op=buy",
                 type: "POST",
                 data: {
                     idPromotion: id,
-                    Cantidad: cant
+                    Cantidad: cant,
+                    idCompany: idC
                 },
                 success: function(response){
                     if(response === "0"){

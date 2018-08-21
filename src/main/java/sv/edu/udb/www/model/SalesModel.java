@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Promotion;
 import sv.edu.udb.www.beans.Sales;
 import sv.edu.udb.www.beans.SalesState;
@@ -46,7 +47,6 @@ public class SalesModel extends Connection {
             return null;
         }
     }//Fin getSales()
-
     public ArrayList<Sales> getSales(int ids, boolean relationship) throws SQLException {
         try {
             ArrayList<Sales> sales = new ArrayList<Sales>();
@@ -214,7 +214,43 @@ public class SalesModel extends Connection {
             return null;
         }
     }//Fin getSale
-
+        public String genCodeSalesnew(Company company) throws SQLException{
+        try {
+            int cuenta = 0;
+            String codigo = "";
+            String sql = "SELECT COUNT(*) AS cuenta FROM sales WHERE coupon_code LIKE '%?%'";
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, company.getIdCompany());
+            cuenta = st.executeUpdate();
+            this.desconectar();
+            if (cuenta != 0) {
+                cuenta += 1;
+                if (cuenta < 10) {
+                    codigo = company.getIdCompany() + "000000" + cuenta;
+                } else if (cuenta >= 10 && cuenta < 100) {
+                    codigo = company.getIdCompany() + "00000" + cuenta;
+                } else if (cuenta >= 100 && cuenta < 1000) {
+                    codigo = company.getIdCompany() + "0000" + cuenta;
+                } else if (cuenta >= 1000 && cuenta < 10000) {
+                    codigo = company.getIdCompany() + "000" + cuenta;
+                } else if (cuenta >= 10000 && cuenta < 100000) {
+                    codigo = company.getIdCompany() + "00" + cuenta;
+                } else if (cuenta >= 100000 && cuenta < 1000000) {
+                    codigo = company.getIdCompany() + "0" + cuenta;
+                } else {
+                    codigo = company.getIdCompany() + cuenta;
+                }
+            } else {
+                codigo = company.getIdCompany() + "0000001";
+            }
+            return codigo;
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }
     public boolean insertSales(Sales sale) throws SQLException {
         try {
             int affectedRows = 0;
