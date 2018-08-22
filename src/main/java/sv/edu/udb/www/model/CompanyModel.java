@@ -138,7 +138,7 @@ public class CompanyModel extends Connection{
     public boolean updateCompany(Company company) throws SQLException{
         try {
             int affectedRows = 0;
-            String sql = "CALL update_company(?, ?, ?, ?, ?, ?)";
+            String sql = "CALL update_company(?, ?, ?, ?, ?, ?, ?)";
             
             this.conectar();
             cs= conexion.prepareCall(sql);
@@ -148,6 +148,7 @@ public class CompanyModel extends Connection{
             cs.setString(4, company.getTelephone());
             cs.setString(5, company.getEmail());
             cs.setString(6, company.getName());
+            cs.setInt(7, company.getCompanyType().getIdCompanyType());
             affectedRows = cs.executeUpdate();
             
             this.desconectar();

@@ -288,6 +288,13 @@ public class companyController extends HttpServlet {
             Company company = new Company();
             CompanyType companyType;
 
+            if (Validacion.esCodigoEmpresa(request.getParameter("idCompany"))) {
+                company = companyModel.getCompany(request.getParameter("idCompany"), true);
+                company.setIdCompany(request.getParameter("idCompany"));
+            } else {
+                errorsList.put("idCompany", "El código de empresa no es válido [AAA000]");
+            }
+            
             if (Validacion.esEnteroPositivo(request.getParameter("type"))) {
                 companyType = companyTypeModel.getCompanyType(Integer.parseInt(request.getParameter("type")), false);
                 if (companyType != null) {
@@ -297,13 +304,6 @@ public class companyController extends HttpServlet {
                 }
             } else {
                 errorsList.put("companyType", "El tipo de empresa no es válido");
-            }
-
-            if (Validacion.esCodigoEmpresa(request.getParameter("idCompany"))) {
-                company = companyModel.getCompany(request.getParameter("idCompany"), true);
-                company.setIdCompany(request.getParameter("idCompany"));
-            } else {
-                errorsList.put("idCompany", "El código de empresa no es válido [AAA000]");
             }
 
             if (Validacion.isEmpty(request.getParameter("name"))) {
@@ -339,7 +339,7 @@ public class companyController extends HttpServlet {
             } else {
                 errorsList.put("email", "El email no es válido [algo@server.com]");
             }
-            System.out.println(company.getCompanyType().getType());
+            
             if (Validacion.esEnteroPositivo(request.getParameter("comission"))) {
                 company.setPctComission(Integer.parseInt(request.getParameter("comission")));
                 if (company.getPctComission() > 99) {

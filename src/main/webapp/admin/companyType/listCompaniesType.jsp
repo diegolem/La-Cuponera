@@ -43,73 +43,75 @@
                     </tbody>
                 </table>
             </div>
-                <div id="modal" class="modal modal-fixed-footer">
-                    <div class="modal-content">
-                        <h4 id="header-modal"></h4>
-                        <div class="divider"></div> 
-                        
-                        <!--<div id="test4"> 
-                            <ul class="collection">
-                                <li class="collection-item" id="lvl1"></li>
-                                <li class="collection-item" id="lvl2"></li>
-                            </ul>
-                        </div>  Fin datos generales -->
-                        <input type="hidden" readonly="true" id="idCt"/>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="javascript:void(0)" onclick="deleteCompanyType($('#idCt').val())" class="waves-effect waves-light red darken-3 btn"><i class="material-icons left">delete</i>Eliminar</a>
-                        <a href="#!" class="modal-close waves-effect waves-light teal darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
-                    </div>
+
+            <div id="modal" class="modal">
+                <div class="modal-content">
+                    <h4 class="center purple-text text-darken-4">¿Realmente deseas eliminar este rubro?</h4>
+                    <input type="hidden" readonly="true" id="idCt"/>
                 </div>
+                <div class="col s12  btn-cont">
+                    <a href="javascript:void(0)" onclick="deleteCompanyType($('#idCt').val())" class="waves-effect waves-light red darken-3 btn"><i class="material-icons left">delete</i>Eliminar</a>
+                    <a href="#!" class="modal-close waves-effect waves-light teal darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
+                </div>
+                <br>
+            </div>
         </main>
         <script>
+            let loader = new Loader();
             $(document).ready(function () {
                 $("#tblCompaniesType").DataTable();
-                <c:if test="${not empty success}">
-                    M.toast({html: '${success}'})
-                    <c:set var="success" value="" scope="session"></c:set>
-                </c:if>
-                <c:if test="${not empty error}">
-                    M.toast({html: '${error}'})
-                    <c:set var="error" value="" scope="session"></c:set>
-                </c:if>
-                
+            <c:if test="${not empty success}">
+                M.toast({html: '${success}'})
+                <c:set var="success" value="" scope="session"></c:set>
+            </c:if>
+            <c:if test="${not empty error}">
+                M.toast({html: '${error}'})
+                <c:set var="error" value="" scope="session"></c:set>
+            </c:if>
+
             });
-            function setId(id){
-               $('#header-modal').text("¿Estas seguro que deseas eliminar esto?");
-               $.ajax({
-                   url: "${pageContext.request.contextPath}/admin/companiesType.do?op=get",
-                   type: "POST",
-                   data: {
-                       idCompanyType: id
-                   },
-                   success: function(response){
-                     if(response === "0"){
-                            M.toast({html: 'No existe un rubro con este codigo'})
-                     }else{
-                        let json = JSON.parse(response);
-                        //$('#test4 #lvl1').text("Codigo: " + json.id);
-                        //$('#test4 #lvl2').text("Nombre del rubro: " + json.type);
-                        $('#idCt').val(json.id);
-                     }
-                   }
-               });           
-            }
-            function deleteCompanyType(id){
+            function setId(id) {
+                //$('#header-modal').text("¿Estas seguro que deseas eliminar esto?");
                 $.ajax({
-                    url: "${pageContext.request.contextPath}/admin/companiesType.do?op=delete",
+                    url: "${pageContext.request.contextPath}/admin/companiesType.do?op=get",
                     type: "POST",
                     data: {
                         idCompanyType: id
                     },
-                    success: function(response){
-                        if(response === "0"){
-                            M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'})
-                        }else if(response === "1"){
-                            M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/admin/companiesType.do?op=list' }})
+                    success: function (response) {
+                        if (response === "0") {
+                            M.toast({html: 'No existe un rubro con este codigo'})
+                        } else {
+                            let json = JSON.parse(response);
+                            //$('#test4 #lvl1').text("Codigo: " + json.id);
+                            //$('#test4 #lvl2').text("Nombre del rubro: " + json.type);
+                            $('#idCt').val(json.id);
                         }
                     }
-                })
+                });
+            }
+            function deleteCompanyType(id) {
+                loader.in();
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/admin/companiesType.do?op=delete",
+                    type: "POST",
+                    data: { idCompanyType: id },
+                    success: function (response) {
+                        let text = '', classes = '', callback;
+                        if (response === "0") {
+                            text = 'Ha ocurrido un error en el proceso de eliminación';
+                            classes = 'red lighten-1';
+                            callback = function(){};
+                        } else if (response === "1") {
+                            classes = 'green darken-2';
+                            text = 'Eliminación exitosa';
+                            callback = function(){ location.href = '${pageContext.request.contextPath}/admin/companiesType.do?op=list'; };
+                        }
+                        M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
+                    }
+                }).done(function(){
+                    loader.out();
+                });
             }
         </script>
     </body>

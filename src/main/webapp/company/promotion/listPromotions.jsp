@@ -47,7 +47,7 @@
                                     <c:choose>
                                         <c:when test="${promotion.promotionState.idPromotionState eq 3}">
                                             <a title="Editar" href="${pageContext.request.contextPath}/company/promotion.do?op=edit&idPromotion=${promotion.idPromotion}" class="waves-effect waves-light btn-small"><i class="material-icons centered">edit</i></a>
-                                            <a title="Eliminar" href="#" onclick="deletePromotion('${promotion.idPromotion}')" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
+                                            <a title="Eliminar" href="#mdlDelete" onclick="setIdDelete('${promotion.idPromotion}')" class="modal-trigger  waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
                                         </c:when>
                                         <c:otherwise>
                                             <a title="Editar" disabled class="waves-effect waves-light btn-small"><i class="material-icons centered">edit</i></a>
@@ -60,17 +60,28 @@
                     </tbody>
                 </table>
             </div>
+            <div id="mdlDelete" class="modal">
+                <div class="modal-content">
+                    <h4 class="center purple-text text-darken-4">¿Realmente deseas eliminar esta oferta?</h4>
+                    <input type="hidden" readonly="true" id="idPromotionDelete"/>
+                </div>
+                <div class="col s12  btn-cont">
+                    <button type="button" onclick="deletePromotion()" class="waves-effect waves-light teal darken-1 btn"><i class="material-icons left">send</i>Aceptar</button>
+                    <a href="#!" class="modal-close waves-effect waves-light red darken-3 btn"><i class="material-icons left">close</i>Cancelar</a>
+                </div>
+                <br>
+            </div>
         </main>
         <script>
             $(document).ready(function () {
-                <c:if test="${not empty success}">
-                    M.toast({html: '${success}'})
-                    <c:set var="success" value="" scope="session"></c:set>
-                </c:if>
-                <c:if test="${not empty error}">
-                    M.toast({html: '${error}'})
-                    <c:set var="error" value="" scope="session"></c:set>
-                </c:if>
+            <c:if test="${not empty success}">
+                M.toast({html: '${success}'})
+                <c:set var="success" value="" scope="session"></c:set>
+            </c:if>
+            <c:if test="${not empty error}">
+                M.toast({html: '${error}'})
+                <c:set var="error" value="" scope="session"></c:set>
+            </c:if>
                 $("#tblPromotions").DataTable({
                     "searching": false,
                     initComplete: function () {
@@ -97,23 +108,39 @@
                 });
                 $('select').formSelect();
             });
+
+            function setIdDelete(id) {
+                $('#mdlDelete #idPromotionDelete').val(id);
+            }
+
             function deletePromotion(id) {
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/company/promotion.do?op=delete",
-                    type: "GET",
-                    data: {
-                        idPromotion: id
-                    },
-                    success: function (response) {
-                        if (response === "0") {
-                            M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'})
-                        } else if (response === "1") {
-                            M.toast({html: 'Eliminación exitosa', completeCallback: function () {
-                                    location.href = '${pageContext.request.contextPath}/company/promotion.do?op=list'
-                                }})
+                if ($('#mdlDelete #idPromotionDelete').val() !== null) {
+                    loader.in();
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/company/promotion.do?op=delete",
+                        type: "GET",
+                        data: {
+                            idPromotion: id
+                        },
+                        success: function (response) {
+                            let text = '', classes = '', callback;
+                            if (response === "0") {
+                                text = 'Ha ocurrido un error en el proceso de eliminación';
+                                classes = 'red lighten-1';
+                                callback = function(){};
+                            } else if (response === "1") {
+                                text = 'Oferta aceptada';
+                                classes = 'green darken-2';
+                                callback = function(){ location.href = '${pageContext.request.contextPath}/company/promotion.do?op=list'; };
+                            }
+                            M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
+                        }, error: function (err) {
+                            M.toast({html: "En este momento no se puede establecer la conexión con el servidor. Inténtelo más tarde... <i class='material-icons right'>error</i>", classes: "red darken-5"});
                         }
-                    }
-                })
+                    }).done(function(){
+                        loader.out();
+                    });
+                }
             }
         </script>
     </body>
