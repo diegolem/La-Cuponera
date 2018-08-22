@@ -108,10 +108,9 @@
 
         <div id="mdlRecover" class="modal">
             <div class="modal-content">
-                <h4>Modal Header</h4>
-                <p>A bunch of text</p>
+                <h4 class="center teal-text">Reestablecer contraseña</h4>
                 <form name="frmRecover" class="frmAjax row">
-                    <div class="input-field col s12">
+                    <div class="input-field col s8 offset-s2">
                         <label for="recover_email" class="col-md-4 control-label">Correo Electrónico</label>
                         <input id="recover_email" type="email" class="form-control" name="recover_email">
                     </div>
@@ -119,9 +118,6 @@
                         <button id="btnRecover" class="btnSubmitForm btn waves-effect">Enviar peticion<i class="material-icons right">send</i></button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
             </div>
         </div>
                                 

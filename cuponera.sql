@@ -1,15 +1,13 @@
-CREATE DATABASE  IF NOT EXISTS `cuponera` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish2_ci */;
-USE `cuponera`;
--- MySQL dump 10.13  Distrib 8.0.12, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.23, for Linux (x86_64)
 --
 -- Host: localhost    Database: cuponera
 -- ------------------------------------------------------
--- Server version	8.0.12
+-- Server version	5.7.23-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8 ;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -18,13 +16,23 @@ USE `cuponera`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Temporary view structure for view `all_users`
+-- Current Database: `cuponera`
+--
+
+/*!40000 DROP DATABASE IF EXISTS `cuponera`*/;
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `cuponera` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish2_ci */;
+
+USE `cuponera`;
+
+--
+-- Temporary table structure for view `all_users`
 --
 
 DROP TABLE IF EXISTS `all_users`;
 /*!50001 DROP VIEW IF EXISTS `all_users`*/;
 SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8;
 /*!50001 CREATE VIEW `all_users` AS SELECT 
  1 AS `email`,
  1 AS `password`,
@@ -40,11 +48,11 @@ SET character_set_client = @saved_cs_client;
 
 DROP TABLE IF EXISTS `authentication`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `authentication` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `token` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
   `auth` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
@@ -65,17 +73,17 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `company`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `company` (
-  `id` varchar(6) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `address` varchar(100) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `contact_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `telephone` char(9) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `id` varchar(6) COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `address` varchar(100) COLLATE utf8_spanish2_ci NOT NULL,
+  `contact_name` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `telephone` char(9) COLLATE utf8_spanish2_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
   `type_company` int(11) NOT NULL,
   `pct_comission` int(11) NOT NULL,
-  `password` char(64) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `password` char(64) COLLATE utf8_spanish2_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `type_company` (`type_company`),
@@ -89,7 +97,7 @@ CREATE TABLE `company` (
 
 LOCK TABLES `company` WRITE;
 /*!40000 ALTER TABLE `company` DISABLE KEYS */;
-INSERT INTO `company` VALUES ('ABC123','Prueba 1','San Salvador','Diego Lemus','2222-4444','prueba@gmail.com',1,10,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+INSERT INTO `company` VALUES ('ABC123','Variedades la Bendicion','San Salvador','Diego Lemus','2222-4444','prueba5@gmail.com',1,10,'e54fc6b51915e222ba6196747a19ebb8dfa651fd2b46a385a0ded647fbfefda0'),('EMP256','La Cabuda','La mascota','Guillermo Calderon','7878-8959','guillermo.calderon@udb.edu.sv',4,5,'e54fc6b51915e222ba6196747a19ebb8dfa651fd2b46a385a0ded647fbfefda0');
 /*!40000 ALTER TABLE `company` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,12 +107,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `company_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `company_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `type` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +121,7 @@ CREATE TABLE `company_type` (
 
 LOCK TABLES `company_type` WRITE;
 /*!40000 ALTER TABLE `company_type` DISABLE KEYS */;
-INSERT INTO `company_type` VALUES (1,'Restaurante'),(2,'Transportes'),(3,'Taller'),(4,'Salón de Belleza');
+INSERT INTO `company_type` VALUES (1,'Restaurante'),(2,'Transportes pesados'),(4,'Salon de Belleza'),(5,'Taller');
 /*!40000 ALTER TABLE `company_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,19 +131,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `employee`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `employee` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `last_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `password` char(64) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `id_company` varchar(6) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `password` char(64) COLLATE utf8_spanish2_ci NOT NULL,
+  `id_company` varchar(6) COLLATE utf8_spanish2_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `FK_EmployeeCompany` (`id_company`),
   CONSTRAINT `FK_EmployeeCompany` FOREIGN KEY (`id_company`) REFERENCES `company` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,7 +152,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'Carlos','Lemus','carlos@gmail.com','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92','ABC123');
+INSERT INTO `employee` VALUES (1,'Carlos','Lemus','carlos@gmail.com','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92','ABC123'),(3,'Franklin','Esquivel','frank.esquivel115@gmail.com','c474bb57efcab739de87a69acbaf4ff9d202f817f1fbc73a65b99bcfc35bf4b2','ABC123');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,16 +162,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `password_resets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `password_resets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `token` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
   `date` datetime DEFAULT NULL,
   `expired` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `token_UNIQUE` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +180,7 @@ CREATE TABLE `password_resets` (
 
 LOCK TABLES `password_resets` WRITE;
 /*!40000 ALTER TABLE `password_resets` DISABLE KEYS */;
-INSERT INTO `password_resets` VALUES (3,'prueba@gmail.com','e1d57c2d-9cfb-45c2-9f75-2d2bb87acc45','2018-08-18 20:54:05',1),(4,'prueba@gmail.com','d6bcc824-df3e-4158-bc8c-32c036636b6d','2018-08-18 21:08:45',1),(5,'prueba@gmail.com','d158d64e-a544-4be4-8ddd-29264cd77c61','2018-08-18 21:12:36',1),(6,'prueba@gmail.com','ca67c54d-ad80-4d42-8bd5-bb23f6c2d8ca','2018-08-18 21:22:46',1),(7,'prueba@gmail.com','c7f01b85-9182-48f9-8fb4-0602a28dafc2','2018-08-18 21:26:30',1);
+INSERT INTO `password_resets` VALUES (1,'Test@gmail.com','sdasdasdadwedawdd','2018-08-18 12:07:32',0),(2,'fas','dafs','2018-08-17 12:30:11',1),(3,'prueba@gmail.com','67b17056-962e-40ec-b882-5913da1c2cfb','2018-08-20 20:48:52',1),(4,'lopezleonardo282@gmail.com','c647a3ba-9227-4792-aab3-cd35bb624270','2018-08-22 16:50:36',1),(5,'prueba5@gmail.com','3e910358-5dec-4c8a-a257-6bfb583f2ee4','2018-08-22 17:55:45',1);
 /*!40000 ALTER TABLE `password_resets` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -199,32 +207,32 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `promotion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `promotion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `title` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
   `regular_price` decimal(18,2) NOT NULL,
   `ofert_price` decimal(18,2) NOT NULL,
   `init_date` date NOT NULL,
   `end_date` date NOT NULL,
   `limit_date` date NOT NULL,
   `limit_cant` int(11) NOT NULL,
-  `description` varchar(500) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `other_details` varchar(500) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `image` varchar(75) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `description` varchar(500) COLLATE utf8_spanish2_ci NOT NULL,
+  `other_details` varchar(500) COLLATE utf8_spanish2_ci NOT NULL,
+  `image` varchar(75) COLLATE utf8_spanish2_ci NOT NULL,
   `coupons_sold` int(11) NOT NULL DEFAULT '0',
   `coupons_available` int(11) NOT NULL,
   `earnings` decimal(18,2) NOT NULL DEFAULT '0.00',
   `charge_service` decimal(18,2) NOT NULL DEFAULT '0.00',
-  `id_company` varchar(6) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `id_company` varchar(6) COLLATE utf8_spanish2_ci NOT NULL,
   `id_state` int(11) NOT NULL,
-  `rejected_description` varchar(300) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `rejected_description` varchar(300) COLLATE utf8_spanish2_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_empresa` (`id_company`),
   KEY `id_estado` (`id_state`),
   CONSTRAINT `FK_PromotionCompany` FOREIGN KEY (`id_company`) REFERENCES `company` (`id`),
   CONSTRAINT `FK_PromotionState` FOREIGN KEY (`id_state`) REFERENCES `promotion_state` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,7 +241,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1,'Hay cocteles amor',4.50,4.45,'2018-08-10','2018-08-11','2018-08-11',10,'No te pierdas estos ricos cocteles amor','Especialidad la que usted quiera amor','coctel.png',0,0,5.95,4.00,'ABC123',1,''),(2,'asd',10.00,2.00,'2018-08-21','2018-08-22','2018-08-24',1,'<p>213</p>','asd','WIN_20180815_17_47_04_Pro.jpg',0,1,0.00,0.00,'ABC123',1,'');
+INSERT INTO `promotion` VALUES (1,'Hay cocteles amor',4.50,4.45,'2018-08-23','2018-08-24','2018-08-31',10,'No te pierdas estos ricos cocteles amor','Especialidad la que usted quiera amor','WIN_20180821_22_43_19_Pro.jpg',0,0,5.95,4.00,'ABC123',2,''),(2,'Gran venta de animales',3.00,2.00,'2018-08-22','2018-08-24','2018-08-31',12,'<p>asdf</p>','sdaf','ofertaanimal.png',6,6,12.00,1.20,'ABC123',2,''),(3,'asd',123.00,2.00,'2018-08-23','2018-08-25','2018-08-31',2,'<p>sad</p>','12','WIN_20180818_18_25_36_Pro.jpg',0,2,0.00,0.00,'ABC123',2,''),(4,'RegaShoes',10.00,9.00,'2018-08-22','2018-08-31','2018-08-31',100,'<p>Vamos a regalar zapatos, ven y canjea el cupon y encuentra tus zapatos ideales</p>','Valido solo por las tardes','Suburbia-zapatos1.jpg',6,94,54.00,5.40,'ABC123',2,'');
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -243,10 +251,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `promotion_state`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `promotion_state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `state` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `state` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -267,10 +275,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sales`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sales` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `coupon_code` varchar(13) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `coupon_code` varchar(13) COLLATE utf8_spanish2_ci NOT NULL,
   `promotion_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
@@ -283,7 +291,7 @@ CREATE TABLE `sales` (
   CONSTRAINT `FK_ClientSales` FOREIGN KEY (`client_id`) REFERENCES `user` (`id`),
   CONSTRAINT `FK_SalesPromotion` FOREIGN KEY (`promotion_id`) REFERENCES `promotion` (`id`),
   CONSTRAINT `FK_SalesState` FOREIGN KEY (`sales_state`) REFERENCES `sales_state` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -292,7 +300,7 @@ CREATE TABLE `sales` (
 
 LOCK TABLES `sales` WRITE;
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,'ABC1230000001',1,1,0,1);
+INSERT INTO `sales` VALUES (1,'ABC1230000001',1,1,0,1),(9,'ABC1230000002',2,1,0,2),(10,'ABC1230000003',2,1,0,2),(11,'ABC1230000004',4,1,0,2),(13,'ABC1230000005',4,1,0,2),(14,'ABC1230000006',4,1,0,2),(16,'ABC1230000007',4,1,0,2),(17,'ABC1230000008',2,1,0,2),(18,'ABC1230000009',2,1,0,2),(19,'ABC1230000010',4,1,0,2),(20,'ABC1230000011',4,1,0,2),(21,'ABC1230000012',2,1,0,2),(22,'ABC1230000013',2,1,0,2);
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -328,12 +336,12 @@ DELIMITER ;
 
 DROP TABLE IF EXISTS `sales_state`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sales_state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `state` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `state` varchar(20) COLLATE utf8_spanish2_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,7 +350,7 @@ CREATE TABLE `sales_state` (
 
 LOCK TABLES `sales_state` WRITE;
 /*!40000 ALTER TABLE `sales_state` DISABLE KEYS */;
-INSERT INTO `sales_state` VALUES (1,'Canjeado');
+INSERT INTO `sales_state` VALUES (1,'Canjeado'),(2,'Disponible');
 /*!40000 ALTER TABLE `sales_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -352,25 +360,25 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `last_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `password` char(64) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `name` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `password` char(64) COLLATE utf8_spanish2_ci NOT NULL,
   `user_type` int(11) NOT NULL,
-  `dui` char(10) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
-  `nit` char(17) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `dui` char(10) COLLATE utf8_spanish2_ci NOT NULL,
+  `nit` char(17) COLLATE utf8_spanish2_ci NOT NULL,
   `confirmed` tinyint(1) NOT NULL,
-  `id_confirmation` varchar(70) CHARACTER SET utf8 COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `id_confirmation` varchar(70) COLLATE utf8_spanish2_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `dui` (`dui`),
   UNIQUE KEY `nit` (`nit`),
   KEY `user_type` (`user_type`),
   CONSTRAINT `FK_UserType` FOREIGN KEY (`user_type`) REFERENCES `user_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -379,7 +387,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Alberto','Lemus','albeto@gmai.com','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',1,'12345678-9','1234-123456-123-1',1,NULL);
+INSERT INTO `user` VALUES (1,'Alberto','Lemus','albeto@gmai.com','ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f',1,'12345678-9','1234-123456-123-1',1,NULL),(2,'Leonardo','Lopez','lopezleonardo282@gmail.com','ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f',1,'78945612-8','1234-123456-123-2',1,''),(3,'Guillermo','Calderon','mochila@gmail.com','d17804966de62c4e0cec29504b08b6a23bb86ae089558fbeaae50d921a6a7464',1,'58748548-0','1234-123450-123-1',1,'');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,10 +397,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `user_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_spanish2_ci NOT NULL,
+  `type` varchar(20) COLLATE utf8_spanish2_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -488,6 +496,25 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `check_sale`(IN _coupon_code VARChAR(13), IN _dui VARCHAR(10))
 BEGIN
 	SELECT * FROM sales AS S INNER JOIN user AS U ON S.client_id = U.id WHERE S.coupon_code = _coupon_code AND U.dui = _dui;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `count_sales` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `count_sales`(IN _company VARCHAR(6))
+BEGIN
+SELECT COUNT(*) AS cuenta FROM sales WHERE coupon_code LIKE CONCAT('%',_company,'%');
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -666,6 +693,12 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Current Database: `cuponera`
+--
+
+USE `cuponera`;
+
+--
 -- Final view structure for view `all_users`
 --
 
@@ -692,4 +725,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-20 16:30:44
+-- Dump completed on 2018-08-22 20:24:18

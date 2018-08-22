@@ -220,4 +220,28 @@ public class CompanyModel extends Connection{
             return false;
         }
     }// Fin checkEmail()
+    
+    public boolean checkEmail(String email, String id) throws SQLException {
+        try {
+            String sql = "SELECT * FROM all_users WHERE email = ? AND id != ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, email);
+            st.setString(2, id);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                this.desconectar();
+                return true;
+            }
+            
+            this.desconectar();
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return false;
+        }
+    }// Fin checkEmail()
 }

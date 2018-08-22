@@ -18,14 +18,13 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import sv.edu.udb.www.model.PasswordResetModel;
 
 /**
  *
  * @author leonardo
  */
 // urlPatterns = {"/*"}
-@WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/company/*", "/employee/*", "/client/*", "/admin/*", "/login.jsp", "/register.jsp", "/index.html"})
+@WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/company/*", "/employee/*", "/client/*", "/admin/*", "/login.jsp", "/register.jsp"})
 public class AuthenticationFilter implements Filter {
 
     private ServletContext context;
@@ -78,7 +77,7 @@ public class AuthenticationFilter implements Filter {
                 chain.doFilter(request, response);
             }*/
         } else {
-            this.context.log("Yei");
+//            this.context.log("Yei");
             String[] actualView = req.getRequestURI().split("/");
 
             if ((Boolean) _s.getAttribute("logged")) {

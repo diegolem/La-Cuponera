@@ -23,7 +23,7 @@
                 <a href="${pageContext.request.contextPath}/company/employee.do?op=list" class="purple lighten-2 waves-effect waves-purple btn-large"><i class="material-icons left centered">line_weight</i>Lista de empleados</a>
                 <br>
                 <br>
-                <form class="col s12" id="frmRegisterEmployee" action="${pageContext.request.contextPath}/employee.do" method="POST">
+                <form class="col s12" id="frmRegisterEmployee" action="${pageContext.request.contextPath}/company/employee.do" method="POST">
                     <input type="hidden" name="op" value="insert"/>
                     <div class="row">
                         <div class="input-field col s12 m6">

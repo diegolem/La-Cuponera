@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div class="input-field col s12">
-                        <select name="type">
+                        <select name="type" readonly="true">
                             <option value="" disabled selected>Elegir un rubro</option>
                             <c:forEach items="${requestScope.typesCompany}" var="t">
                                 <c:choose>
