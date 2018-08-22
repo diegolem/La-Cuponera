@@ -331,7 +331,7 @@ public class companyController extends HttpServlet {
             }
 
             if (Validacion.esCorreo(request.getParameter("email"))) {
-                if (!companyModel.checkEmail(request.getParameter("email"))) {
+                if (!companyModel.checkEmail(request.getParameter("email"), request.getParameter("idCompany"))) {
                     company.setEmail(request.getParameter("email"));
                 } else {
                     errorsList.put("email", "Favor agregar otra dirección de correo electrónico");
@@ -339,7 +339,7 @@ public class companyController extends HttpServlet {
             } else {
                 errorsList.put("email", "El email no es válido [algo@server.com]");
             }
-
+            System.out.println(company.getCompanyType().getType());
             if (Validacion.esEnteroPositivo(request.getParameter("comission"))) {
                 company.setPctComission(Integer.parseInt(request.getParameter("comission")));
                 if (company.getPctComission() > 99) {
@@ -353,7 +353,7 @@ public class companyController extends HttpServlet {
                 request.setAttribute("errorsList", errorsList);
                 request.setAttribute("company", company);
                 request.setAttribute("typesCompany", companyTypeModel.getCompanyTypes(false));
-                request.getRequestDispatcher("/company/editCompany.jsp").forward(request, response);
+                request.getRequestDispatcher("/admin/company/editCompany.jsp").forward(request, response);
             } else {
                 if (companyModel.updateCompany(company)) { // Se insertó correctamente
                     request.getSession().setAttribute("success", "Empresa editada");

@@ -71,7 +71,7 @@
                                     M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'});
                                 }else if(response === "1"){
                                     $( "#"+a ).remove();
-                                    M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = 'employee.do?op=list' }});
+                                    M.toast({html: 'Eliminación exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/company/employee.do?op=list' }});
                                 }
                             }
                         });

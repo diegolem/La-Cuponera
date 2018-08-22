@@ -54,7 +54,7 @@
                                 </td>
                                 <td>${sales.state.state}</td>
                                 <td>
-                                    <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
+                                    <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                 </td>
                             </tr>
                         </c:forEach>

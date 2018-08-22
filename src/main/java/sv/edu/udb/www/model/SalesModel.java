@@ -81,7 +81,7 @@ public class SalesModel extends Connection {
         try {
             ArrayList<Sales> sales = new ArrayList<Sales>();
             ArrayList<Integer> id = new ArrayList<Integer>();
-            String sql = "SELECT * FROM sales WHERE client_id = ?";
+            String sql = "SELECT * FROM sales WHERE client_id = ? AND sales_state = 2";
 
             this.conectar();
             st = conexion.prepareStatement(sql);
@@ -245,6 +245,47 @@ public class SalesModel extends Connection {
         }
     }//Fin getSale
 
+    public String generateCode(Company company) throws SQLException {
+        try {
+            int cuenta = 0;
+            String codigo = "";
+            String sql = "CALL count_sales(?)";
+            this.conectar();
+            cs = conexion.prepareCall(sql);
+            cs.setString(1, company.getIdCompany());
+            rs = cs.executeQuery();
+            if (rs.next()) {
+                cuenta = Integer.parseInt(rs.getString("cuenta"));
+                this.desconectar();
+                if (cuenta > 0) {
+                    cuenta += 1;
+                    if (cuenta < 10) {
+                        codigo = company.getIdCompany() + "000000" + cuenta;
+                    } else if (cuenta >= 10 && cuenta < 100) {
+                        codigo = company.getIdCompany() + "00000" + cuenta;
+                    } else if (cuenta >= 100 && cuenta < 1000) {
+                        codigo = company.getIdCompany() + "0000" + cuenta;
+                    } else if (cuenta >= 1000 && cuenta < 10000) {
+                        codigo = company.getIdCompany() + "000" + cuenta;
+                    } else if (cuenta >= 10000 && cuenta < 100000) {
+                        codigo = company.getIdCompany() + "00" + cuenta;
+                    } else if (cuenta >= 100000 && cuenta < 1000000) {
+                        codigo = company.getIdCompany() + "0" + cuenta;
+                    } else {
+                        codigo = company.getIdCompany() + cuenta;
+                    }
+                } else {
+                    codigo = company.getIdCompany() + "0000001";
+                }
+            }
+            return codigo;
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }
+
     public boolean insertSales(Sales sale) throws SQLException {
         try {
             int affectedRows = 0;
@@ -374,7 +415,7 @@ public class SalesModel extends Connection {
             return false;
         }
     }// deleteSales()
-    
+
     public boolean deleteSales(User user) throws SQLException {
         try {
             int affectedRows = 0;

@@ -274,13 +274,13 @@ public class promotionController extends HttpServlet {
                 promotion.setCompany(company);
                 if (promotionModel.insertPromotion(promotion)) {
                     request.getSession().setAttribute("success", "Oferta registrada");
-                    response.sendRedirect(request.getContextPath() + "/company/promtion.do?op=list");
+                    response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
                 } else {
                     if (multimedia.getFile("img") != null) {
                         multimedia.getFile("img").delete();
                     }
                     request.getSession().setAttribute("error", "Oferta no registrada");
-                    response.sendRedirect(request.getContextPath() + "/company/promtion.do?op=list");
+                    response.sendRedirect(request.getContextPath() + "/company/promotion.do?op=list");
                 }
             }
         } catch (SQLException | ServletException ex) {

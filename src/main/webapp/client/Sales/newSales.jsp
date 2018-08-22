@@ -20,13 +20,9 @@
                     <div class="grid-sizer">
                         <c:choose>
                             <c:when test="${empty requestScope.promotions}">
-                                <nav>
-                                  <div class="nav-wrapper red darken-4">
-                                    <div class="col s12">
-                                      <a href="#!" class="breadcrumb">No hay Promociones aprobadas!!</a>
-                                    </div>
-                                  </div>
-                                </nav>
+                                <div class="alert lighten-2 white-text red darken-4 center">
+                                    No hay Promociones aprobadas!!
+                                </div>
                             </c:when>
                             <c:when test="${not empty requestScope.promotions}">
                                 <c:forEach var="promotion" items="${requestScope.promotions}">
@@ -41,7 +37,7 @@
                                                 </span>
 
                                                 <p class='center-align'>
-                                                    <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion})">Comprar</a>
+                                                    <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion}, '${promotion.company.idCompany}')">Comprar</a>
                                                 </p>
                                             </div>
                                             <div class="card-reveal">
@@ -69,17 +65,15 @@
                                 <div class="row">
                                     <div class="input-field col s6">
                                         <input type="hidden" readonly="true" id="idCt"/>
+                                        <input type="hidden" readonly="true" id="idCom"/>
                                         <label for="numCu">Por favor especifique el número de cupones:</label>
                                         <input type="number" max="10" min="1" id="numCu" autocomplete="false"/>
-                                        <span class="error-block red-text">
-                                            <strong id="error-txt"></strong>
-                                        </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <a href="javascript:void(0)" class="modal-close waves-effect waves-light red darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
-                                <a href="#!" onclick="buyPromotion($('#idCt').val(),$('#numCu').val())" class="waves-effect waves-light green darken-3 btn"><i class="material-icons left">attach_money</i>Comprar</a>
+                                <a href="#!" onclick="buyPromotion($('#idCt').val(),$('#numCu').val(),$('#idCom').val())" class="waves-effect waves-light green darken-3 btn"><i class="material-icons left">attach_money</i>Comprar</a>
                             </div>
                         </div>
                     </div>
@@ -95,9 +89,10 @@
                 columnWidth: 200
             });
         });
+        
         function setId(id){
-                $('#idCt').val(id);
-            }
+            $('#idCt').val(id);
+        }
         function buyPromotion(id,cant){
             $.ajax({
                 url: "${pageContext.request.contextPath}/client/sales.do?op=buy",
@@ -108,10 +103,10 @@
                 },
                 success: function(response){
                     if(response === "0"){
-                            M.toast({html: 'Ha ocurrido un error en el proceso de compra'})
-                        }else if(response === "1"){
-                            M.toast({html: 'Compra Exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC' }})
-                        }
+                        M.toast({html: 'Ha ocurrido un error en el proceso de compra'})
+                    }else if(response === "1"){
+                        M.toast({html: 'Compra Exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC' }})
+                    }
                 }
             });
         }
