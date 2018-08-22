@@ -41,7 +41,7 @@
                                                 </span>
 
                                                 <p class='center-align'>
-                                                    <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion},${promotion.idCompany})">Comprar</a>
+                                                    <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion}, '${promotion.company.idCompany}')">Comprar</a>
                                                 </p>
                                             </div>
                                             <div class="card-reveal">

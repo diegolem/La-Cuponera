@@ -125,22 +125,22 @@ public class loginController extends HttpServlet {
                         switch (user.getUserType().toLowerCase()) {
                             case "company":
                                 _s.setAttribute("user", user.getCompany());
-                                _s.setAttribute("redirect", request.getContextPath() + "/company/index.jsp");
+                                _s.setAttribute("redirect", request.getContextPath() + "/company/user.do");
                                 _s.setAttribute("type", "company");
                                 break;
                             case "client":
                                 _s.setAttribute("user", user.getUser());
-                                _s.setAttribute("redirect", request.getContextPath() + "/client/index.jsp");
+                                _s.setAttribute("redirect", request.getContextPath() + "/client/user.do");
                                 _s.setAttribute("type", "client");
                                 break;
                             case "administrator":
                                 _s.setAttribute("user", user.getUser());
-                                _s.setAttribute("redirect", request.getContextPath() + "/admin/index.jsp");
+                                _s.setAttribute("redirect", request.getContextPath() + "/admin/user.do");
                                 _s.setAttribute("type", "admin");
                                 break;
                             case "employee":
                                 _s.setAttribute("user", user.getEmployee());
-                                _s.setAttribute("redirect", request.getContextPath() + "/employee/index.jsp");
+                                _s.setAttribute("redirect", request.getContextPath() + "/employee/user.do");
                                 _s.setAttribute("type", "employee");
                                 break;
                         }

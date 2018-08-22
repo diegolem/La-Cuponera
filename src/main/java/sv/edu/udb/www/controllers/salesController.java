@@ -42,7 +42,7 @@ public class salesController extends HttpServlet {
     SalesStateModel salesStates = new SalesStateModel();
     PromotionModel promotions = new PromotionModel();
     HashMap<String, String> errorsList = new HashMap<>();
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -70,7 +70,7 @@ public class salesController extends HttpServlet {
                         newCupon(request, response);
                         break;
                     case "buy":
-                        buyCupon(request,response);
+                        buyCupon(request, response);
                         break;
                 }
             } else {
@@ -190,69 +190,76 @@ public class salesController extends HttpServlet {
             int cant = 0;
             String idC = "";
             int idP = 0;
+
             if (Validacion.esEnteroPositivo(request.getParameter("Cantidad"))) {
                 cant = Integer.parseInt(request.getParameter("Cantidad"));
             } else {
                 errorsList.put("cantidad", "Porfavor ingrese un número válido");
             }
+
             if (Validacion.esCodigoEmpresa(request.getParameter("idCompany"))) {
                 idC = request.getParameter("idCompany");
             } else {
                 errorsList.put("codigo", "Porfavor revise los datos");
             }
+
             if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
                 idP = Integer.parseInt(request.getParameter("idPromotion"));
             } else {
                 errorsList.put("promotion", "Porfavor revise los datos");
             }
+
             if (errorsList.size() > 0) {
-                request.setAttribute("errorsList", errorsList);
-                request.setAttribute("cantidad", cant);
-                request.getRequestDispatcher("/client/sales.do?op=newC").forward(request, response);
+                out.print("-2");
+                //request.setAttribute("errorsList", errorsList);
+                //request.setAttribute("cantidad", cant);
+                //request.getRequestDispatcher("/client/sales.do?op=newC").forward(request, response);
             } else {
                 ArrayList<String> ids = new ArrayList<>();
                 //inicio del for
-                for (int i = 0;i <= cant;i++) {
-                    Company company = new Company();
+                Company company = new Company();
+                company.setIdCompany(idC);
+                HttpSession session = request.getSession(true);
+                User user = (User) session.getAttribute("user");
+                user.setIdUser(user.getIdUser());
+                Promotion promot = new Promotion();
+                SalesState stat = new SalesState();
+                stat.setIdSalesState(2);
+                promot.setIdPromotion(idP);
+                
+                for (int i = 0; i < cant; i++) {
                     Sales salesN = new Sales();
-                    Promotion promot = new Promotion();
-                    SalesState stat = new SalesState();
-                    
-                    company.setIdCompany(idC);
+
                     //Asignando el codigo del cupon
-                    salesN.setCouponCode(sales.genCodeSalesnew(company));
+                    salesN.setCouponCode(sales.generateCode(company));
                     //Asignando el codigo de la promotion
-                    promot.setIdPromotion(idP);
+
                     salesN.setPromotion(promot);
                     //Asignando el Cliente
-                    HttpSession session = request.getSession(true);
-                    User user = (User) session.getAttribute("user");
-                    user.setIdUser(user.getIdUser());
+
                     salesN.setClient(user);
                     //Falta asignar el estado
-                    stat.setIdSalesState(2);
+
                     salesN.setState(stat);
                     //Realizando el proceso - Falta el for para la cantidad
                     if (sales.insertSales(salesN)) {
-                        //Añadiendo el codigo del cupon a un array 
+                    //Añadiendo el codigo del cupon a un array 
                         ids.add(salesN.getCouponCode());
-                    } else {
-                        out.print("0");
                     }
                 }//fin for
                 //Verificando si el tamaño de transacciones es igual a la cantidad
-                    if(ids.size() == cant){
-                        out.print("1");
-                        //Aqui vamos a generar el JasperReport
-                        request.getSession().setAttribute("success", "Cupones comprados");
-                        response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
-                    }else{
-                        out.print("0");
-                        request.getSession().setAttribute("error", "Los cupones no se pudieron comprar");
-                        response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
-                    }
+                if (ids.size() == cant) {
+                    out.print("1");
+                    //Aqui vamos a generar el JasperReport
+                    //request.getSession().setAttribute("success", "Cupones comprados");
+                    //response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
+                } else {
+                    out.print("0");
+                    //request.getSession().setAttribute("error", "Los cupones no se pudieron comprar");
+                    //response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
+                }
             }
-        } catch (ServletException | IOException | SQLException ex) {
+        } catch (IOException | SQLException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

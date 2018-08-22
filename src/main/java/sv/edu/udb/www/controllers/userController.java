@@ -38,7 +38,7 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "userController", urlPatterns = {"/user.do", "/admin/user.do"})
+@WebServlet(name = "userController", urlPatterns = {"/user.do", "/admin/user.do", "/company/user.do", "/employee/user.do", "/client/user.do"})
 public class userController extends HttpServlet {
 
     SalesModel sales = new SalesModel();
@@ -63,6 +63,10 @@ public class userController extends HttpServlet {
             String opcion = request.getParameter("op");
             HttpSession _s = request.getSession(true);
             if (_s.getAttribute("logged") != null) {
+                if(opcion == null){
+                    request.getRequestDispatcher("/" + _s.getAttribute("type")  + "/index.jsp").forward(request, response);
+                    return;
+                }
                 switch (opcion) {
                     case "list_client":
                         listClient(request, response);
