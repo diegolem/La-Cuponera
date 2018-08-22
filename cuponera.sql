@@ -587,9 +587,9 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_company`(IN _id VARCHAR(6), IN _address VARCHAR(100), IN _contact_name VARCHAR(50), IN _telephone VARCHAR(9), IN _email VARCHAR(50), IN _name VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_company`(IN _id VARCHAR(6), IN _address VARCHAR(100), IN _contact_name VARCHAR(50), IN _telephone VARCHAR(9), IN _email VARCHAR(50), IN _name VARCHAR(50), IN _type INTEGER)
 BEGIN
-	UPDATE company SET address = _address, contact_name = _contact_name, telephone = _telephone, email = _email, name = _name WHERE id = _id;
+	UPDATE company SET address = _address, contact_name = _contact_name, telephone = _telephone, email = _email, name = _name, type_company = _type WHERE id = _id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;

@@ -32,7 +32,7 @@
                             <a title="Rechazar Oferta" disabled href="#"  class="waves-effect waves-light btn-large"><i class="material-icons centered">clear</i></a>
                         </c:when>
                         <c:when test="${promotion.promotionState.idPromotionState eq 1}">
-                            <a title="Aceptar Oferta" onclick="acceptPromotion('${promotion.idPromotion}')" class="waves-effect waves-light btn-large"><i class="material-icons centered">check</i></a>
+                            <a title="Aceptar Oferta" onclick="setIdAccept('${promotion.idPromotion}')" href="#mdlAccept" class="modal-trigger waves-effect waves-light btn-large"><i class="material-icons centered">check</i></a>
                             <a title="Rechazar Oferta" onclick="setIdRejected('${promotion.idPromotion}')" href="#mdlRejected" class="modal-trigger waves-effect waves-light btn-large"><i class="material-icons centered">clear</i></a>
                         </c:when>
                         <c:otherwise>
@@ -76,13 +76,25 @@
                         <li><b>Empresa: </b>${promotion.company.name}</li>
                     </ul>
                 </div>
+                <div class="center-align">
+                    <img class="materialboxed" width="650" src="${pageContext.request.contextPath}/img/${promotion.image}">
+                </div>
             </div>
-            <div id="mdlRejected" class="modal modal-fixed-footer">
-                <div class="modal-content center">
-                    <h4 id="header-modal center">Rechazar Oferta</h4>
-                    <div class="divider"></div> 
-                    <br>
-                    <br>
+            <div id="mdlAccept" class="modal">
+                <div class="modal-content">
+                    <h4 class="center purple-text text-darken-4">¿Realmente deseas aceptar esta oferta?</h4>
+                    <input type="hidden" readonly="true" id="idPromotionAccept"/>
+                </div>
+                <div class="col s12  btn-cont">
+                    <button type="button" onclick="acceptPromotion()" class="waves-effect waves-light teal darken-1 btn"><i class="material-icons left">send</i>Aceptar</button>
+                    <a href="#!" class="modal-close waves-effect waves-light red darken-3 btn"><i class="material-icons left">close</i>Cancelar</a>
+                </div>
+                <br>
+            </div>
+
+            <div id="mdlRejected" class="modal">
+                <div class="modal-content">
+                    <h4 class="center purple-text text-darken-4">¿Realmente deseas rechazar esta oferta?</h4>
                     <form enctype="multipart/form-data" class="col s12" id="frmRejectedPromotion" method="POST">
                         <input type="hidden" readonly="true" id="idPromotionRejected" name="idPromotionRejected"/>
                         <div class="input-field col s12">
@@ -91,10 +103,11 @@
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
+                <div class="col s12  btn-cont">
                     <button type="submit" form="frmRejectedPromotion" class="waves-effect waves-light teal darken-1 btn"><i class="material-icons left">send</i>Enviar</button>
                     <a href="#!" class="modal-close waves-effect waves-light red darken-3 btn"><i class="material-icons left">close</i>Cancelar</a>
                 </div>
+                <br>
             </div>
             <div id="mdlSales" class="modal bottom-sheet">
                 <div class="modal-content">
@@ -137,6 +150,7 @@
             </div>
         </main>
         <script>
+            let loader = new Loader();
             $(document).ready(function () {
                 $('.modal').modal();
 
@@ -152,6 +166,7 @@
                         }
                     },
                     submitHandler: function (form) {
+                        loader.in();
                         $.ajax({
                             url: "${pageContext.request.contextPath}/admin/promotion.do?op=rejected",
                             type: "GET",
@@ -160,44 +175,68 @@
                                 rejectedDescription: $('#frmRejectedPromotion #rejectedDescription').val()
                             },
                             success: function (response) {
+                                let text = '', classes = '', callback;
                                 if (response === "0") {
-                                    M.toast({html: 'Ha ocurrido un error en el proceso de rechazo'})
+                                    text = 'Ha ocurrido un error en el proceso de rechazo';
+                                    classes = 'red lighten-1';
+                                    callback = function () {};
                                 } else if (response === "1") {
-                                    M.toast({html: 'Rechazo ingresado exitosamente', completeCallback: function () {
-                                            location.href = '${pageContext.request.contextPath}/admin/promotion.do?op=list'
-                                        }});
+                                    text = 'Rehazada exitosamente';
+                                    classes = 'green darken-2';
+                                    callback = function () {
+                                        location.href = '${pageContext.request.contextPath}/admin/promotion.do?op=list';
+                                    };
                                 }
+                                M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
                             }, error: function (err) {
                                 M.toast({html: "En este momento no se puede establecer la conexión con el servidor. Inténtelo más tarde... <i class='material-icons right'>error</i>", classes: "red darken-5"});
                             }
+                        }).done(function () {
+                            loader.out();
                         });
                         return false;  //This doesn't prevent the form from submitting.
                     }
                 });
             });
+
             function setIdRejected(id) {
                 $('#frmRejectedPromotion #idPromotionRejected').val(id);
             }
 
-            function acceptPromotion(id) {
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/admin/promotion.do?op=accept",
-                    type: "GET",
-                    data: {
-                        idPromotion: id
-                    },
-                    success: function (response) {
-                        if (response === "0") {
-                            M.toast({html: 'Ha ocurrido un error en el proceso de aceptación'})
-                        } else if (response === "1") {
-                            M.toast({html: 'Se ha aceptado la oferta exitosamente', completeCallback: function () {
-                                    location.href = '${pageContext.request.contextPath}/admin/promotion.do?op=list'
-                                }});
+            function setIdAccept(id) {
+                $('#mdlAccept #idPromotionAccept').val(id);
+            }
+
+            function acceptPromotion() {
+                if ($('#mdlAccept #idPromotionAccept').val() !== null) {
+                    loader.in();
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/admin/promotion.do?op=accept",
+                        type: "GET",
+                        data: {
+                            idPromotion: $('#mdlAccept #idPromotionAccept').val()
+                        },
+                        success: function (response) {
+                            let text = '', classes = '', callback;
+                            if (response === "0") {
+                                text = 'Ha ocurrido un error en el proceso de aceptación';
+                                classes = 'red lighten-1';
+                                callback = function () {};
+                            } else if (response === "1") {
+                                text = 'Oferta aceptada';
+                                classes = 'green darken-2';
+                                callback = function () {
+                                    location.href = '${pageContext.request.contextPath}/admin/promotion.do?op=list';
+                                };
+                            }
+                            M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
+                        }, error: function (err) {
+                            M.toast({html: "En este momento no se puede establecer la conexión con el servidor. Inténtelo más tarde... <i class='material-icons right'>error</i>", classes: "red darken-5"});
                         }
-                    }, error: function (err) {
-                        M.toast({html: "En este momento no se puede establecer la conexión con el servidor. Inténtelo más tarde... <i class='material-icons right'>error</i>", classes: "red darken-5"});
-                    }
-                });
+                    }).done(function () {
+                        loader.out();
+                    });
+                }
             }
         </script>
     </body>
