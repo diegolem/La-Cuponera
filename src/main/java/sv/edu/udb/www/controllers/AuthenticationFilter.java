@@ -25,7 +25,7 @@ import sv.edu.udb.www.model.PasswordResetModel;
  * @author leonardo
  */
 // urlPatterns = {"/*"}
-@WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/company/*", "/employee/*", "/client/*", "/admin/*"})
+@WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/company/*", "/employee/*", "/client/*", "/admin/*", "/login.jsp", "/register.jsp", "/index.html"})
 public class AuthenticationFilter implements Filter {
 
     private ServletContext context;
@@ -46,8 +46,17 @@ public class AuthenticationFilter implements Filter {
         if ( _s.getAttribute("logged") == null) {   // checking whether the session exists
             this.context.log("Unauthorized access request");
             _s.invalidate();
+            
+            String[] actualView = req.getRequestURI().split("/");
+            
+            if(Arrays.asList(actualView).contains("company") || Arrays.asList(actualView).contains("admin")
+               || Arrays.asList(actualView).contains("client") || Arrays.asList(actualView).contains("employee")){
+                res.sendRedirect(req.getContextPath() + "/login.jsp");
+            }else{
+                chain.doFilter(request, response);
+            }
 
-            boolean flag = false;
+            /*boolean flag = false;
 
             if(!req.getRequestURI().equals(req.getContextPath() + "/login.jsp")){
                 flag = true;
@@ -67,7 +76,7 @@ public class AuthenticationFilter implements Filter {
                 res.sendRedirect(req.getContextPath() + "/login.jsp");
             }else{
                 chain.doFilter(request, response);
-            }
+            }*/
         } else {
             this.context.log("Yei");
             String[] actualView = req.getRequestURI().split("/");

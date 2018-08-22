@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.primefaces.json.JSONObject;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.CompanyType;
@@ -24,7 +25,7 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "companyController", urlPatterns = {"/company.do", "/admin/company.do"})
+@WebServlet(name = "companyController", urlPatterns = {"/admin/company.do"})
 public class companyController extends HttpServlet {
 
     CompanyModel companyModel = new CompanyModel();
@@ -36,37 +37,42 @@ public class companyController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             String operation = request.getParameter("op");
+            HttpSession _s = request.getSession(true);
 
             if (operation == null) {
                 list(request, response);
                 return;
             }
 
-            switch (operation) {
-                case "list":
-                    list(request, response);
-                    break;
-                case "new":
-                    add(request, response);
-                    break;
-                case "insert":
-                    insert(request, response);
-                    break;
-                case "get":
-                    get(request, response);
-                    break;
-                case "details":
-                    details(request, response);
-                    break;
-                case "edit":
-                    edit(request, response);
-                    break;
-                case "update":
-                    update(request, response);
-                    break;
-                case "delete":
-                    delete(request, response);
-                    break;
+            if (_s.getAttribute("logged") != null) {
+                switch (operation) {
+                    case "list":
+                        list(request, response);
+                        break;
+                    case "new":
+                        add(request, response);
+                        break;
+                    case "insert":
+                        insert(request, response);
+                        break;
+                    case "get":
+                        get(request, response);
+                        break;
+                    case "details":
+                        details(request, response);
+                        break;
+                    case "edit":
+                        edit(request, response);
+                        break;
+                    case "update":
+                        update(request, response);
+                        break;
+                    case "delete":
+                        delete(request, response);
+                        break;
+                }
+            } else {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
             }
         }
     }

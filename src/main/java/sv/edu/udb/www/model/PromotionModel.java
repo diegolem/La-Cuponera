@@ -38,6 +38,33 @@ public class PromotionModel extends Connection {
             return null;
         }
     }// Fin getPromotions()
+    public List<Promotion> getPromotionsA(String accion,boolean relationship) throws SQLException{
+        try {
+            if(accion.equals("Aprobados")) {
+                ArrayList<Promotion> promotions = new ArrayList<>();
+                ArrayList<Integer> id = new ArrayList<>();
+                String sql = "SELECT id FROM promotion WHERE id_state = 2";
+
+                this.conectar();
+                st = conexion.prepareStatement(sql);
+                rs = st.executeQuery();
+                while (rs.next()) {
+                    id.add(rs.getInt("id"));
+                }
+                this.desconectar();
+
+                for (int i = 0; i < id.size(); i++) {
+                    promotions.add(this.getPromotion(id.get(i), relationship));
+                }
+                return promotions;
+            }
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(PromotionModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }// Fin getPromotions()
     
     public List<Promotion> getPromotions(PromotionState promotionState, boolean relationship) throws SQLException{
         try {
