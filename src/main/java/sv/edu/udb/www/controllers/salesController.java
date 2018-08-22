@@ -78,6 +78,10 @@ public class salesController extends HttpServlet {
                     case "buy":
                         buyCupon(request, response);
                         break;
+                    case "exchange":
+                        exchange(request,response);
+                        break;
+                        
                 }
             } else {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -282,6 +286,10 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
         } catch (ServletException | IOException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void exchange(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/employee/sale/redeemCoupons.jsp").forward(request, response);
     }
 
 }

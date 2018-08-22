@@ -94,7 +94,7 @@
                                     list += "<div class='collapsible-body'>";
                                         list += "<div class='row'>";
                                             list += "<div class='col s12'>";
-                                                list += "<center><img src='${pageContext.request.contextPath}/assets/img/" + value.imagen +"' width='250px' alt=''></center>";
+                                                list += "<center><img src='${pageContext.request.contextPath}/img/" + value.imagen +"' width='250px' alt=''></center>";
                                             list += "</div>";
                                         list += "</div>";
 

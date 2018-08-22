@@ -118,7 +118,7 @@
                         var list = "";
                         
                         $.each( data, function( key, value ) {
-                            list += "<li class='collection-item avatar row'><img src='${pageContext.request.contextPath}/assets/img/" + value.image + "' alt=''  class='col s6 m4 l1'><div class='col s6 m8 l11'><span class='title'>Code: " + key + "</span><p>Titulo: " + value.titulo + " <br>Descripcion: " + value.descripcion + "<br>Fecha limite: " + value.fechaLimite + "</p><div></li>";
+                            list += "<li class='collection-item avatar row'><img src='${pageContext.request.contextPath}/img/" + value.image + "' alt=''  class='col s6 m4 l1'><div class='col s6 m8 l11'><span class='title'>Code: " + key + "</span><p>Titulo: " + value.titulo + " <br>Descripcion: " + value.descripcion + "<br>Fecha limite: " + value.fechaLimite + "</p><div></li>";
                         });
                         
                         $("#listSales").html(list);
