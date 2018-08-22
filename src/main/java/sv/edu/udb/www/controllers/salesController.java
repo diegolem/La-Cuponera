@@ -69,6 +69,9 @@ public class salesController extends HttpServlet {
                     case "newC":
                         newCupon(request, response);
                         break;
+                    case "details":
+                        detailsCupon(request, response);
+                        break;
                     case "buy":
                         buyCupon(request, response);
                         break;
@@ -176,7 +179,7 @@ public class salesController extends HttpServlet {
     private void newCupon(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         try {
             request.setAttribute("title", "Comprar Cupon");
-            request.setAttribute("promotions", promotions.getPromotionsA("Aprobados", true));
+            request.setAttribute("promotions", promotions.getPromotionsA(true));
             request.getRequestDispatcher("/client/Sales/newSales.jsp").forward(request, response);
         } catch (ServletException | IOException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
@@ -208,12 +211,9 @@ public class salesController extends HttpServlet {
             } else {
                 errorsList.put("promotion", "Porfavor revise los datos");
             }
-
+            //Aqui para abajo
             if (errorsList.size() > 0) {
                 out.print("-2");
-                //request.setAttribute("errorsList", errorsList);
-                //request.setAttribute("cantidad", cant);
-                //request.getRequestDispatcher("/client/sales.do?op=newC").forward(request, response);
             } else {
                 ArrayList<String> ids = new ArrayList<>();
                 //inicio del for
@@ -222,6 +222,7 @@ public class salesController extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 User user = (User) session.getAttribute("user");
                 user.setIdUser(user.getIdUser());
+                
                 Promotion promot = new Promotion();
                 SalesState stat = new SalesState();
                 stat.setIdSalesState(2);
@@ -241,7 +242,7 @@ public class salesController extends HttpServlet {
                     //Falta asignar el estado
 
                     salesN.setState(stat);
-                    //Realizando el proceso - Falta el for para la cantidad
+                    //Realizando el proceso 
                     if (sales.insertSales(salesN)) {
                     //Añadiendo el codigo del cupon a un array 
                         ids.add(salesN.getCouponCode());
@@ -250,16 +251,32 @@ public class salesController extends HttpServlet {
                 //Verificando si el tamaño de transacciones es igual a la cantidad
                 if (ids.size() == cant) {
                     out.print("1");
-                    //Aqui vamos a generar el JasperReport
-                    //request.getSession().setAttribute("success", "Cupones comprados");
-                    //response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
                 } else {
                     out.print("0");
-                    //request.getSession().setAttribute("error", "Los cupones no se pudieron comprar");
-                    //response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
                 }
             }
         } catch (IOException | SQLException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void detailsCupon(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+            try {
+            if (Validacion.esEnteroPositivo(request.getParameter("idSales"))) {
+                Sales sale = sales.getSale(Integer.parseInt(request.getParameter("idSales")), true);
+                if (sale != null) {
+                    request.setAttribute("coupon", sale);
+                    request.setAttribute("title", "Detalle del cupon");
+                    request.getRequestDispatcher("/client/Sales/detailsSales.jsp").forward(request, response);
+                } else {
+                    request.getSession().setAttribute("error", "No se ha encontrado ningun cupon");
+                    response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
+                }
+            } else {
+                request.getSession().setAttribute("error", "No se ha encontrado ningun rubro");
+                response.sendRedirect(request.getContextPath() + "/client/sales.do?op=listC");
+            }
+        } catch (ServletException | IOException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

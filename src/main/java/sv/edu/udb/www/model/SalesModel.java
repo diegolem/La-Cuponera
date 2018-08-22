@@ -52,7 +52,7 @@ public class SalesModel extends Connection {
         try {
             ArrayList<Sales> sales = new ArrayList<Sales>();
             ArrayList<Integer> id = new ArrayList<Integer>();
-            String sql = "SELECT * FROM sales WHERE client_id = ?";
+            String sql = "SELECT * FROM sales WHERE client_id = ? AND sales_state = 2";
 
             this.conectar();
             st = conexion.prepareStatement(sql);

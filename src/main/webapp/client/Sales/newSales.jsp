@@ -20,13 +20,9 @@
                     <div class="grid-sizer">
                         <c:choose>
                             <c:when test="${empty requestScope.promotions}">
-                                <nav>
-                                  <div class="nav-wrapper red darken-4">
-                                    <div class="col s12">
-                                      <a href="#!" class="breadcrumb">No hay Promociones aprobadas!!</a>
-                                    </div>
-                                  </div>
-                                </nav>
+                                <div class="alert lighten-2 white-text red darken-4 center">
+                                    No hay Promociones aprobadas!!
+                                </div>
                             </c:when>
                             <c:when test="${not empty requestScope.promotions}">
                                 <c:forEach var="promotion" items="${requestScope.promotions}">
@@ -71,14 +67,7 @@
                                         <input type="hidden" readonly="true" id="idCt"/>
                                         <input type="hidden" readonly="true" id="idCom"/>
                                         <label for="numCu">Por favor especifique el número de cupones:</label>
-                                        <input type="number" max="10" min="1" id="numCu" value="${cantidad}" autocomplete="false"/>
-                                        <c:if test="${not empty requestScope.errorsList}">
-                                            <c:if test = "${not empty requestScope.errorsList['cantidad']}">
-                                                <span class="error-block red-text">
-                                                    <strong id="error-txt">${requestScope.errorsList['cantidad']}</strong>
-                                                </span>
-                                            </c:if>
-                                        </c:if>
+                                        <input type="number" max="10" min="1" id="numCu" autocomplete="false"/>
                                     </div>
                                 </div>
                             </div>
@@ -118,6 +107,8 @@
                             M.toast({html: 'Ha ocurrido un error en el proceso de compra'})
                         }else if(response === "1"){
                             M.toast({html: 'Compra Exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC' }})
+                        }else if(response === "-2"){
+                            M.toast({html: 'Revise los datos'})
                         }
                 }
             });
