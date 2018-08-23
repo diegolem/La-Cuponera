@@ -21,15 +21,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Promotion;
-import sv.edu.udb.www.beans.PromotionState;
 import sv.edu.udb.www.model.PromotionModel;
 import sv.edu.udb.www.model.PromotionStateModel;
 import sv.edu.udb.www.utilities.Validacion;
@@ -351,7 +347,7 @@ public class promotionController extends HttpServlet {
 
                     if (promotion != null) {
                         Company currentCompany = (Company) _s.getAttribute("user");
-                        if(promotion.getCompany().getIdCompany().equals(currentCompany.getIdCompany())){
+                        if (promotion.getCompany().getIdCompany().equals(currentCompany.getIdCompany())) {
                             if (promotion.getPromotionState().getState().toLowerCase().equals("rechazada")) {
                                 request.setAttribute("title", "Editar oferta");
                                 request.setAttribute("promotion", promotion);
@@ -359,7 +355,7 @@ public class promotionController extends HttpServlet {
                             } else {
                                 request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
                             }
-                        }else{
+                        } else {
                             request.getRequestDispatcher("/company/promotion.do?op=list").forward(request, response);
                         }
                     } else {

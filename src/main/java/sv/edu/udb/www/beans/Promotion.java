@@ -5,6 +5,8 @@
  */
 package sv.edu.udb.www.beans;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -182,6 +184,21 @@ public class Promotion {
 
     public void setPromotionState(PromotionState promotionState) {
         this.promotionState = promotionState;
+    }
+    
+    public String getStringInitDate() {
+        DateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+        return dt.format(initDate);
+    }
+    
+    public String getStringEndDate() {
+        DateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+        return dt.format(endDate);
+    }
+    
+    public String getStringLimitDate() {
+        DateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+        return dt.format(limitDate);
     }
     
     // Constructores

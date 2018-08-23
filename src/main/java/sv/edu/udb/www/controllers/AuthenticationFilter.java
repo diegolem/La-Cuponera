@@ -50,7 +50,7 @@ public class AuthenticationFilter implements Filter {
             
             if(Arrays.asList(actualView).contains("company") || Arrays.asList(actualView).contains("admin")
                || Arrays.asList(actualView).contains("client") || Arrays.asList(actualView).contains("employee")){
-                res.sendRedirect(req.getContextPath() + "/login.jsp");
+                res.sendRedirect(req.getContextPath() + "/login");
             }else{
                 chain.doFilter(request, response);
             }

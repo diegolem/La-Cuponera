@@ -62,9 +62,9 @@
         <li>
             <div class="divider"></div>
         </li>
-        <li class="nav-item"><a href="#"><i class="material-icons">settings</i>Mi cuenta</a></li> 
+        <li class="nav-item"><a href="${pageContext.request.contextPath}/company/config.do"><i class="material-icons">settings</i>Mi cuenta</a></li> 
         <li  class="nav-item">
-            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesión"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a>
+            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesion"><i class="material-icons">exit_to_app</i>Cerrar Sesion</a>
         </li>
     </ul>
 </header>

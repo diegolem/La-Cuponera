@@ -23,7 +23,7 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author leonardo
  */
-@WebServlet(name = "loginController", urlPatterns = {"/login.do", "/company/login.do", "/employee/login.do", "/client/login.do", "/admin/login.do"})
+@WebServlet(name = "loginController", urlPatterns = {"/login", "/login.do", "/company/login.do", "/employee/login.do", "/client/login.do", "/admin/login.do"})
 public class loginController extends HttpServlet {
 
     UserModel userModel = new UserModel();
@@ -34,8 +34,9 @@ public class loginController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            String operation = request.getParameter("op");
+        String operation = request.getParameter("op");
+
+        if (operation != null) {
             switch (operation) {
                 case "login":
                     login(request, response);
@@ -44,7 +45,10 @@ public class loginController extends HttpServlet {
                     logout(request, response);
                     break;
             }
+        } else {
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

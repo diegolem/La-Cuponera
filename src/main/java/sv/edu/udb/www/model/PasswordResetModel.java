@@ -85,13 +85,13 @@ public class PasswordResetModel extends Connection {
 
     public boolean confirmRequest(String token) throws SQLException {
         boolean res;
-        
+
         try {
             this.conectar();
             st = conexion.prepareStatement("UPDATE password_resets SET expired = 1 WHERE token = ?;");
             st.setString(1, token);
             res = st.executeUpdate() > 0;
-            
+
             this.desconectar();
         } catch (SQLException ex) {
             Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,7 +111,7 @@ public class PasswordResetModel extends Connection {
             String table = "";
 
             switch (userType) {
-                case "client":
+                case "client": case "administrator":
                     table = "user";
                     break;
 
@@ -125,8 +125,10 @@ public class PasswordResetModel extends Connection {
             }
 
             this.conectar();
-            st = conexion.prepareStatement("UPDATE " + table + " SET password = ?;");
+            st = conexion.prepareStatement("UPDATE " + table + " SET password = ? WHERE email = ?;");
             st.setString(1, PasswordResetModel.parsingPassword(password));
+            st.setString(2, email);
+
             res = st.executeUpdate() > 0;
 
             this.desconectar();

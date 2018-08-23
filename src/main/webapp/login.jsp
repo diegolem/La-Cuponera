@@ -10,9 +10,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login [Cuponera]</title>
-        <jsp:include page="cabecera.jsp"/>
+        <jsp:include page="/cabecera.jsp"/>
         <link href="${pageContext.request.contextPath}/assets/css/login.css" rel="stylesheet">
-        <!--<script src="${pageContext.request.contextPath}/js/login.js" type="text/javascript"></script>-->
     </head>
     <body>
         <div class="">
@@ -63,7 +62,7 @@
             <br><br>
 
             <div class="row">
-                <form class="col s12" method="POST" action="login.do">
+                <form class="col s12" method="POST" action="${pageContext.request.contextPath}/login.do">
                     <input type="hidden" class="form-control" name="op" value="login">
                     <div class="row">
                         <div class="input-field col s12">

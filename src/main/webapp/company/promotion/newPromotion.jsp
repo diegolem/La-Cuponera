@@ -61,7 +61,7 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input type="date" name="initDate" id="initDate" value="${promotion.initDate}">
+                            <input type="date" name="initDate" id="initDate" value="${promotion.getStringInitDate()}">
                             <label for="initDate">Fecha de Inicio</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['initDate']}">
@@ -72,7 +72,7 @@
                             </c:if>
                         </div>
                         <div class="input-field col s6">
-                            <input type="date" name="endDate" id="endDate" value="${promotion.endDate}">
+                            <input type="date" name="endDate" id="endDate" value="${promotion.getStringEndDate()}">
                             <label for="initDate">Fecha Final</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['endDate']}">
@@ -85,7 +85,7 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <input type="date" name="limitDate" id="limitDate" value="${promotion.limitDate}">
+                            <input type="date" name="limitDate" id="limitDate" value="${promotion.getStringLimitDate()}">
                             <label for="limitDate">Fecha Límite</label>
                             <c:if test="${not empty requestScope.errorsList}">
                                 <c:if test = "${not empty requestScope.errorsList['limitDate']}">

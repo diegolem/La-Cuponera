@@ -245,7 +245,7 @@ public class UserModel extends Connection {
     public boolean updateUser(User user) throws SQLException {
         try {
             int affectedRows = 0;
-            String sql = "CALL update_user(?, ?, ?, ?)";
+            String sql = "CALL update_user(?, ?, ?, ?, ?)";
 
             this.conectar();
             cs = conexion.prepareCall(sql);
