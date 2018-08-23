@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import org.primefaces.json.JSONObject;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,13 +76,18 @@ public class salesController extends HttpServlet {
                     case "details":
                         detailsCupon(request, response);
                         break;
+                    case "get":
+                        getInfo(request, response);
+                        break;
                     case "buy":
                         buyCupon(request, response);
                         break;
                     case "exchange":
                         exchange(request,response);
                         break;
-                        
+                    default:
+                        tusCupones(request, response);
+                        break;
                 }
             } else {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -175,7 +181,9 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
         try {
             HttpSession session = request.getSession(true);
             User user = (User) session.getAttribute("user");
-            request.setAttribute("salesList", sales.getSales(user.getIdUser(), true));
+            request.setAttribute("salesDisponible", sales.getSales(user.getIdUser(), true,"Disponible"));
+            request.setAttribute("salesVencidos", sales.getSales(user.getIdUser(), true,"Canjeado"));
+            request.setAttribute("salesCanjeados", sales.getSales(user.getIdUser(), true,"Vencido"));
             request.setAttribute("title", "Lista de tus cupones");
             request.getRequestDispatcher("/client/Sales/listSales.jsp").forward(request, response);
         } catch (ServletException | IOException ex) {
@@ -291,5 +299,27 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
     private void exchange(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/employee/sale/redeemCoupons.jsp").forward(request, response);
     }
-
+    private void getInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            PrintWriter out = response.getWriter();
+            if (Validacion.esEnteroPositivo(request.getParameter("idPromo"))) {
+                Promotion promo = promotions.getPromotion(Integer.parseInt(request.getParameter("idPromo")), true);
+                if (promo != null) {
+                    JSONObject json = new JSONObject();
+                                        
+                    json.put("title", promo.getTitle());
+                    json.put("ofertPrice", promo.getOfertPrice());
+                    json.put("limitDate", promo.getLimitDate());
+                    json.put("description", promo.getDescription());
+                    json.put("couponrest", promo.getCouponsAvailable());
+                    out.print(json);
+                } else {
+                    out.print("0");
+                    request.getSession().setAttribute("error", "No se ha encontrado ninguna promocion");
+                }
+            }
+        } catch (SQLException | IOException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
