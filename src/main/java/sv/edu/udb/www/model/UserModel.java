@@ -109,6 +109,35 @@ public class UserModel extends Connection {
         }
     }// Fin getUsers()
 
+    public ArrayList<User> getUsersWithoutEspecificUser(UserType type, User user, boolean relationship) throws SQLException {
+        try {
+            ArrayList<User> users = new ArrayList<User>();
+            ArrayList<Integer> id = new ArrayList<Integer>();
+            String sql = "SELECT id FROM user WHERE user_type = ? AND id != ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            
+            st.setInt(1, type.getIdUserType());
+            st.setInt(2, user.getIdUser());
+            
+            rs = st.executeQuery();
+            while (rs.next()) {
+                id.add(rs.getInt("id"));
+            }
+            this.desconectar();
+
+            for (int i = 0; i < id.size(); i++) {
+                users.add(this.getUser(id.get(i), relationship));
+            }
+            return users;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }// Fin getUsers()
+    
     public User getUserClientDui(String dui, boolean relationship) throws SQLException {
         try {
             String sql = "SELECT * FROM user WHERE dui = ? AND user_type = 1";

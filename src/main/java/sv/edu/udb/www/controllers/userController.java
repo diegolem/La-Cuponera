@@ -145,10 +145,16 @@ public class userController extends HttpServlet {
     }// </editor-fold>
 
     private void listClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
-        UserType typeClient = typeUsers.getUserType(1, false);
-        ArrayList<User> users = this.users.getUsers(typeClient, false);
+        HttpSession _s = request.getSession(true);
+        User user = (User) _s.getAttribute("user");
 
-        request.setAttribute("users", users);
+        
+        UserType typeClient = typeUsers.getUserType(1, true);
+        UserType typeAdmin = typeUsers.getUserTypeWithoutEspecificUser(2,user,true);
+
+        request.setAttribute("clientType", typeClient);
+        request.setAttribute("adminType", typeAdmin);
+        
         request.getRequestDispatcher("/admin/user/listClient.jsp").forward(request, response);
     }
 
@@ -160,7 +166,7 @@ public class userController extends HttpServlet {
     private void insertClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         errorsList.clear();
         User user = new User();
-        user.setType(this.typeUsers.getUserType(1, false));
+        user.setType(this.typeUsers.getUserType(2, false));
 
         if (!Validacion.isEmpty(request.getParameter("name"))) {
             user.setName(request.getParameter("name"));
@@ -339,7 +345,7 @@ public class userController extends HttpServlet {
 
                 int idClient = Integer.parseInt(id);
 
-                User user = users.getUser(idClient, false);
+                User user = users.getUser(idClient, true);
 
                 if (user != null) {
                     List<Sales> cuponesCanjeados = sales.getSales(user, salesStates.getSalesState(1, false), true);
@@ -347,6 +353,8 @@ public class userController extends HttpServlet {
                     List<Sales> cuponesVencidos = sales.getSales(user, salesStates.getSalesState(3, false), true);
 
                     request.setAttribute("client", user);
+                    
+                     request.setAttribute("isAdmin", user.getType().getIdUserType() == 2);
 
                     request.setAttribute("cuponesCanjeados", cuponesCanjeados);
                     request.setAttribute("cuponesDisponibles", cuponesDisponibles);
@@ -377,7 +385,7 @@ public class userController extends HttpServlet {
 
                 User client;
 
-                if ((client = users.getUser(idClient, true)) != null) {
+                if ((client = users.getUser(idClient, true)) != null && client.getType().getIdUserType() == 1) {
                     boolean next = true;
 
                     if (!client.getSales().isEmpty() && !sales.deleteSales(client)) {

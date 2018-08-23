@@ -16,9 +16,6 @@
         <jsp:include page="../../menus/menuAdmin.jsp"/>
         <main class="">
             <div class="row">
-                <a href="${pageContext.request.contextPath}/admin/user.do?op=list_client" class="waves-effect waves-light btn-large"><i class="material-icons left centered">line_weight</i>Listar usurios</a>
-                <br>
-                <br>
                 <form class="col s12" id="frmRegistClient" action="${pageContext.request.contextPath}/admin/user.do" method="POST">
                     <input type="hidden" name="op" value="insert_client"/>
                     <div class="row">
