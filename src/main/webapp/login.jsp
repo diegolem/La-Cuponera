@@ -116,6 +116,7 @@
                     <div class="col s12 btn-cont">
                         <button id="btnRecover" class="btnSubmitForm btn waves-effect">Enviar peticion<i class="material-icons right">send</i></button>
                     </div>
+                    <br>
                 </form>
             </div>
         </div>

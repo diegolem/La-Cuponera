@@ -34,7 +34,8 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Diego Lemus
  */
-@WebServlet(name = "salesController", urlPatterns = {"/client/sales.do"})
+@WebServlet(name = "salesController", urlPatterns = {"/sales.do","/client/sales.do", "/employee/sales.do"})
+
 public class salesController extends HttpServlet {
 
     SalesModel sales = new SalesModel();
@@ -55,7 +56,9 @@ public class salesController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
+
             String op = request.getParameter("op");
+            
             HttpSession _s = request.getSession(true);
 
             if (_s.getAttribute("logged") != null) {
@@ -75,12 +78,16 @@ public class salesController extends HttpServlet {
                     case "buy":
                         buyCupon(request, response);
                         break;
+                    case "exchange":
+                        exchange(request,response);
+                        break;
+                        
                 }
             } else {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
             }
-        } catch (IOException | SQLException ex) {
-            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch(Exception error) {
+        
         }
     }
 
@@ -123,7 +130,7 @@ public class salesController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int idUsuario = Integer.parseInt(request.getParameter("usuario"));
         int idEstado = Integer.parseInt(request.getParameter("estado"));
 
@@ -279,6 +286,10 @@ public class salesController extends HttpServlet {
         } catch (ServletException | IOException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void exchange(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/employee/sale/redeemCoupons.jsp").forward(request, response);
     }
 
 }

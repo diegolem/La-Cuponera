@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sv.edu.udb.www.beans.User;
 import sv.edu.udb.www.beans.UserType;
 
 /**
@@ -41,6 +42,34 @@ public class UserTypeModel extends Connection{
             return null;
         }
     }
+    
+    public UserType getUserTypeWithoutEspecificUser(int id, User user, boolean relationship) throws SQLException{
+        try {
+            String sql = "SELECT * FROM user_type WHERE id = ?";
+            
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setInt(1, id);
+            rs = st.executeQuery();
+            
+            if(rs.next()){
+                UserModel userModel = new UserModel();
+                UserType type = new UserType(rs.getInt("id"), rs.getString("type"));
+                
+                this.desconectar();
+                
+                if (relationship) type.setUsers(userModel.getUsersWithoutEspecificUser(type, user, relationship));
+                
+                return type;
+            }
+            this.desconectar();
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserTypeModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }// Fin geUserType
     
     public UserType getUserType(int id, boolean relationship) throws SQLException{
         try {

@@ -56,39 +56,33 @@
                     </tbody>
                 </table>
             </div>
-            <div id="modal" class="modal modal-fixed-footer">
+            <div id="modal" class="modal">
                 <div class="modal-content">
-                    <h4 id="header-modal"></h4>
-                    <div class="divider"></div> 
-
-                    <!--<div id="test4"> 
-                        <ul class="collection">
-                            <li class="collection-item" id="lvl1"></li>
-                            <li class="collection-item" id="lvl2"></li>
-                        </ul>
-                    </div>  Fin datos generales -->
+                    <h4 class="center purple-text text-darken-4">¿Realmente deseas eliminar esta empresa?</h4>
                     <input type="hidden" readonly="true" id="idCt"/>
                 </div>
-                <div class="modal-footer">
+                <div class="col s12  btn-cont">
                     <a href="javascript:void(0)" onclick="deleteCompany($('#idCt').val())" class="waves-effect waves-light red darken-3 btn"><i class="material-icons left">delete</i>Eliminar</a>
                     <a href="#!" class="modal-close waves-effect waves-light teal darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
                 </div>
+                <br>
             </div>
         </main>
         <script>
+            let loader = new Loader();
             $(document).ready(function () {
                 $("#tblCompanies").DataTable();
-                <c:if test="${not empty success}">
-                    M.toast({html: '${success}'})
-                    <c:set var="success" value="" scope="session"></c:set>
-                </c:if>
-                <c:if test="${not empty error}">
-                    M.toast({html: '${error}'})
-                    <c:set var="error" value="" scope="session"></c:set>
-                </c:if>
+            <c:if test="${not empty success}">
+                M.toast({html: '${success}'})
+                <c:set var="success" value="" scope="session"></c:set>
+            </c:if>
+            <c:if test="${not empty error}">
+                M.toast({html: '${error}'})
+                <c:set var="error" value="" scope="session"></c:set>
+            </c:if>
             });
             function setId(id) {
-                $('#header-modal').text("¿Estas seguro que deseas eliminar esto?");
+                //$('#header-modal').text("¿Estas seguro que deseas eliminar esto?");
                 $.ajax({
                     url: "${pageContext.request.contextPath}/admin/company.do?op=get",
                     type: "POST",
@@ -108,6 +102,7 @@
                 });
             }
             function deleteCompany(id) {
+                loader.in();
                 $.ajax({
                     url: "${pageContext.request.contextPath}/admin/company.do?op=delete",
                     type: "POST",
@@ -115,15 +110,21 @@
                         idCompany: id
                     },
                     success: function (response) {
+                        let text = '', classes = '', callback;
                         if (response === "0") {
-                            M.toast({html: 'Ha ocurrido un error en el proceso de eliminación'})
+                            text = 'Ha ocurrido un error en el proceso de eliminación';
+                            classes = 'red lighten-1';
+                            callback = function(){};
                         } else if (response === "1") {
-                            M.toast({html: 'Eliminación exitosa', completeCallback: function () {
-                                    location.href = 'company.do'
-                                }})
+                            text = 'Eliminación exitosa';
+                            classes = 'green darken-2';
+                            callback = function(){ location.href = '${pageContext.request.contextPath}/admin/company.do?op=list'; };
                         }
+                        M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
                     }
-                })
+                }).done(function(){
+                    loader.out();
+                });
             }
         </script>
     </body>

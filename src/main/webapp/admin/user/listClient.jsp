@@ -4,6 +4,7 @@
     Author     : pc
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -18,44 +19,100 @@
         <jsp:include page="../../menus/menuAdmin.jsp"/>
         
         <main class="">
-            <a href="${pageContext.request.contextPath}/admin/user.do?op=new_client" class="waves-effect waves-light btn-large"><i class="material-icons left centered">add</i>Añadir usuario</a>
-            <br>
-            <br>
             
             <div class="row">
-                <table id="tblClients" class="centered striped">
-                    <thead>
-                      <tr>
-                          <th>ID</th>
-                          <th>Nombre completo</th>
-                          <th>E-mail</th>
-                          <th>Estado</th>
-                          <th>Cupones</th>
-                          <th>Opciones</th>
-                      </tr>
-                    </thead>
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s3"><a href="#tab_client">Clientes</a></li>
+                        <li class="tab col s3"><a class="active" href="#tab_admin">Administradores</a></li>
+                    </ul>
+                </div>
+                <div id="tab_client" class="col s12">
+                
+                    <div class="row">
+                        <table id="tblClients" class="centered striped">
+                            <thead>
+                              <tr>
+                                  <th>ID</th>
+                                  <th>Nombre completo</th>
+                                  <th>E-mail</th>
+                                  <th>Estado</th>
+                                  <c:if test="${client.confirmed}">
+                                    <th>Cupones</th>
+                                  </c:if>
+                                  <th>Opciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach items="${requestScope.clientType.users}" var="user" >
+                                    <tr id="tr_${user.idUser}">
+                                        <td>${user.idUser}</td>
+                                        <td>${user.name} ${user.lastName}</td>
+                                        <td>${user.email}</td>
+                                        <td>${(user.confirmed)? "Habilitado" : "Esperando comprobacion"}</td>
+                                        <c:if test="${client.confirmed}">
+                                            <td>
+                                            
+                                                <a title="Disponibles" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',2)"><i class="material-icons centered">new_releases</i></a>
+                                                <a title="Canjeados" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',1)"><i class="material-icons centered">insert_emoticon</i></a>
+                                                <a title="Vencidos" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',3)"><i class="material-icons centered">block</i></a>
 
-                    <tbody>
-                        <c:forEach items="${requestScope.users}" var="user" >
-                            <tr id="tr_${user.idUser}">
-                                <td>${user.idUser}</td>
-                                <td>${user.name} ${user.lastName}</td>
-                                <td>${user.email}</td>
-                                <td>${(user.confirmed)? "Habilitado" : "Esperando comprobacion"}</td>
-                                <td>
-                                    <a title="Disponibles" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',2)"><i class="material-icons centered">new_releases</i></a>
-                                    <a title="Canjeados" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',1)"><i class="material-icons centered">insert_emoticon</i></a>
-                                    <a title="Vencidos" class="waves-effect waves-light btn-small" href="javascript:obtenerCupones(${user.idUser},'${user.name} ${user.lastName}',3)"><i class="material-icons centered">block</i></a>
-                                </td>
-                                <td>
-                                    <a title="Detalle" href="${pageContext.request.contextPath}/admin/user.do?op=details_client&id=${user.idUser}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
-                                    <a id="a_${user.idUser}" title="Eliminar" href="#" onclick="deleteClient(${user.idUser}, 'tr_${user.idUser}', 'a_${user.idUser}');" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
+                                            </td>
+                                        </c:if>
+                                        <td>
+                                            <a title="Detalle" href="${pageContext.request.contextPath}/admin/user.do?op=details_client&id=${user.idUser}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
+
+                                            <c:choose>
+                                                <c:when test="${fn:length(user.sales) gt 0}">
+                                                    <a disabled title="Eliminar" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <a id="a_${user.idUser}" title="Eliminar" href="#" onclick="deleteClient(${user.idUser}, 'tr_${user.idUser}', 'a_${user.idUser}');" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+                <div id="tab_admin" class="col s12">
+                    <br>
+                    <a href="${pageContext.request.contextPath}/admin/user.do?op=new_client" class="waves-effect waves-light btn-large"><i class="material-icons left centered">add</i>Añadir administrador</a>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <table id="tblAdmins" class="centered striped">
+                            <thead>
+                              <tr>
+                                  <th>ID</th>
+                                  <th>Nombre completo</th>
+                                  <th>E-mail</th>
+                                  <th>Estado</th>
+                                  <th>Opciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach items="${requestScope.adminType.users}" var="user" >
+                                    <tr id="tr_${user.idUser}">
+                                        <td>${user.idUser}</td>
+                                        <td>${user.name} ${user.lastName}</td>
+                                        <td>${user.email}</td>
+                                        <td>${(user.confirmed)? "Habilitado" : "Esperando comprobacion"}</td>
+                                        <td>
+                                            <a title="Detalle" href="${pageContext.request.contextPath}/admin/user.do?op=details_client&id=${user.idUser}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+            
         </main>
         
         <div id="modal" class="modal bottom-sheet">
@@ -118,7 +175,7 @@
                         var list = "";
                         
                         $.each( data, function( key, value ) {
-                            list += "<li class='collection-item avatar row'><img src='${pageContext.request.contextPath}/assets/img/" + value.image + "' alt=''  class='col s6 m4 l1'><div class='col s6 m8 l11'><span class='title'>Code: " + key + "</span><p>Titulo: " + value.titulo + " <br>Descripcion: " + value.descripcion + "<br>Fecha limite: " + value.fechaLimite + "</p><div></li>";
+                            list += "<li class='collection-item avatar row'><img src='${pageContext.request.contextPath}/img/" + value.image + "' alt=''  class='col s6 m4 l1'><div class='col s6 m8 l11'><span class='title'>Code: " + key + "</span><p>Titulo: " + value.titulo + "<br>Fecha limite: " + value.fechaLimite + "</p><div></li>";
                         });
                         
                         $("#listSales").html(list);
@@ -129,6 +186,8 @@
             $(document).ready(function(){
                 $('.modal').modal();
                 $("#tblClients").DataTable();
+                $("#tblAdmins").DataTable();
+                $('.tabs').tabs();
             });
         </script>
     </body>

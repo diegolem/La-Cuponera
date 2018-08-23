@@ -109,9 +109,79 @@ public class UserModel extends Connection {
         }
     }// Fin getUsers()
 
+    public ArrayList<User> getUsersWithoutEspecificUser(UserType type, User user, boolean relationship) throws SQLException {
+        try {
+            ArrayList<User> users = new ArrayList<User>();
+            ArrayList<Integer> id = new ArrayList<Integer>();
+            String sql = "SELECT id FROM user WHERE user_type = ? AND id != ?";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            
+            st.setInt(1, type.getIdUserType());
+            st.setInt(2, user.getIdUser());
+            
+            rs = st.executeQuery();
+            while (rs.next()) {
+                id.add(rs.getInt("id"));
+            }
+            this.desconectar();
+
+            for (int i = 0; i < id.size(); i++) {
+                users.add(this.getUser(id.get(i), relationship));
+            }
+            return users;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }// Fin getUsers()
+    
+    public User getUserClientDui(String dui, boolean relationship) throws SQLException {
+        try {
+            String sql = "SELECT * FROM user WHERE dui = ? AND user_type = 1";
+
+            this.conectar();
+            st = conexion.prepareStatement(sql);
+            st.setString(1, dui);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                int userType = rs.getInt("user_type");
+                SalesModel salesModel = new SalesModel();
+                UserTypeModel typeModel = new UserTypeModel();
+
+                User user = new User();
+                user.setIdUser(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setDui(rs.getString("dui"));
+                user.setNit(rs.getString("nit"));
+                user.setIdConfirmation(rs.getString("id_confirmation"));
+                user.setConfirmed(rs.getBoolean("confirmed"));
+
+                this.desconectar();
+                user.setType(typeModel.getUserType(userType, false));
+                if (relationship) {
+                    user.setSales(salesModel.getSales(user, relationship));
+                }
+                return user;
+            }
+            this.desconectar();
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.SEVERE, null, ex);
+            this.desconectar();
+            return null;
+        }
+    }// Fin getUser()
+    
     public User getUser(String id_confirmation, boolean relationship) throws SQLException {
         try {
-            String sql = "SELECT * FROM user WHERE 	id_confirmation = ?";
+            String sql = "SELECT * FROM user WHERE id_confirmation = ?";
 
             this.conectar();
             st = conexion.prepareStatement(sql);

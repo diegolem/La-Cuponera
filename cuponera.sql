@@ -350,7 +350,7 @@ CREATE TABLE `sales_state` (
 
 LOCK TABLES `sales_state` WRITE;
 /*!40000 ALTER TABLE `sales_state` DISABLE KEYS */;
-INSERT INTO `sales_state` VALUES (1,'Canjeado'),(2,'Disponible');
+INSERT INTO `sales_state` VALUES (1,'Canjeado'),(2,'Disponible'),(3,' Vencido');
 /*!40000 ALTER TABLE `sales_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -587,9 +587,9 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_company`(IN _id VARCHAR(6), IN _address VARCHAR(100), IN _contact_name VARCHAR(50), IN _telephone VARCHAR(9), IN _email VARCHAR(50), IN _name VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_company`(IN _id VARCHAR(6), IN _address VARCHAR(100), IN _contact_name VARCHAR(50), IN _telephone VARCHAR(9), IN _email VARCHAR(50), IN _name VARCHAR(50), IN _type INTEGER)
 BEGIN
-	UPDATE company SET address = _address, contact_name = _contact_name, telephone = _telephone, email = _email, name = _name WHERE id = _id;
+	UPDATE company SET address = _address, contact_name = _contact_name, telephone = _telephone, email = _email, name = _name, type_company = _type WHERE id = _id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -695,6 +695,22 @@ DELIMITER ;
 --
 -- Current Database: `cuponera`
 --
+
+DELIMITER $$
+--
+-- Eventos
+--
+DROP EVENT IF EXISTS `change_state_promotion`$$
+CREATE DEFINER=`root`@`localhost` EVENT `change_state_promotion` ON SCHEDULE EVERY 1 DAY STARTS '2018-08-14 00:00:00' ON COMPLETION PRESERVE ENABLE DO UPDATE cuponera.promotion SET id_state = 6 WHERE limit_date < DATE_FORMAT(NOW(), '%Y-%m-%d')/ 
+END$$
+
+DROP EVENT `change_state_sales`$$
+CREATE DEFINER=`root`@`localhost` EVENT `change_state_sales` ON SCHEDULE EVERY 1 DAY STARTS '2018-08-14 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO update sales set sales_state = 3 where promotion_id = (SELECT promotion.id
+FROM cuponera.promotion promotion
+WHERE promotion.limit_date < DATE_FORMAT(NOW(), '%Y-%m-%d')) AND sales_state = 2$$
+
+DELIMITER ;
+COMMIT;
 
 USE `cuponera`;
 

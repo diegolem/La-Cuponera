@@ -28,89 +28,107 @@
                 
                 <center><h4>Dui: ${client.dui} Nit: ${client.nit}</h4></center>
                 
-                 <ul class="collapsible">
-                    <li>
-                      <div class="collapsible-header"><i class="material-icons">new_releases</i>Cupones disponibles</div>
-                      <div class="collapsible-body">
-                          <table class="centered responsive-table" id="tblEmployees">
-                            <thead>
-                                <tr>
-                                    <th>Codigo</th>
-                                    <th>Titulo</th>
-                                    <th>Precio regular</th>
-                                    <th>Precio de oferta</th>
-                                    <th>Fecha limite</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${cuponesDisponibles}" var="cupon">
+                <c:if test="${not isAdmin}" >
+                    
+                    <ul class="collapsible">
+                        <li>
+                          <div class="collapsible-header"><i class="material-icons">new_releases</i>Cupones disponibles</div>
+                          <div class="collapsible-body">
+                              <table class="centered responsive-table" id="tblEmployees">
+                                <thead>
                                     <tr>
-                                        <td>${cupon.couponCode}</td>
-                                        <td>${cupon.promotion.title}</td>
-                                        <td>${cupon.promotion.regularPrice}$</td>
-                                        <td>${cupon.promotion.ofertPrice}$</td>
-                                        <td>${cupon.promotion.limitDate}</td>
+                                        <th>Codigo</th>
+                                        <th>Titulo</th>
+                                        <th>Precio regular</th>
+                                        <th>Precio de oferta</th>
+                                        <th>Fecha limite</th>
                                     </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="collapsible-header"><i class="material-icons">insert_emoticon</i>Cupones canjeados</div>
-                      <div class="collapsible-body">
-                          <table class="centered responsive-table" id="tblEmployees">
-                            <thead>
-                                <tr>
-                                    <th>Codigo</th>
-                                    <th>Titulo</th>
-                                    <th>Precio regular</th>
-                                    <th>Precio de oferta</th>
-                                    <th>Fecha limite</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${cuponesCanjeados}" var="cupon">
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="${cuponesDisponibles}" var="cupon">
+                                        <tr>
+                                            <td>${cupon.couponCode}</td>
+                                            <td>${cupon.promotion.title}</td>
+                                            <td>${cupon.promotion.regularPrice}$</td>
+                                            <td>${cupon.promotion.ofertPrice}$</td>
+                                            <td>${cupon.promotion.limitDate}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="collapsible-header"><i class="material-icons">insert_emoticon</i>Cupones canjeados</div>
+                          <div class="collapsible-body">
+                              <table class="centered responsive-table" id="tblEmployees">
+                                <thead>
                                     <tr>
-                                        <td>${cupon.couponCode}</td>
-                                        <td>${cupon.promotion.title}</td>
-                                        <td>${cupon.promotion.regularPrice}$</td>
-                                        <td>${cupon.promotion.ofertPrice}$</td>
-                                        <td>${cupon.promotion.limitDate}</td>
+                                        <th>Codigo</th>
+                                        <th>Titulo</th>
+                                        <th>Precio regular</th>
+                                        <th>Precio de oferta</th>
+                                        <th>Fecha limite</th>
                                     </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="collapsible-header"><i class="material-icons">block</i>Cupones vencidos</div>
-                      <div class="collapsible-body">
-                          <table class="centered responsive-table" id="tblEmployees">
-                            <thead>
-                                <tr>
-                                    <th>Codigo</th>
-                                    <th>Titulo</th>
-                                    <th>Precio regular</th>
-                                    <th>Precio de oferta</th>
-                                    <th>Fecha limite</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach items="${cuponesVencidos}" var="cupon">
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="${cuponesCanjeados}" var="cupon">
+                                        <tr>
+                                            <td>${cupon.couponCode}</td>
+                                            <td>${cupon.promotion.title}</td>
+                                            <td>${cupon.promotion.regularPrice}$</td>
+                                            <td>${cupon.promotion.ofertPrice}$</td>
+                                            <td>${cupon.promotion.limitDate}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="collapsible-header"><i class="material-icons">block</i>Cupones vencidos</div>
+                          <div class="collapsible-body">
+                              <table class="centered responsive-table" id="tblEmployees">
+                                <thead>
                                     <tr>
-                                        <td>${cupon.couponCode}</td>
-                                        <td>${cupon.promotion.title}</td>
-                                        <td>${cupon.promotion.regularPrice}$</td>
-                                        <td>${cupon.promotion.ofertPrice}$</td>
-                                        <td>${cupon.promotion.limitDate}</td>
+                                        <th>Codigo</th>
+                                        <th>Titulo</th>
+                                        <th>Precio regular</th>
+                                        <th>Precio de oferta</th>
+                                        <th>Fecha limite</th>
                                     </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                      </div>
-                    </li>
-                </ul>
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="${cuponesVencidos}" var="cupon">
+                                        <tr>
+                                            <td>${cupon.couponCode}</td>
+                                            <td>${cupon.promotion.title}</td>
+                                            <td>${cupon.promotion.regularPrice}$</td>
+                                            <td>${cupon.promotion.ofertPrice}$</td>
+                                            <td>${cupon.promotion.limitDate}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                          </div>
+                        </li>
+                    </ul>
+                    
+                </c:if>
+                
+                <c:if test="${not client.confirmed}">
+                    
+                    <div class="row">
+                        <div class="col s12 m6 offset-m3">
+                            <div class="card red darken-1">
+                                <div class="card-content white-text">
+                                    <span class="card-title center-align">El usuario no ha confirmado su cuenta</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </c:if>
                 
             </div>
         </main>

@@ -89,27 +89,24 @@
                 columnWidth: 200
             });
         });
-        function setId(id,idC){
-                $('#idCt').val(id);
-                $('#idCom').val(idC);
-            }
-        function buyPromotion(id,cant,idC){
+        
+        function setId(id){
+            $('#idCt').val(id);
+        }
+        function buyPromotion(id,cant){
             $.ajax({
                 url: "${pageContext.request.contextPath}/client/sales.do?op=buy",
                 type: "POST",
                 data: {
                     idPromotion: id,
-                    Cantidad: cant,
-                    idCompany: idC
+                    Cantidad: cant
                 },
                 success: function(response){
                     if(response === "0"){
-                            M.toast({html: 'Ha ocurrido un error en el proceso de compra'})
-                        }else if(response === "1"){
-                            M.toast({html: 'Compra Exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC' }})
-                        }else if(response === "-2"){
-                            M.toast({html: 'Revise los datos'})
-                        }
+                        M.toast({html: 'Ha ocurrido un error en el proceso de compra'})
+                    }else if(response === "1"){
+                        M.toast({html: 'Compra Exitosa', completeCallback: function(){ location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC' }})
+                    }
                 }
             });
         }
