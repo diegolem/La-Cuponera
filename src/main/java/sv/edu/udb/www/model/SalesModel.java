@@ -77,12 +77,18 @@ public class SalesModel extends Connection {
         }
     }//Fin getSales()
 
-    public ArrayList<Sales> getSales(int ids, boolean relationship) throws SQLException {
+    public ArrayList<Sales> getSales(int ids, boolean relationship,String state) throws SQLException {
         try {
             ArrayList<Sales> sales = new ArrayList<Sales>();
             ArrayList<Integer> id = new ArrayList<Integer>();
-            String sql = "SELECT * FROM sales WHERE client_id = ? AND sales_state = 2";
-
+            String sql = "";
+            if(state.equals("Disponible")){
+                sql = "SELECT * FROM sales WHERE client_id = ? AND sales_state = 2";
+            }else if(state.equals("Vencido")){
+                sql = "SELECT * FROM sales WHERE client_id = ? AND sales_state = 3";
+            }else if(state.equals("Canjeado")){
+                sql = "SELECT * FROM sales WHERE client_id = ? AND sales_state = 1";
+            }
             this.conectar();
             st = conexion.prepareStatement(sql);
             st.setInt(1, ids);

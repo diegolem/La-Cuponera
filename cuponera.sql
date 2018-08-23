@@ -704,7 +704,7 @@ DROP EVENT IF EXISTS `change_state_promotion`$$
 CREATE DEFINER=`root`@`localhost` EVENT `change_state_promotion` ON SCHEDULE EVERY 1 DAY STARTS '2018-08-14 00:00:00' ON COMPLETION PRESERVE ENABLE DO UPDATE cuponera.promotion SET id_state = 6 WHERE limit_date < DATE_FORMAT(NOW(), '%Y-%m-%d')/ 
 END$$
 
-DROP EVENT `change_state_sales`$$
+DROP EVENT IF EXISTS `change_state_sales`$$
 CREATE DEFINER=`root`@`localhost` EVENT `change_state_sales` ON SCHEDULE EVERY 1 DAY STARTS '2018-08-14 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO update sales set sales_state = 3 where promotion_id = (SELECT promotion.id
 FROM cuponera.promotion promotion
 WHERE promotion.limit_date < DATE_FORMAT(NOW(), '%Y-%m-%d')) AND sales_state = 2$$

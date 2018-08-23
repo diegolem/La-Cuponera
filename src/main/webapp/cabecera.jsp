@@ -12,6 +12,7 @@
 <script src="${pageContext.request.contextPath}/assets/js/datatables.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/assets/js/datatables.material.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/assets/js/init.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/assets/js/moment.min.js" type="text/javascript"></script>
 <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
 <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
