@@ -1,5 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header>
+    <c:if test="${sessionScope.userColor == null}">
+        <c:set var="userColor" value="deep-purple" scope="session"/>
+    </c:if>
     <form id="logout-form" action="#" method="POST" style="display: none;"></form>
 
     <nav class="purple darken-4">

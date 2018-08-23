@@ -5,6 +5,9 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${sessionScope.userColor == null}">
+        <c:set var="userColor" value="deep-purple" scope="session"/>
+    </c:if>
 <header>
     <form id="logout-form" action="#" method="POST" style="display: none;"></form>
 

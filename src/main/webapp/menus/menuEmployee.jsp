@@ -5,6 +5,9 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:if test="${sessionScope.userColor == null}">
+    <c:set var="userColor" value="blue" scope="session"/>
+</c:if>
 <header>
     <form id="logout-form" action="#" method="POST" style="display: none;"></form>
 
@@ -24,7 +27,7 @@
                     <span style="font-weight: bold;" class="white-text email"><b>Empleado: </b>${user.name} ${user.lastName}</span>
                 </a>
                 <a>
-                    <span class="white-text">Compañia: ${user.company.name}</span>
+                    <span class="white-text">Compaï¿½ia: ${user.company.name}</span>
                     <span class="white-text email">${user.email}</span>
                 </a>
             </div>
@@ -43,9 +46,9 @@
         <li>
             <div class="divider"></div>
         </li>
-        <li class="nav-item"><a href="#"><i class="material-icons">settings</i>Mi cuenta</a></li> 
+        <li class="nav-item"><a href="${pageContext.request.contextPath}/employee/config.do"><i class="material-icons">settings</i>Mi cuenta</a></li> 
         <li  class="nav-item">
-            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesión"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a>
+            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesiï¿½n"><i class="material-icons">exit_to_app</i>Cerrar Sesiï¿½n</a>
         </li>
     </ul>
 </header>

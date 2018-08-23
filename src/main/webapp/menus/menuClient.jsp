@@ -6,6 +6,9 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header>
+    <c:if test="${sessionScope.userColor == null}">
+        <c:set var="userColor" value="blue" scope="session"/>
+    </c:if>
     <form id="logout-form" action="#" method="POST" style="display: none;"></form>
 
     <nav class="light-blue darken-2">
@@ -48,9 +51,9 @@
         <li>
             <div class="divider"></div>
         </li>
-        <li class="nav-item"><a href="#"><i class="material-icons">settings</i>Mi cuenta</a></li> 
+        <li class="nav-item"><a href="${pageContext.request.contextPath}/client/config.do"><i class="material-icons">settings</i>Mi cuenta</a></li> 
         <li  class="nav-item">
-            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesión"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a>
+            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesion"><i class="material-icons">exit_to_app</i>Cerrar Sesion</a>
         </li>
     </ul>
 </header>

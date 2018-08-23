@@ -19,7 +19,6 @@ import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Employee;
 import sv.edu.udb.www.beans.Entity;
 import sv.edu.udb.www.beans.User;
-import sv.edu.udb.www.beans.UserApp;
 import sv.edu.udb.www.model.CompanyModel;
 import sv.edu.udb.www.model.EmployeeModel;
 import sv.edu.udb.www.model.PasswordResetModel;
@@ -31,7 +30,7 @@ import sv.edu.udb.www.utilities.Validacion;
  *
  * @author Frank Esquivel
  */
-@WebServlet(name = "ConfigController", urlPatterns = {"/admin/config.do", "/company/config.do"})
+@WebServlet(name = "ConfigController", urlPatterns = {"/admin/config.do", "/client/config.do", "/employee/config.do", "/company/config.do"})
 public class ConfigController extends HttpServlet {
 
     UserModel uMdl = new UserModel();
@@ -46,6 +45,7 @@ public class ConfigController extends HttpServlet {
 
     HashMap<String, String> errorsList = new HashMap<>();
     Boolean emailChangedFlag = false;
+    String usrConfig = "0";
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -64,16 +64,14 @@ public class ConfigController extends HttpServlet {
         if (type != null) {
             switch (type) {
                 case "admin":
-                    view = "/config/adminConfig.jsp";
+                case "client":
+                case "employee":
+                    view = "/config/userConfig.jsp";
+                    usrConfig = "user";
                     break;
                 case "company":
                     view = "/config/companyConfig.jsp";
-                    break;
-                case "employee":
-                    view = "/config/employeeConfig.jsp";
-                    break;
-                case "client":
-                    view = "/config/clientConfig.jsp";
+                    usrConfig = "company";
                     break;
                 default:
                     response.sendRedirect(request.getContextPath() + "/login");
@@ -100,6 +98,7 @@ public class ConfigController extends HttpServlet {
             throws ServletException, IOException {
         errorsList.clear();
         emailChangedFlag = false;
+        request.setAttribute("title", "Mi cuenta");
         if ((Boolean) request.getSession().getAttribute("logged")) {
             String type = (String) request.getSession().getAttribute("type"), view = "";
             boolean sameUserFlag = false;
@@ -137,7 +136,7 @@ public class ConfigController extends HttpServlet {
 
                 if (errorsList.size() > 0) {
                     request.setAttribute("errorsList", errorsList);
-                    request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                    request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
                     return;
                 } else {
 
@@ -166,13 +165,13 @@ public class ConfigController extends HttpServlet {
                                             errorsList.put("password", "Las contraseñas no coinciden...");
                                             errorsList.put("conf_password", "Las contraseñas no coinciden...");
                                             request.setAttribute("errorsList", errorsList);
-                                            request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                                            request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
                                             return;
                                         }
                                     } else {
                                         errorsList.put("current_password", "El valor ingresado no coincide con su contraseña actual!");
                                         request.setAttribute("errorsList", errorsList);
-                                        request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                                        request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
                                         return;
                                     }
                                 } catch (SQLException ex) {
@@ -180,13 +179,13 @@ public class ConfigController extends HttpServlet {
 
                                     errorsList.put("msg", "Ha ocurrido un error al modificar la contraseña!");
                                     request.setAttribute("errorsList", errorsList);
-                                    request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                                    request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
                                     return;
                                 }
                             } else {
                                 errorsList.put("current_password", "Si quiere cambiar su contraseña debe de ingresar su contraseña actual!");
                                 request.setAttribute("errorsList", errorsList);
-                                request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                                request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
                                 return;
                             }
                         }
@@ -196,7 +195,7 @@ public class ConfigController extends HttpServlet {
 
                         errorsList.put("msg", "Ha ocurrido un error al modificar los datos!");
                         request.setAttribute("errorsList", errorsList);
-                        request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                        request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
                     }
                 }
 
@@ -214,11 +213,11 @@ public class ConfigController extends HttpServlet {
                 }
 
                 request.getSession().setAttribute("msg", "Tu cuenta ha sido moficada exitosamente!");
-                request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
             } else {
                 errorsList.put("msg", "No se puede modificar un usuario no existente o que sea distinto al suyo...");
                 request.setAttribute("errorsList", errorsList);
-                request.getRequestDispatcher("/config/" + type + "Config.jsp").forward(request, response);
+                request.getRequestDispatcher("/config/" + usrConfig + "Config.jsp").forward(request, response);
             }
         } else {
             response.sendRedirect(request.getContextPath() + "/login");
@@ -291,14 +290,14 @@ public class ConfigController extends HttpServlet {
             errorsList.put("name", "Debe ingresar un nombre...");
         }
 
-        if (!Validacion.isEmpty(request.getParameter("adress"))) {
-            _c.setAddress(request.getParameter("adress"));
+        if (!Validacion.isEmpty(request.getParameter("address"))) {
+            _c.setAddress(request.getParameter("address"));
         } else {
-            errorsList.put("adress", "Debe ingresar una direccion...");
+            errorsList.put("address", "Debe ingresar una direccion...");
         }
 
-        if (!Validacion.isEmpty(request.getParameter("contact_name"))) {
-            _c.setContactName(request.getParameter("contact_name"));
+        if (!Validacion.isEmpty(request.getParameter("contactName"))) {
+            _c.setContactName(request.getParameter("contactName"));
         } else {
             errorsList.put("contact_name", "Debe ingresar un nombre de contacto...");
         }

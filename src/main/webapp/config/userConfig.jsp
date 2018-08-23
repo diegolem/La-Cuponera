@@ -15,7 +15,17 @@
         <link href="${pageContext.request.contextPath}/assets/css/login.css" rel="stylesheet">
     </head>
     <body>
-        <jsp:include page="../menus/menuAdmin.jsp"/>
+        <c:choose>
+            <c:when test = "${sessionScope.type == 'admin'}">
+                <jsp:include page="../menus/menuAdmin.jsp"/>
+            </c:when>
+            <c:when test = "${sessionScope.type == 'client'}">
+                <jsp:include page="../menus/menuClient.jsp"/>
+            </c:when>
+            <c:when test = "${sessionScope.type == 'employee'}">
+                <jsp:include page="../menus/menuEmployee.jsp"/>
+            </c:when>
+        </c:choose>
 
         <main class="container">
             <br>
@@ -29,18 +39,27 @@
             </c:if>
 
             <c:if test="${sessionScope.msg != null}">
-                    <div class="alert green lighten-4 green-text text-darken-2 center">
-                        ${sessionScope.msg}
-                    </div>
+                <div class="alert green lighten-4 green-text text-darken-2 center">
+                    ${sessionScope.msg}
+                </div>
                 <c:remove var="msg" scope="session" />
             </c:if>
 
-            <form class="row" method="POST" action="${pageContext.request.contextPath}/admin/config.do" name="frmConfig">
+            <form class="row" method="POST" action="${pageContext.request.contextPath}/${sessionScope.type}/config.do" name="frmConfig">
                 <div class="col s12">
                     <h5 class="grey-text text-darken-2 center">Datos generales</h5>
                     <br>
                 </div>
-                <input type="hidden" name="id" value="${user.getIdUser()}">
+
+                <c:choose>
+                    <c:when test = "${sessionScope.type == 'admin' || sessionScope.type == 'client'}">
+                        <input type="hidden" name="id" value="${user.getIdUser()}">
+                    </c:when>
+                    <c:when test = "${sessionScope.type == 'employee'}">
+                            <input type="hidden" name="id" value="${user.getIdEmployee()}">
+                    </c:when>
+                </c:choose>
+
                 <div class="input-field col s10 m6 l6 offset-s1">
                     <input type="text" id="name" name="name" value="${user.getName()}">
                     <label for="name">Nombre</label>
@@ -74,28 +93,32 @@
                         </c:if>
                     </c:if>
                 </div>
-                <div class="input-field col s10 m6 l6 offset-s1">
-                    <input readonly disabled type="text" id="dui" name="dui" value="${user.getDui()}">
-                    <label for="dui">DUI</label>
-                    <c:if test="${not empty requestScope.errorsList}">
-                        <c:if test = "${not empty requestScope.errorsList['dui']}">
-                            <span class="error-block red-text">
-                                <strong>${requestScope.errorsList['dui']}</strong>
-                            </span>
+
+                <c:if test="${requestScope.type == 'admin' || requestScope.type == 'client'}">
+                    <div class="input-field col s10 m6 l6 offset-s1">
+                        <input readonly disabled type="text" id="dui" name="dui" value="${user.getDui()}">
+                        <label for="dui">DUI</label>
+                        <c:if test="${not empty requestScope.errorsList}">
+                            <c:if test = "${not empty requestScope.errorsList['dui']}">
+                                <span class="error-block red-text">
+                                    <strong>${requestScope.errorsList['dui']}</strong>
+                                </span>
+                            </c:if>
                         </c:if>
-                    </c:if>
-                </div>
-                <div class="input-field col s10 m6 l6 offset-s1">
-                    <input readonly disabled type="text" id="nit" name="nit" value="${user.getNit()}">
-                    <label for="nit">NIT</label>
-                    <c:if test="${not empty requestScope.errorsList}">
-                        <c:if test = "${not empty requestScope.errorsList['nit']}">
-                            <span class="error-block red-text">
-                                <strong>${requestScope.errorsList['nit']}</strong>
-                            </span>
+                    </div>
+                    <div class="input-field col s10 m6 l6 offset-s1">
+                        <input readonly disabled type="text" id="nit" name="nit" value="${user.getNit()}">
+                        <label for="nit">NIT</label>
+                        <c:if test="${not empty requestScope.errorsList}">
+                            <c:if test = "${not empty requestScope.errorsList['nit']}">
+                                <span class="error-block red-text">
+                                    <strong>${requestScope.errorsList['nit']}</strong>
+                                </span>
+                            </c:if>
                         </c:if>
-                    </c:if>
-                </div>
+                    </div>
+                </c:if>
+                
                 <hr>
                 <div class="col s12">
                     <br><br>
@@ -137,7 +160,7 @@
                     <br><br>
                 </div>
                 <div class="col s12 btn-cont">
-                    <button class="btn deep-purple darken-1 waves-effect">Guardar cambios<i class="material-icons right">save</i></button>
+                    <button class="btn ${sessionScope.userColor} darken-1 waves-effect">Guardar cambios<i class="material-icons right">save</i></button>
                 </div>
             </form>
 
