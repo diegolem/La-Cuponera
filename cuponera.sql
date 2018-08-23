@@ -350,7 +350,7 @@ CREATE TABLE `sales_state` (
 
 LOCK TABLES `sales_state` WRITE;
 /*!40000 ALTER TABLE `sales_state` DISABLE KEYS */;
-INSERT INTO `sales_state` VALUES (1,'Canjeado'),(2,'Disponible');
+INSERT INTO `sales_state` VALUES (1,'Canjeado'),(2,'Disponible'),(3,' Vencido');
 /*!40000 ALTER TABLE `sales_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -695,6 +695,22 @@ DELIMITER ;
 --
 -- Current Database: `cuponera`
 --
+
+DELIMITER $$
+--
+-- Eventos
+--
+DROP EVENT IF EXISTS `change_state_promotion`$$
+CREATE DEFINER=`root`@`localhost` EVENT `change_state_promotion` ON SCHEDULE EVERY 1 DAY STARTS '2018-08-14 00:00:00' ON COMPLETION PRESERVE ENABLE DO UPDATE cuponera.promotion SET id_state = 6 WHERE limit_date < DATE_FORMAT(NOW(), '%Y-%m-%d')/ 
+END$$
+
+DROP EVENT `change_state_sales`$$
+CREATE DEFINER=`root`@`localhost` EVENT `change_state_sales` ON SCHEDULE EVERY 1 DAY STARTS '2018-08-14 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO update sales set sales_state = 3 where promotion_id = (SELECT promotion.id
+FROM cuponera.promotion promotion
+WHERE promotion.limit_date < DATE_FORMAT(NOW(), '%Y-%m-%d')) AND sales_state = 2$$
+
+DELIMITER ;
+COMMIT;
 
 USE `cuponera`;
 
