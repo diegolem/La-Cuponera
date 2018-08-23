@@ -76,7 +76,7 @@ public class salesController extends HttpServlet {
                     case "details":
                         detailsCupon(request, response);
                         break;
-                    case "get":
+                    case "detailP":
                         getInfo(request, response);
                         break;
                     case "buy":
@@ -193,7 +193,7 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
 
     private void newCupon(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         try {
-            request.setAttribute("title", "Comprar Cupon");
+            request.setAttribute("title", "Compra de Cupones");
             request.setAttribute("promotions", promotions.getPromotionsA(true));
             request.getRequestDispatcher("/client/Sales/newSales.jsp").forward(request, response);
         } catch (ServletException | IOException ex) {
@@ -302,23 +302,19 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
     private void getInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
             PrintWriter out = response.getWriter();
-            if (Validacion.esEnteroPositivo(request.getParameter("idPromo"))) {
-                Promotion promo = promotions.getPromotion(Integer.parseInt(request.getParameter("idPromo")), true);
+            if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
+                Promotion promo = promotions.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), true);
                 if (promo != null) {
-                    JSONObject json = new JSONObject();
-                                        
-                    json.put("title", promo.getTitle());
-                    json.put("ofertPrice", promo.getOfertPrice());
-                    json.put("limitDate", promo.getLimitDate());
-                    json.put("description", promo.getDescription());
-                    json.put("couponrest", promo.getCouponsAvailable());
-                    out.print(json);
+                    request.setAttribute("title", "Detalle de la promocion");
+                    request.setAttribute("promotion", promo);
+                    request.getRequestDispatcher("/client/Sales/detailsPromotion.jsp").forward(request, response);
                 } else {
-                    out.print("0");
-                    request.getSession().setAttribute("error", "No se ha encontrado ninguna promocion");
+                    request.setAttribute("title", "Compra de Cupones");
+                    request.setAttribute("promotions", promotions.getPromotionsA(true));
+                    request.getRequestDispatcher("/client/Sales/newSales.jsp").forward(request, response);
                 }
             }
-        } catch (SQLException | IOException ex) {
+        } catch (SQLException | IOException | ServletException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

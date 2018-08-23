@@ -32,7 +32,7 @@
                                             </div>
                                             <div class="card-content">
                                                 <span class="card-title grey-text text-darken-4">
-                                                    ${promotion.title}<a href="#mdlInfo" class="modal-trigger" onclick="setInfo(${promotion.idPromotion})"><i class="material-icons right">more_vert</i></a>
+                                                    ${promotion.title}<a href="${pageContext.request.contextPath}/client/sales.do?op=detailP&idPromotion=${promotion.idPromotion}" class="modal-trigger" ><i class="material-icons right">more_vert</i></a>
                                                 </span>
                                                 <p class='center-align'>
                                                     <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion}, '${promotion.company.idCompany}')">Comprar</a>
@@ -62,7 +62,7 @@
                             </div>
                             <br>
                         </div>
-                        
+                        <!--
                         <div id="mdlInfo" class="modal">
                             <div class="modal-content">
                                 <h4 class="center light-blue-text text-darken-4">Información General</h4>
@@ -80,7 +80,7 @@
                             <div class="col s12  btn-cont">
                                 <a href="javascript:void(0)" class="modal-close waves-effect waves-light light-blue darken-2 btn"><i class="material-icons left">close</i> Cerrar</a>
                             </div>
-                            <br>
+                            <br>-->
                         </div>
                     </div>
                 </div>
@@ -95,6 +95,7 @@
                 columnWidth: 10
             });
         });
+        /*
         function setInfo(idP){
             $('#mdlInfo #title').text("");
             $('#mdlInfo #ofertPrice').text("");
@@ -126,7 +127,7 @@
                   loader.out();
               }
            });
-        }
+        }*/
         function setId(id,idC){
                 $('#idCt').val(id);
                 $('#idCom').val(idC);

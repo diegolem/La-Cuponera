@@ -687,6 +687,24 @@ BEGIN
 	UPDATE user SET password = _password WHERE id = _id;
 END ;;
 DELIMITER ;
+
+DROP PROCEDURE if EXISTS pagination;
+DELIMITER ;;
+CREATE PROCEDURE pagination(IN _x INTEGER)
+BEGIN
+	DECLARE maxi INTEGER;
+    DECLARE mini INTEGER;
+    
+    SET maxi = _x*20;
+    SET mini = (_x*20) - 10;
+    
+	SELECT promotion.title, promotion.image,promotion.id, CAST((SELECT COUNT(*) FROM promotion)/10 AS INT) AS 'Items' FROM promotion
+    WHERE id_state = 2
+	ORDER BY promotion.limit_date DESC
+	LIMIT mini, maxi;
+END ;;
+DELIMITER ;
+
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
