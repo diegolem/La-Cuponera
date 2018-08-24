@@ -18,9 +18,10 @@
             <nav class="teal z-depth-0" id="nav">
                 <div class="nav-wrapper">
                     <a href="#" class="brand-logo">
-                        Cuponera
+                        &nbsp;La Cuponera
                     </a>
-                    <ul class="right hide-on-med-and-down" id="opc">    
+                    <ul class="right hide-on-med-and-down" id="opc">
+                        <li><a href="${pageContext.request.contextPath}/sales.do?op=public">Cupones</a></li>
                         <li><a href="login.jsp">Iniciar Sesión</a></li>
                         <li><a href="register.jsp">Registrarme</a></li>
                     </ul>

@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import org.primefaces.json.JSONObject;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -90,10 +89,22 @@ public class salesController extends HttpServlet {
                         break;
                 }
             } else {
-                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                if(null == op){
+                    response.sendRedirect(request.getContextPath() + "/login.jsp");
+                }else switch (op) {
+                    case "public":
+                        publicP(request,response);
+                        break;
+                    case "detailPublic":
+                        getInfoPublic(request, response);
+                        break;
+                    default:
+                        response.sendRedirect(request.getContextPath() + "/login.jsp");
+                        break;
+                }
             }
-        } catch(Exception error) {
-        
+        } catch(IOException | SQLException | ServletException error) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, error);
         }
     }
 
@@ -307,11 +318,42 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
                 if (promo != null) {
                     request.setAttribute("title", "Detalle de la promocion");
                     request.setAttribute("promotion", promo);
+                    request.setAttribute("fechali", promo.getStringLimitDate());
+                    request.setAttribute("fechaexp", promo.getStringEndDate());
                     request.getRequestDispatcher("/client/Sales/detailsPromotion.jsp").forward(request, response);
                 } else {
                     request.setAttribute("title", "Compra de Cupones");
                     request.setAttribute("promotions", promotions.getPromotionsA(true));
                     request.getRequestDispatcher("/client/Sales/newSales.jsp").forward(request, response);
+                }
+            }
+        } catch (SQLException | IOException | ServletException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void publicP(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+        try {
+            request.setAttribute("promotions", promotions.getPromotionsA(true));
+            request.getRequestDispatcher("/promociones.jsp").forward(request, response);
+        } catch (ServletException | IOException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void getInfoPublic(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            PrintWriter out = response.getWriter();
+            if (Validacion.esEnteroPositivo(request.getParameter("idPromotion"))) {
+                Promotion promo = promotions.getPromotion(Integer.parseInt(request.getParameter("idPromotion")), true);
+                if (promo != null) {
+                    request.setAttribute("promotion", promo);
+                    request.setAttribute("fechali", promo.getStringLimitDate());
+                    request.setAttribute("fechaexp", promo.getStringEndDate());
+                    request.getRequestDispatcher("/detailsPromotion.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("promotions", promotions.getPromotionsA(true));
+                    request.getRequestDispatcher("/promociones.jsp").forward(request, response);
                 }
             }
         } catch (SQLException | IOException | ServletException ex) {

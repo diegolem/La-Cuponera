@@ -17,6 +17,12 @@
     <body onload="cargarFecha()">
         <jsp:include page="../../menus/menuClient.jsp"/>
 
+        <style>
+            .tabs .indicator{
+                background-color: #0091ea !important;
+            }
+        </style>
+
         <main class="">
             <div class="row">
                 <a href="${pageContext.request.contextPath}/client/sales.do?op=newC" class="waves-effect waves-blue btn-large"><i class="material-icons left centered">line_weight</i>Listado de cupones</a>
@@ -24,7 +30,7 @@
                 <div class="card">
                     <div class="card-content center">
                         <p class='center-align'>
-                            <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion}, '${promotion.company.idCompany}')">Comprar</a>
+                            <a href="#mdlBuy1" id="btnc" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion}, '${promotion.company.idCompany}')">Comprar</a>
                         </p>
                     </div>
                     <div class="card-tabs">
@@ -37,7 +43,7 @@
                             <ul class="collection">
                                 <li class="collection-item"><b>Nombre de la promoción: </b>${promotion.title}</li>
                                 <li class="collection-item"><b>Precio de la oferta: </b>$ ${promotion.ofertPrice}</li>
-                                <li id="fecha" class="collection-item red-text darken-4"></li>
+                                <li id="fecha" class="collection-item"></li>
                                 <li class="collection-item">
                                     <c:choose>
                                         <c:when test="${promotion.couponsAvailable eq 0}">
@@ -77,7 +83,7 @@
                         </div>
                         <div class="col s12  btn-cont">
                             <a href="javascript:void(0)" class="modal-close waves-effect waves-light red darken-1 btn"><i class="material-icons left">close</i>Cancelar</a>
-                            <a href="#!" onclick="buyPromotion($('#idCt').val(),$('#numCu').val(),$('#idCom').val())" class="waves-effect waves-light green darken-3 btn"><i class="material-icons left">attach_money</i>Comprar</a>
+                            <a href="#!" onclick="buyPromotion($('#idCt').val(), $('#numCu').val(), $('#idCom').val())" class="waves-effect waves-light green darken-3 btn"><i class="material-icons left">attach_money</i>Comprar</a>
                         </div>
                         <br>
                         <br>
@@ -88,16 +94,37 @@
     </body>
     <script>
         let loader = new Loader();
-        function cargarFecha(){
-            let fechaLimite = moment(${promotion.limitDate}), now = moment();
-            fechaLimite.subtract(parseInt(now.format('DD')), 'days').calendar(); 
-            $('#fecha').html('Ya solo quedan <b>'+ fechaLimite.format('DD') + ' dias</b> para que la oferta termine!!');
-        }
-    function setId(id,idC){
-                $('#idCt').val(id);
-                $('#idCom').val(idC);
+        function cargarFecha() {
+            let fechaLimite = moment('${fechali}'), now = moment();
+            fechaLimite.subtract(parseInt(now.format('DD')), 'days').calendar();
+            
+            if(${fechali != fechaexp}){
+                if(fechaLimite.format('DD') > 5){
+                    $('#fecha').html('Quedan <b>' + fechaLimite.format('DD') + ' dias</b> para que la oferta termine!!');
+                    $('#fecha').addClass('green-text darken-4');
+                }else if(fechaLimite.format('DD') <= 5 && fechaLimite.format('DD') >= 2){
+                    $('#fecha').html('Ya solo quedan <b>' + fechaLimite.format('DD') + ' dias</b> para que la oferta termine!!');
+                    $('#fecha').addClass('orange-text darken-4');
+                }else if(fechaLimite.format('DD') = 1){
+                    $('#fecha').html('Ya solo queda <b>' + fechaLimite.format('DD') + ' dia</b> para que la oferta termine!!');
+                    $('#fecha').addClass('red-text darken-4');
+                }else{
+                    $('#fecha').html('La oferta ya ha expirado');
+                    $('#fecha').addClass('black-text darken-4');
+                }
+            }else{
+                $('#fecha').html('<b>La oferta ya ha expirado</b>');
+                $('#fecha').addClass('red-text darken-4');
+                $('#btnc').addClass('disabled');
+                $('#btnc').removeClass('modal-trigger');
+                $('#btnc').removeAttr('onclick');
             }
-        function buyPromotion(id,cant,idC){
+        }
+        function setId(id, idC) {
+            $('#idCt').val(id);
+            $('#idCom').val(idC);
+        }
+        function buyPromotion(id, cant, idC) {
             loader.in();
             $.ajax({
                 url: "${pageContext.request.contextPath}/client/sales.do?op=buy",
@@ -107,23 +134,25 @@
                     Cantidad: cant,
                     idCompany: idC
                 },
-                success: function(response){
+                success: function (response) {
                     let text = '', classes = '', callback;
-                    if(response === "0"){
-                            text = 'Ha ocurrido un error en el proceso de compra';
-                            classes = 'red lighten-1';
-                            callback = function(){};
-                        }else if(response === "1"){
-                            classes = 'green darken-2';
-                            text = 'Compra exitosa';
-                            callback = function(){location.href='${pageContext.request.contextPath}/client/sales.do?op=listC';};
-                        }else if(response === "-2"){
-                            text = 'Por favor revise los datos';
-                            classes = 'red lighten-1';
-                            callback = function(){};
-                        }
-                        loader.out();
-                        M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
+                    if (response === "0") {
+                        text = 'Ha ocurrido un error en el proceso de compra';
+                        classes = 'red lighten-1';
+                        callback = function () {};
+                    } else if (response === "1") {
+                        classes = 'green darken-2';
+                        text = 'Compra exitosa';
+                        callback = function () {
+                            location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC';
+                        };
+                    } else if (response === "-2") {
+                        text = 'Por favor revise los datos';
+                        classes = 'red lighten-1';
+                        callback = function () {};
+                    }
+                    loader.out();
+                    M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
                 }
             });
         }
