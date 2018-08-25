@@ -241,7 +241,7 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1,'Hay cocteles amor',4.50,4.45,'2018-08-23','2018-08-24','2018-08-31',10,'No te pierdas estos ricos cocteles amor','Especialidad la que usted quiera amor','WIN_20180821_22_43_19_Pro.jpg',0,0,5.95,4.00,'ABC123',2,''),(2,'Gran venta de animales',3.00,2.00,'2018-08-22','2018-08-24','2018-08-31',12,'<p>asdf</p>','sdaf','ofertaanimal.png',6,6,12.00,1.20,'ABC123',2,''),(3,'asd',123.00,2.00,'2018-08-23','2018-08-25','2018-08-31',2,'<p>sad</p>','12','WIN_20180818_18_25_36_Pro.jpg',0,2,0.00,0.00,'ABC123',2,''),(4,'RegaShoes',10.00,9.00,'2018-08-22','2018-08-31','2018-08-31',100,'<p>Vamos a regalar zapatos, ven y canjea el cupon y encuentra tus zapatos ideales</p>','Valido solo por las tardes','Suburbia-zapatos1.jpg',6,94,54.00,5.40,'ABC123',2,'');
+INSERT INTO `promotion` VALUES (1,'Gran venta de animales',3.00,2.00,'2018-08-22','2018-08-24','2018-08-31',12,'<p>asdf</p>','sdaf','ofertaanimal.png',6,6,12.00,1.20,'ABC123',2,''),(2,'RegaShoes',10.00,9.00,'2018-08-22','2018-08-31','2018-08-31',100,'<p>Vamos a regalar zapatos, ven y canjea el cupon y encuentra tus zapatos ideales</p>','Valido solo por las tardes','Suburbia-zapatos1.jpg',6,94,54.00,5.40,'ABC123',2,'');
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
