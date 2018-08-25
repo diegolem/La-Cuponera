@@ -260,7 +260,6 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
                     //Asignando el codigo del cupon
                     salesN.setCouponCode(sales.generateCode(company));
                     //Asignando el codigo de la promotion
-
                     salesN.setPromotion(promot);
                     //Asignando el Cliente
 

@@ -241,7 +241,18 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1,'Gran venta de animales',3.00,2.00,'2018-08-22','2018-08-24','2018-08-31',12,'<p>asdf</p>','sdaf','ofertaanimal.png',6,6,12.00,1.20,'ABC123',2,''),(2,'RegaShoes',10.00,9.00,'2018-08-22','2018-08-31','2018-08-31',100,'<p>Vamos a regalar zapatos, ven y canjea el cupon y encuentra tus zapatos ideales</p>','Valido solo por las tardes','Suburbia-zapatos1.jpg',6,94,54.00,5.40,'ABC123',2,'');
+INSERT INTO `promotion` VALUES (1, 'Gran venta de animales', '3.00', '2.00', '2018-08-22', '2018-08-24', '2018-08-31', 12, '<p>asdf</p>', 'sdaf', 'ofertaanimal.png', 6, 6, '12.00', '1.20', 'ABC123', 2, ''),
+(2, 'RegaShoes', '10.00', '9.00', '2018-08-22', '2018-08-31', '2018-08-31', 100, '<p>Vamos a regalar zapatos, ven y canjea el cupon y encuentra tus zapatos ideales</p>', 'Valido solo por las tardes', 'Suburbia-zapatos1.jpg', 6, 94, '54.00', '5.40', 'ABC123', 2, ''),
+(5, 'Banquete para 6', '16.00', '15.00', '2018-08-26', '2018-09-02', '2018-09-03', 25, '<p><span class=\"ql-font-serif\">Te tenemos una oferta solo para ti!, un banquete familiar para 6 personas por un precio increible al presentar la factura en tu restaurante mas cercano</span></p>', 'No hay detalles extra', 'banquet.jpg', 2, 23, '30.00', '3.00', 'ABC123', 2, ''),
+(6, 'Hamburguesas Gigas', '8.00', '6.00', '2018-08-26', '2018-08-30', '2018-08-31', 40, '<p>Ven y disfruta de unas ricas hamburguesas al mejor precio que te puedas imaginar en nuestros establecimientos, te esperamos!!</p>', 'La oferta sera valida solamente si se presenta la factura de compra', 'hamburofert.jpg', 0, 40, '0.00', '0.00', 'ABC123', 1, ''),
+(7, 'Ropa para bebes', '5.00', '4.00', '2018-08-26', '2018-09-04', '2018-09-05', 15, '<p>Ven y disfruta las grandes ofertas que tenemos para tu bebe con los mejores estilos para toda clase de ocasion, que esperas compra ya tu cupon!!</p>', 'Presentar factura en caja para hacer efectivo el canje', 'ofertabebes.jpg', 0, 15, '0.00', '0.00', 'ABC123', 2, ''),
+(8, 'Vacaciones CaribeÃ±as', '800.00', '794.00', '2018-08-26', '2018-09-02', '2018-09-03', 20, '<p>Ven y disfruta un viaje unico con toda tu familia por la riviera maya y las bellas playas del caribe, ven que esperas la playa te esta esperando!	</p>', 'La oferta es valida para 4 personas', 'ofertacaribe.jpg', 0, 20, '0.00', '0.00', 'ABC123', 1, ''),
+(9, 'Black Friday - Ropa', '20.00', '18.00', '2018-08-26', '2018-08-30', '2018-08-31', 0, '<p>Ven y disfruta de los mejores precios en la mejor semana para comprar lo que quieras con tus amigos o familia, ven ya te esperamos!</p>', 'Debes presentar tu factura de compra para obtener un 10% en tu gasto total', 'ofertaropa2.jpg', 0, 0, '0.00', '0.00', 'ABC123', 2, ''),
+(10, 'Servicio de Veterinaria', '3.00', '2.00', '2018-08-26', '2018-08-28', '2018-08-29', 10, '<p>Trae a tu mascota a nuestra clinica tenemos el mejor personal especializado de la zona para el tratamiento correcto o problema que tenga tu mascota</p>', 'El 5% se aplica al total de la consulta', 'ofertveter.jpg', 0, 10, '0.00', '0.00', 'ABC123', 2, ''),
+(11, 'Bahia Principe', '250.00', '200.00', '2018-08-26', '2018-09-02', '2018-09-03', 30, '<p>El hotel Bahia Principe te ofrece en esta ocasion como especial de agosto una oferta que no podras rechazar ya que al pagar 1 oferta puede venir un acompaÃ±ante GRATIS!! contigo para mas informacion llamar al Tel. 2222-6969</p>', 'No hay detalles extra', 'vacaciones.jpg', 0, 30, '0.00', '0.00', 'ABC123', 2, ''),
+(12, 'Rebajas Video oca', '10.00', '8.00', '2018-08-26', '2018-08-29', '2018-08-30', 0, '<p>En Video Oca te ofrecemos el mejor equipo electronico a los mejores precios, solamente con la presentacion de la factura de pago tienes el 5% de descuento en TODO lo que compres, que esperas compra uno YA!!</p>', 'Valido solo para articulos web', 'webofrett.jpg', 0, 0, '0.00', '0.00', 'ABC123', 2, ''),
+(13, 'Celular - LG G4 beat', '5.00', '5.00', '2018-08-26', '2018-08-28', '2018-08-30', 5, '<p>Te presentamos el telefono LG G4 beat el cual posee una gran calidad tanto en camara, como espacio de almacenamiento, memoria RAM ademas es calidad asegurada!</p>', 'Al presentar esta factura en nuestras instalaciones tienes un 14% de descuento en la compra de este celular', 'phoneofert.png', 0, 5, '0.00', '0.00', 'ABC123', 2, '');
+
 /*!40000 ALTER TABLE `promotion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,7 +311,7 @@ CREATE TABLE `sales` (
 
 LOCK TABLES `sales` WRITE;
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,'ABC1230000001',1,1,0,1),(9,'ABC1230000002',2,1,0,2),(10,'ABC1230000003',2,1,0,2),(11,'ABC1230000004',4,1,0,2),(13,'ABC1230000005',4,1,0,2),(14,'ABC1230000006',4,1,0,2),(16,'ABC1230000007',4,1,0,2),(17,'ABC1230000008',2,1,0,2),(18,'ABC1230000009',2,1,0,2),(19,'ABC1230000010',4,1,0,2),(20,'ABC1230000011',4,1,0,2),(21,'ABC1230000012',2,1,0,2),(22,'ABC1230000013',2,1,0,2);
+INSERT INTO `sales` VALUES (1,'ABC1230000001',1,1,0,1),(2,'ABC1230000002',2,1,0,2);
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
