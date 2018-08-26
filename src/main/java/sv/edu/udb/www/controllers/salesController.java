@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.primefaces.json.JSONObject;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Sales;
 import sv.edu.udb.www.beans.SalesState;
@@ -80,6 +81,9 @@ public class salesController extends HttpServlet {
                         break;
                     case "buy":
                         buyCupon(request, response);
+                        break;
+                    case "pagination":
+                        pagination(request, response);
                         break;
                     case "exchange":
                         exchange(request,response);
@@ -356,6 +360,29 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
                 }
             }
         } catch (SQLException | IOException | ServletException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void pagination(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            PrintWriter out = response.getWriter();
+            if(Validacion.esEnteroPositivo(request.getParameter("page"))){
+                int page = Integer.parseInt(request.getParameter("page"));
+                List<Promotion> cupones = promotions.getPagination(page, true);
+                if(cupones != null){
+                    JSONObject json = new JSONObject();
+                    json.put("promotions", cupones);
+                    json.put("btn",promotions.getBtn(page));
+                    out.print(json);
+                }else{
+                    out.print("0");
+                }                    
+            }else{
+                out.print("0");
+            }
+            
+        } catch (IOException | SQLException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

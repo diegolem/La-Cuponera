@@ -49,7 +49,6 @@ public class SalesModel extends Connection {
             return null;
         }
     }//Fin getSales()
-
     public ArrayList<Sales> getSales(User user, SalesState saleState, boolean relationship) throws SQLException {
         try {
             ArrayList<Sales> sales = new ArrayList<Sales>();

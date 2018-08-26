@@ -49,7 +49,6 @@
                     <div class="collapsible-body">
                         <ul>
                             <li><a href="${pageContext.request.contextPath}/admin/companiesType.do?op=list">Mostrar <i class="material-icons left">remove_red_eye</i></a></li>
-                            <li><a href="${pageContext.request.contextPath}/admin/companiesType.do?op=new">Registrar <i class="material-icons left">add</i></a></li>
                         </ul>
                     </div>
                 </li>

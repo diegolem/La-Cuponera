@@ -62,7 +62,52 @@ public class PromotionModel extends Connection {
             return null;
         }
     }// Fin getPromotions()
-    
+    public ArrayList<Promotion> getPagination(int page,boolean relationship) throws SQLException{
+        try {
+            ArrayList<Promotion> promotion = new ArrayList<Promotion>();
+            ArrayList<Integer> id = new ArrayList<Integer>();
+            String sql = "CALL pagination(?)";
+            
+            this.conectar();
+            cs = conexion.prepareCall(sql);
+            cs.setInt(1, page);
+            rs = cs.executeQuery();
+            while (rs.next()) {
+                id.add(rs.getInt("id"));
+            }
+            this.desconectar();
+            
+            for (int i = 0; i < id.size(); i++) {
+                promotion.add(this.getPromotion(id.get(i), relationship));
+            }
+            return promotion;
+        } catch (SQLException ex) {
+            this.desconectar();
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    public int getBtn(int page) throws SQLException{
+        try {
+            int cuenta = 0;
+            String sql = "CALL pagination(?)";
+            
+            this.conectar();
+            cs = conexion.prepareCall(sql);
+            cs.setInt(1, page);
+            rs = cs.executeQuery();
+            while (rs.next()) {
+                cuenta = rs.getInt("Items");
+            }
+            this.desconectar();
+                        
+            return cuenta;
+        } catch (SQLException ex) {
+            this.desconectar();
+            Logger.getLogger(SalesModel.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
     public List<Promotion> getPromotions(PromotionState promotionState, boolean relationship) throws SQLException{
         try {
             ArrayList<Promotion> promotions = new ArrayList<>();
