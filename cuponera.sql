@@ -292,6 +292,7 @@ CREATE TABLE `sales` (
   `coupon_code` varchar(13) COLLATE utf8_spanish2_ci NOT NULL,
   `promotion_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
+  `date` datetime DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
   `sales_state` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -334,6 +335,8 @@ DELIMITER ;;
 	ELSE
 		UPDATE promotion SET coupons_sold = (coupons_sold + 1), earnings = ((coupons_sold) *(@ofert_price)), charge_service = ((earnings)*(@pct_comission / 100)) WHERE id =  NEW.promotion_id;
     END IF;
+
+    SET NEW.date = current_timestamp();
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
