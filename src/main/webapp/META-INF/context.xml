@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/Cuponera">
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="5000" name="jdbc/mysql" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost/cuponera?characterEncoding=utf8" username="root"/>
+    <Resource username="root" url="jdbc:mysql://localhost/cuponera?characterEncoding=utf8&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" type="javax.sql.DataSource" password="" name="jdbc/mysql" maxWait="5000" maxIdle="10" maxActive="20" driverClassName="com.mysql.jdbc.Driver" auth="Container"/>
 </Context>

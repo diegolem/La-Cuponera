@@ -16,6 +16,9 @@ import sv.edu.udb.www.beans.PromotionState;
  * @author Diego Lemus
  */
 public class PromotionStateModel extends Connection {
+
+    public PromotionStateModel() {
+    }
     
     public ArrayList<PromotionState> getPromotionState(boolean relationship) throws SQLException{
         try {

@@ -51,9 +51,6 @@ public class companyTypeController extends HttpServlet {
                     case "list":
                         list(request, response);
                         break;
-                    case "new":
-                        add(request, response);
-                        break;
                     case "get":
                         get(request, response);
                         break;
@@ -136,18 +133,11 @@ public class companyTypeController extends HttpServlet {
         }
     }//Fin  list()
 
-    private void add(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            request.setAttribute("title", "Nuevo Rubro");
-            request.getRequestDispatcher("/admin/companyType/newCompaniesType.jsp").forward(request, response);
-        } catch (ServletException | IOException ex) {
-            Logger.getLogger(companyTypeController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }// Fin add()
 
     private void insert(HttpServletRequest request, HttpServletResponse response) {
         try {
             errorsList.clear();
+            PrintWriter out = response.getWriter();
             CompanyType companytype = new CompanyType();
             if (Validacion.esRubro(request.getParameter("name"))) {
                 if (!Validacion.isEmpty(request.getParameter("name"))) {
@@ -159,21 +149,16 @@ public class companyTypeController extends HttpServlet {
             } else {
                 errorsList.put("name", "El nombre del rubro no es valido");
             }
-
             if (errorsList.size() > 0) {
-                request.setAttribute("errorsList", errorsList);
-                request.setAttribute("companiesType", companytype);
-                request.getRequestDispatcher("/admin/companiesType.do?op=new").forward(request, response);
+                out.print("0");
             } else {
                 if (companyTypeModel.insertCompanyType(companytype)) {
-                    request.getSession().setAttribute("success", "Rubro registrado");
-                    response.sendRedirect(request.getContextPath() + "/admin/companiesType.do?op=list");
+                    out.print("1");
                 } else {
-                    request.getSession().setAttribute("error", "Rubro no registrado. Revise los datos");
-                    response.sendRedirect(request.getContextPath() + "/admin/companiesType.do?op=list");
+                    out.print("0");
                 }
             }
-        } catch (SQLException | IOException | ServletException ex) {
+        } catch (SQLException | IOException ex) {
             Logger.getLogger(companyTypeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// Fin insert()
@@ -223,6 +208,7 @@ public class companyTypeController extends HttpServlet {
     private void update(HttpServletRequest request, HttpServletResponse response) {
         try {
             errorsList.clear();
+            PrintWriter out = response.getWriter();
             CompanyType companytype = new CompanyType();
             if (Validacion.esEnteroPositivo(request.getParameter("idCompanyType"))) {
                 companytype = companyTypeModel.getCompanyType(Integer.parseInt(request.getParameter("idCompanyType")), true);
@@ -242,19 +228,15 @@ public class companyTypeController extends HttpServlet {
             }
 
             if (errorsList.size() > 0) {
-                request.setAttribute("errorsList", errorsList);
-                request.setAttribute("companiesType", companytype);
-                request.getRequestDispatcher("/admin/companyType/editCompaniesType.jsp").forward(request, response);
+                out.print("0");
             } else {
                 if (companyTypeModel.updateCompanyType(companytype)) {
-                    request.getSession().setAttribute("success", "Rubro modificado");
-                    response.sendRedirect(request.getContextPath() + "/admin/companiesType.do?op=list");
+                    out.print("1");
                 } else {
-                    request.getSession().setAttribute("error", "El rubro no pudo ser modificado");
-                    response.sendRedirect(request.getContextPath() + "/admin/companiesType.do?op=list");
+                    out.print("0");
                 }
             }
-        } catch (SQLException | IOException | ServletException ex) {
+        } catch (SQLException | IOException ex) {
             Logger.getLogger(companyTypeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }// Fin update()

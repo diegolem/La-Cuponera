@@ -22,30 +22,11 @@
             </c:if>
             <div class="grid">
                 <div class="grid-sizer"></div>
-                    <c:choose>
-                        <c:when test="${not empty requestScope.promotions}">
-                            <c:forEach var="promotion" items="${requestScope.promotions}">
-                                <div class="grid-item">
-                                    <div class="card">
-                                        <div class="card-image waves-effect waves-block waves-light">
-                                            <img class="activator" src="${pageContext.request.contextPath}/img/${promotion.image}">
-                                        </div>
-                                        <div class="card-content">
-                                            <span class="card-title grey-text text-darken-4">
-                                                ${promotion.title}<a href="${pageContext.request.contextPath}/client/sales.do?op=detailP&idPromotion=${promotion.idPromotion}"><i class="material-icons right">more_vert</i></a>
-                                            </span>
-                                            <p class='center-align'>
-                                                <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(${promotion.idPromotion}, '${promotion.company.idCompany}')">Comprar</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </c:when>
-                    </c:choose>
-                <!-- Modal Structure -->
+                <!--Generate grid-item-->
             </div>
-        </div>
+        
+        <ul class="pagination center" id="pagination"></ul>
+            
     </main>
         <div id="mdlBuy1" class="modal">
             <div class="modal-content">
@@ -98,22 +79,81 @@
         display: block;
         max-width: 100%;
     }
-
+    .w{
+            color: white !important;
+        }
 </style>
 <script>
     let loader = new Loader();
+    var botn = 0;
+    var $page = $('.pagination');
+    var $grid;
     $(document).ready(function () {
-        var $grid = $('.grid').masonry({
+        $grid = $('.grid').masonry({
           itemSelector: '.grid-item',
           percentPosition: true,
           columnWidth: '.grid-sizer'
         });
-        // layout Masonry after each image loads
-        $grid.imagesLoaded().progress( function() {
-          $grid.masonry();
-        });
+        pagination(1);
     });
-
+    function pagination(page){
+        let promotion = [];
+        loader.in();
+        $.ajax({
+            type: "POST",
+            url: "${pageContext.request.contextPath}/client/sales.do?op=pagination",
+            data: {page: page},
+            success: function(response){
+                if(response === "0"){
+                    console.log("Revise los datos");
+                }else {
+                let cards = '';
+                let btns = '';
+                let json = JSON.parse(response);
+                promotion = json.promotions;
+                botn = json.btn;
+                $('.grid-item').remove();
+                $('.pag').remove();
+                promotion.forEach(function(_p,i){
+                    cards += `<div class="grid-item">
+                                    <div class="card">
+                                        <div class="card-image waves-effect waves-block waves-light">
+                                            <img class="activator" src="${pageContext.request.contextPath}/img/`+ _p["image"] +`">
+                                        </div>
+                                        <div class="card-content">
+                                            <span class="card-title grey-text text-darken-4">
+                                                `+ _p["title"] +`<a href="${pageContext.request.contextPath}/client/sales.do?op=detailP&idPromotion=`+ _p["idPromotion"] +`"><i class="material-icons right">more_vert</i></a>
+                                            </span>
+                                            <p class='center-align'>
+                                                <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(`+ _p["idPromotion"] +`, '`+ _p["company"]["idCompany"] +`')">Comprar</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    });
+                    for(var i = 1;i <= botn;i++){
+                        btns += `<li class="waves-effect btn pag light-blue darken-2"><a href="javascript:void(0)" class="w waves-light" onclick="pagination(`+ i +`)">`+ i +`</a></li>`;
+                    }
+                    let $b = $(btns);
+                    $page.append($b);
+                    let $c = $(cards);
+                    $grid.append($c).masonry('appended',$c);
+                    $grid.masonry('reloadItems');
+                }
+            }
+        }).done(function(){
+            $(".grid").imagesLoaded(function(){
+            $('.grid').masonry({
+                // options
+                itemSelector: '.grid-item',
+                columnWidth: '.grid-sizer',
+                percentPosition: true
+                });
+            });
+            loader.out();
+        });
+    }
+    
     function setId(id, idC) {
         $('#idCt').val(id);
         $('#idCom').val(idC);
@@ -130,32 +170,21 @@
             },
             success: function (response) {
                 let text = '', classes = '', callback;
-                
                 if (response === "0") {
                     text = 'Ha ocurrido un error en el proceso de compra';
                     classes = 'red lighten-1';
                     callback = function () {};
+                } else if (response === "1") {
+                    classes = 'green darken-2';
+                    text = 'Compra exitosa';
+                    callback = function () {
+                        location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC';
+                    };
                 } else if (response === "-2") {
                     text = 'Por favor revise los datos';
                     classes = 'red lighten-1';
                     callback = function () {};
-                } else {
-                    var sales = jQuery.parseJSON( response );
-                    
-                    var url = "${pageContext.request.contextPath}/client/sales.do?op=cuponPdf&type=pdf";
-                    
-                    $.each(sales.cupones, function( key, value ) {
-                        url += "&code="+value;
-                    });
-                    
-                    classes = 'green darken-2';
-                    text = 'Compra exitosa';
-                    callback = function () {
-                        location.href = url;
-                    };
                 }
-                
-                
                 loader.out();
                 M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
             }

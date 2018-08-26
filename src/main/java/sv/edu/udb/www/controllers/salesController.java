@@ -26,6 +26,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import org.primefaces.json.JSONObject;
+import sv.edu.udb.www.beans.Company;
+import sv.edu.udb.www.beans.Sales;
+import sv.edu.udb.www.beans.SalesState;
+import sv.edu.udb.www.beans.User;
+import sv.edu.udb.www.model.SalesModel;
+import sv.edu.udb.www.model.SalesStateModel;
+import sv.edu.udb.www.model.UserModel;
+import sv.edu.udb.www.beans.Promotion;
+import sv.edu.udb.www.model.PromotionModel;
+import sv.edu.udb.www.utilities.Validacion;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -38,17 +49,6 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.j2ee.servlets.ImageServlet;
 import org.jfree.util.Log;
 import org.primefaces.json.JSONObject;
-import sv.edu.udb.www.beans.Company;
-import sv.edu.udb.www.beans.Sales;
-import sv.edu.udb.www.beans.SalesState;
-import sv.edu.udb.www.beans.User;
-import sv.edu.udb.www.model.SalesModel;
-import sv.edu.udb.www.model.SalesStateModel;
-import sv.edu.udb.www.model.UserModel;
-import sv.edu.udb.www.beans.Promotion;
-import sv.edu.udb.www.model.PromotionModel;
-import sv.edu.udb.www.utilities.Validacion;
-
 /**
  *
  * @author Diego Lemus
@@ -100,6 +100,9 @@ public class salesController extends HttpServlet {
                     case "buy":
                         buyCupon(request, response);
                         break;
+                    case "pagination":
+                        pagination(request, response);
+                        break;
                     case "exchange":
                         exchange(request,response);
                         break;
@@ -116,6 +119,9 @@ public class salesController extends HttpServlet {
                 }else switch (op) {
                     case "public":
                         publicP(request,response);
+                        break;
+                    case "pagination":
+                        pagination(request, response);
                         break;
                     case "detailPublic":
                         getInfoPublic(request, response);
@@ -282,7 +288,6 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
                     //Asignando el codigo del cupon
                     salesN.setCouponCode(sales.generateCode(company));
                     //Asignando el codigo de la promotion
-
                     salesN.setPromotion(promot);
                     //Asignando el Cliente
 
@@ -310,66 +315,6 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
         }
     }
 
-    private void generarPdf(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException{
-        ServletOutputStream out = response.getOutputStream();
-        String tipo = request.getParameter("type");
-        
-        try {
-            Context init = new InitialContext();
-        
-            Context context = (Context) init.lookup("java:comp/env");
-        
-            DataSource dataSource =(DataSource)context.lookup("jdbc/mysql");
-            Connection conexion = dataSource.getConnection();
-            
-            String codes = "";
-            boolean first = true;
-            
-            for (Entry<String, String[]> paramEntry : request.getParameterMap().entrySet())
-                if(paramEntry.getKey().toLowerCase().startsWith("code"))
-                    for (String val : paramEntry.getValue()){
-                        codes += (first)? "'"+val+"'": ",'"+val+"'";
-                        first = false;
-                    }
-            
-            JasperReport reporte = (JasperReport)JRLoader.loadObjectFromFile(getServletContext().getRealPath("/jasper/FacturaCupones.jasper"));
-        
-            Map parameters = new HashMap();
-            parameters.put("codes", codes);
-            
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,parameters, conexion);
-            JRExporter exporter = null;
-
-            if (tipo.equals("pdf")) {
-                response.setContentType("application/pdf");
-                exporter = new JRPdfExporter();
-            } else {
-                response.setContentType("text/html;charset=UTF-8");
-                exporter = new JRHtmlExporter();
-            }
-            
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
-            exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI,
-            getServletContext().getContextPath() + "/jasperImage?rnd=" + Math.random() + "&image=");
-
-            exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN,Boolean.FALSE);
-
-            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
-            
-            conexion.close();
-            exporter.exportReport();
-        }
-        catch (Exception e)
-        {
-        e.printStackTrace();
-        Log.debug("Error", e);
-        }
-        finally {
-        out.close();
-        }
-    }
-    
     private void detailsCupon(HttpServletRequest request, HttpServletResponse response) throws SQLException {
             try {
             if (Validacion.esEnteroPositivo(request.getParameter("idSales"))) {
@@ -442,6 +387,89 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
             }
         } catch (SQLException | IOException | ServletException ex) {
             Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void pagination(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            PrintWriter out = response.getWriter();
+            if(Validacion.esEnteroPositivo(request.getParameter("page"))){
+                int page = Integer.parseInt(request.getParameter("page"));
+                List<Promotion> cupones = promotions.getPagination(page, true);
+                if(cupones != null){
+                    JSONObject json = new JSONObject();
+                    json.put("promotions", cupones);
+                    json.put("btn",promotions.getBtn(page));
+                    out.print(json);
+                }else{
+                    out.print("0");
+                }                    
+            }else{
+                out.print("0");
+            }
+            
+        } catch (IOException | SQLException ex) {
+            Logger.getLogger(salesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void generarPdf(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException{
+        ServletOutputStream out = response.getOutputStream();
+        String tipo = request.getParameter("type");
+        
+        try {
+            Context init = new InitialContext();
+        
+            Context context = (Context) init.lookup("java:comp/env");
+        
+            DataSource dataSource =(DataSource)context.lookup("jdbc/mysql");
+            Connection conexion = dataSource.getConnection();
+            
+            String codes = "";
+            boolean first = true;
+            
+            for (Entry<String, String[]> paramEntry : request.getParameterMap().entrySet())
+                if(paramEntry.getKey().toLowerCase().startsWith("code"))
+                    for (String val : paramEntry.getValue()){
+                        codes += (first)? "'"+val+"'": ",'"+val+"'";
+                        first = false;
+                    }
+            
+            JasperReport reporte = (JasperReport)JRLoader.loadObjectFromFile(getServletContext().getRealPath("/jasper/FacturaCupones.jasper"));
+        
+            Map parameters = new HashMap();
+            parameters.put("codes", codes);
+            
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,parameters, conexion);
+            JRExporter exporter = null;
+
+            if (tipo.equals("pdf")) {
+                response.setContentType("application/pdf");
+                exporter = new JRPdfExporter();
+            } else {
+                response.setContentType("text/html;charset=UTF-8");
+                exporter = new JRHtmlExporter();
+            }
+            
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
+            exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI,
+            getServletContext().getContextPath() + "/jasperImage?rnd=" + Math.random() + "&image=");
+
+            exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN,Boolean.FALSE);
+
+            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+            
+            conexion.close();
+            exporter.exportReport();
+        }
+        catch (Exception e)
+        {
+        e.printStackTrace();
+        Log.debug("Error", e);
+        }
+        finally {
+        out.close();
         }
     }
 }

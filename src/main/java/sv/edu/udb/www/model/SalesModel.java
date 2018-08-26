@@ -20,6 +20,9 @@ import sv.edu.udb.www.beans.User;
  * @author Diego Lemus
  */
 public class SalesModel extends Connection {
+
+    public SalesModel() {
+    }
     
     public ArrayList<Sales> getSales(User user, SalesState saleState, Company company, boolean relationship) throws SQLException {
         try {
@@ -49,7 +52,6 @@ public class SalesModel extends Connection {
             return null;
         }
     }//Fin getSales()
-
     public ArrayList<Sales> getSales(User user, SalesState saleState, boolean relationship) throws SQLException {
         try {
             ArrayList<Sales> sales = new ArrayList<Sales>();

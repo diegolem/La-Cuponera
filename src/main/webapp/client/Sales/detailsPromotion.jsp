@@ -57,6 +57,7 @@
                                 <li class="collection-item"><b>Descripción de la promoción:</b>
                                     <br>${promotion.description}
                                 </li>
+                                <li class="collection-item"><b>Otros detalles: </b>${promotion.otherDetails}</li>
                                 <li class="collection-item">
                                     <div class="row">
                                         <div class="col s2"></div>
