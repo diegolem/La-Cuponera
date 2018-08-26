@@ -18,7 +18,7 @@
         <jsp:include page="../../menus/menuCompany.jsp"/>
         <main class="">
             <div class="row">
-                <a href="${pageContext.request.contextPath}/company/employee.do?op=new" class="waves-effect waves-light btn-large"><i class="material-icons left centered">add</i>Agregar Empleado</a>
+                <a href="${pageContext.request.contextPath}/company/employee.do?op=new" class="purple lighten-2 waves-effect waves-light btn-large"><i class="material-icons left centered">add</i>Agregar Empleado</a>
                 <table class="centered responsive-table" id="tblEmployees">
                     <thead>
                         <tr>
@@ -37,9 +37,9 @@
                                 <td>${employee.email}</td>
                                 <td>${employee.company.name}</td>
                                 <td>
-                                    <a title="Detalles" href="${pageContext.request.contextPath}/company/employee.do?op=details&idEmployee=${employee.idEmployee}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
-                                    <a title="Editar" href="${pageContext.request.contextPath}/company/employee.do?op=edit&idEmployee=${employee.idEmployee}" class="waves-effect waves-light btn-small"><i class="material-icons centered">edit</i></a>
-                                    <a id="a_${employee.idEmployee}" title="Eliminar" href="#" onclick="deleteEmploye(${employee.idEmployee}, 'tr_${employee.idEmployee}', 'a_${employee.idEmployee}');" class="waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
+                                    <a title="Detalles" href="${pageContext.request.contextPath}/company/employee.do?op=details&idEmployee=${employee.idEmployee}" class="purple lighten-2 waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
+                                    <a title="Editar" href="${pageContext.request.contextPath}/company/employee.do?op=edit&idEmployee=${employee.idEmployee}" class="purple lighten-2 waves-effect waves-light btn-small"><i class="material-icons centered">edit</i></a>
+                                    <a id="a_${employee.idEmployee}" title="Eliminar" href="#" onclick="deleteEmploye(${employee.idEmployee}, 'tr_${employee.idEmployee}', 'a_${employee.idEmployee}');" class="purple lighten-2 waves-effect waves-light btn-small"><i class="material-icons centered">delete</i></a>
                                 </td>
                             </tr>
                         </c:forEach>

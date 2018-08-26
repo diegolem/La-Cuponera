@@ -22,11 +22,11 @@
                     <input type="hidden" name="op" value="client_sales" />
                     <div class="row">
                         <div class="input-field col s12 m8 offset-m1">
-                            <input id="dui" name="dui" type="text" class="validate">
-                            <label for="dui">Dui</label>
+                            <input id="dui" name="dui" type="text" class="validate blue-text">
+                            <label for="dui" class="blue-text">Dui</label>
                         </div>
                         <div class="input-field col s12 m2">
-                            <button type="submit" id="btnRecover" class="btn-floating"><i class="material-icons">search</i></button>
+                            <button type="submit" id="btnRecover" class="btn-floating blue"><i class="material-icons">search</i></button>
                         </div>
                     </div>
                     

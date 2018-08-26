@@ -4,6 +4,7 @@
     Author     : Diego Lemus
 --%>
 
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:if test="${sessionScope.userColor == null}">
     <c:set var="userColor" value="blue" scope="session"/>
@@ -27,7 +28,7 @@
                     <span style="font-weight: bold;" class="white-text email"><b>Empleado: </b>${user.name} ${user.lastName}</span>
                 </a>
                 <a>
-                    <span class="white-text">Compa�ia: ${user.company.name}</span>
+                    <span class="white-text">Compañia: ${user.company.name}</span>
                     <span class="white-text email">${user.email}</span>
                 </a>
             </div>
@@ -48,7 +49,7 @@
         </li>
         <li class="nav-item"><a href="${pageContext.request.contextPath}/employee/config.do"><i class="material-icons">settings</i>Mi cuenta</a></li> 
         <li  class="nav-item">
-            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesi�n"><i class="material-icons">exit_to_app</i>Cerrar Sesi�n</a>
+            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesion"><i class="material-icons">exit_to_app</i>Cerrar Sesiï¿½n</a>
         </li>
     </ul>
 </header>

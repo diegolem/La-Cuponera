@@ -6,7 +6,7 @@
 package sv.edu.udb.www.utilities;
 
 import java.util.Properties;
-//import javafx.util.Pair;
+import javafx.util.Pair;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
@@ -27,17 +27,17 @@ public class Mail {
 
     private final Properties properties = new Properties();
     private final Session session;
-    //private Pair<String, String> filePath;
+    private Pair<String, String> filePath;
     private String Addressee;
     private String message;
     private String affair;
 
     public Mail() {
-        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.host", "smtp.mailtrap.io");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.port", 587);
-        properties.put("mail.smtp.user", "elsalvadorprueba4@gmail.com");
-        properties.put("mail.smtp.password", "mekaku12");
+        properties.put("mail.smtp.port", 25);
+        properties.put("mail.smtp.user", "f3b304e742ba85");
+        properties.put("mail.smtp.password", "6ca405416af632");
         properties.put("mail.smtp.auth", "true");
         session = Session.getDefaultInstance(properties);
     }
@@ -50,12 +50,12 @@ public class Mail {
             body.setContent(this.message, "text/html");
             message.addBodyPart(body);
 
-           /* if (this.filePath != null) {
+            if (this.filePath != null) {
                 BodyPart file = new MimeBodyPart();
                 file.setDataHandler(new DataHandler(new FileDataSource(this.getFilePath())));
                 file.setFileName(this.getFileName());
                 message.addBodyPart(file);
-            }*/
+            }
             
             MimeMessage gmail = new MimeMessage(this.session);
             
@@ -77,7 +77,7 @@ public class Mail {
         }
     }
 
-    /*public String getFileName() {
+    public String getFileName() {
         return filePath.getKey();
     }
     
@@ -87,7 +87,7 @@ public class Mail {
 
     public void setFilePath(String fileName, String filePath) {
         this.filePath = new Pair<>(fileName, filePath);
-    }*/
+    }
 
     public String getAddressee() {
         return Addressee;

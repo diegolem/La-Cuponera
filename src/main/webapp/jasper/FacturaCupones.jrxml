@@ -77,12 +77,13 @@ WHERE sales.`coupon_code` IN ($P!{code})]]>
 		<field name="promotion_init_date" class="java.sql.Date"/>
 	</subDataset>
 	<parameter name="codes" class="java.lang.String">
-		<defaultValueExpression><![CDATA["'ABC1230000037','ABC1230000038','ABC1230000039'"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["'ABC1230000001'"]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT
      CONCAT(user.`name`,' ',user.`last_name`) AS user_name,
      sales.`coupon_code` AS sales_coupon_code,
+     sales.`date` AS date,
      promotion.`title` AS promotion_title,
      promotion.`regular_price` AS promotion_regular_price,
      promotion.`ofert_price` AS promotion_ofert_price,
@@ -109,6 +110,9 @@ WHERE
 	</queryString>
 	<field name="user_name" class="java.lang.String"/>
 	<field name="sales_coupon_code" class="java.lang.String"/>
+	<field name="date" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="promotion_title" class="java.lang.String"/>
 	<field name="promotion_regular_price" class="java.math.BigDecimal"/>
 	<field name="promotion_ofert_price" class="java.math.BigDecimal"/>
@@ -256,6 +260,20 @@ WHERE
 				</textElement>
 				<text><![CDATA[Tipo:]]></text>
 			</staticText>
+			<textField>
+				<reportElement uuid="5aae8528-a0d4-469d-9e02-3a7ea71f6f04" x="651" y="59" width="151" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5475b3d8-cc5b-4eb4-afe8-65942b8bf09f" x="651" y="39" width="151" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de compra:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -267,98 +285,84 @@ WHERE
 	<detail>
 		<band height="198" splitType="Stretch">
 			<textField>
-				<reportElement uuid="5efcc1f1-b455-404d-aca6-4c98ba70a624" x="237" y="17" width="323" height="33"/>
+				<reportElement uuid="5efcc1f1-b455-404d-aca6-4c98ba70a624" mode="Opaque" x="0" y="17" width="802" height="33" backcolor="#9999FF"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Consolas" size="18" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sales_coupon_code}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="246bee79-606d-462c-ba5a-e173268f9ff1" x="237" y="50" width="323" height="29"/>
+				<reportElement uuid="246bee79-606d-462c-ba5a-e173268f9ff1" mode="Opaque" x="0" y="50" width="802" height="29" backcolor="#CCCCFF"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Consolas" size="16"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{promotion_title}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="8f1fb71c-6517-4aac-a7dc-c0e0f0a5e4af" x="0" y="133" width="115" height="20"/>
+				<reportElement uuid="8f1fb71c-6517-4aac-a7dc-c0e0f0a5e4af" x="0" y="79" width="115" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Precio regular:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="5bed6c15-2e66-4b19-a1bd-5545b92e36dd" x="115" y="133" width="179" height="20"/>
+				<reportElement uuid="5bed6c15-2e66-4b19-a1bd-5545b92e36dd" x="115" y="79" width="179" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{promotion_regular_price}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="0c4e385e-d9cc-4627-b205-c2dc9b283be8" x="0" y="153" width="115" height="20"/>
+				<reportElement uuid="0c4e385e-d9cc-4627-b205-c2dc9b283be8" x="0" y="99" width="115" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Precio oferta:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="7ba1a652-5112-4e67-bd13-542b860bafb8" x="115" y="153" width="179" height="20"/>
+				<reportElement uuid="7ba1a652-5112-4e67-bd13-542b860bafb8" x="115" y="99" width="179" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{promotion_ofert_price}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="7ee817c3-55a6-459e-be27-2947c49e8b57" x="307" y="133" width="138" height="20"/>
+				<reportElement uuid="7ee817c3-55a6-459e-be27-2947c49e8b57" x="294" y="79" width="138" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha de inicio:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="0fbe2de3-34f8-43c0-926a-607babdf8313" x="445" y="153" width="145" height="20"/>
+				<reportElement uuid="0fbe2de3-34f8-43c0-926a-607babdf8313" x="432" y="99" width="145" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{promotion_end_date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="bbdf1e23-9e5e-4fc3-8815-5485ad116db6" x="0" y="79" width="273" height="20"/>
+				<reportElement uuid="cc99ecc3-a6b4-4711-bc77-794823081bd9" mode="Opaque" x="0" y="119" width="802" height="30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Consolas" isBold="true"/>
+					<font fontName="Consolas" size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Descripcion:]]></text>
+				<text><![CDATA[Detalles]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="bbccec21-acfc-4f13-b924-825124022296" x="0" y="99" width="273" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Consolas"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{promotion_description}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="cc99ecc3-a6b4-4711-bc77-794823081bd9" x="529" y="79" width="273" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Consolas" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Detalles:]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="cbc3605d-4247-4028-bb82-cf9dbaef2beb" x="529" y="99" width="273" height="20"/>
+				<reportElement uuid="cbc3605d-4247-4028-bb82-cf9dbaef2beb" x="0" y="149" width="802" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Consolas"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{promotion_other_details}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="1e759d7e-eadb-4bb8-84f9-87996e5d382d" x="307" y="153" width="138" height="20"/>
+				<reportElement uuid="1e759d7e-eadb-4bb8-84f9-87996e5d382d" x="294" y="99" width="138" height="20"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Consolas" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha de finalizacion:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="7ef41bfb-65fa-42dd-bf35-0b95c36d842d" x="445" y="133" width="145" height="20"/>
+				<reportElement uuid="7ef41bfb-65fa-42dd-bf35-0b95c36d842d" x="432" y="79" width="145" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Consolas"/>
 				</textElement>

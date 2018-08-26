@@ -174,17 +174,26 @@
                     text = 'Ha ocurrido un error en el proceso de compra';
                     classes = 'red lighten-1';
                     callback = function () {};
-                } else if (response === "1") {
-                    classes = 'green darken-2';
-                    text = 'Compra exitosa';
-                    callback = function () {
-                        location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC';
-                    };
                 } else if (response === "-2") {
                     text = 'Por favor revise los datos';
                     classes = 'red lighten-1';
                     callback = function () {};
+                } else {
+                    var sales = jQuery.parseJSON( response );
+                    
+                    var url = "${pageContext.request.contextPath}/client/sales.do?op=cuponPdf&type=pdf";
+                    
+                    $.each(sales.cupones, function( key, value ) {
+                        url += "&code="+value;
+                    });
+                    
+                    classes = 'green darken-2';
+                    text = 'Compra exitosa';
+                    callback = function () {
+                        location.href = url;
+                    };
                 }
+                
                 loader.out();
                 M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
             }

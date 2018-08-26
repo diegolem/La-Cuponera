@@ -292,6 +292,7 @@ CREATE TABLE `sales` (
   `coupon_code` varchar(13) COLLATE utf8_spanish2_ci NOT NULL,
   `promotion_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
+  `date` datetime DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
   `sales_state` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -311,7 +312,7 @@ CREATE TABLE `sales` (
 
 LOCK TABLES `sales` WRITE;
 /*!40000 ALTER TABLE `sales` DISABLE KEYS */;
-INSERT INTO `sales` VALUES (1,'ABC1230000001',1,1,0,1),(2,'ABC1230000002',2,1,0,2);
+INSERT INTO `sales` VALUES (1,'ABC1230000001',1,1,'2/8/2017',0,1),(2,'ABC1230000002',2,1,'2/8/2017',0,2);
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -334,6 +335,8 @@ DELIMITER ;;
 	ELSE
 		UPDATE promotion SET coupons_sold = (coupons_sold + 1), earnings = ((coupons_sold) *(@ofert_price)), charge_service = ((earnings)*(@pct_comission / 100)) WHERE id =  NEW.promotion_id;
     END IF;
+
+    SET NEW.date = current_timestamp();
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
