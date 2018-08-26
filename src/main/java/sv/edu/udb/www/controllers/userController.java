@@ -214,7 +214,7 @@ public class userController extends HttpServlet {
             user.setIdConfirmation(UserModel.getIdConfirmation());
 
             Mail gmail = new Mail();
-            String url = request.getRequestURL().toString() + "?op=confirmation&id=" + user.getIdConfirmation();
+            String url = request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/user.do?op=confirmation&id=" + user.getIdConfirmation();
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
             gmail.setMessage("Bienvenido usuario <h3>" + user.getName() + " " + user.getLastName() + "</h3>"
@@ -315,7 +315,7 @@ public class userController extends HttpServlet {
 
             user.setIdConfirmation(UserModel.getIdConfirmation());
             Mail gmail = new Mail();
-            String url = request.getRequestURL().toString() + "?op=confirmation&id=" + user.getIdConfirmation();
+            String url = request.getServerName() + ":" + request.getServerPort() + request.getContextPath() +  "/user.do?op=confirmation&id=" + user.getIdConfirmation();
 
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
