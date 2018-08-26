@@ -25,9 +25,7 @@
                 <!--Generate grid-item-->
             </div>
         
-        <ul class="pagination center" id="pagination">
-            
-      </ul>
+        <ul class="pagination center" id="pagination"></ul>
             
     </main>
         <div id="mdlBuy1" class="modal">
@@ -81,7 +79,9 @@
         display: block;
         max-width: 100%;
     }
-
+    .w{
+            color: white !important;
+        }
 </style>
 <script>
     let loader = new Loader();
@@ -132,7 +132,7 @@
                                 </div>`;
                     });
                     for(var i = 1;i <= botn;i++){
-                        btns += `<li class="waves-effect btn pag"><a href="javascript:void(0)" class="waves-light" onclick="pagination(`+ i +`)">`+ i +`</a></li>`;
+                        btns += `<li class="waves-effect btn pag light-blue darken-2"><a href="javascript:void(0)" class="w waves-light" onclick="pagination(`+ i +`)">`+ i +`</a></li>`;
                     }
                     let $b = $(btns);
                     $page.append($b);

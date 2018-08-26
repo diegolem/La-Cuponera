@@ -99,6 +99,9 @@ public class salesController extends HttpServlet {
                     case "public":
                         publicP(request,response);
                         break;
+                    case "pagination":
+                        pagination(request, response);
+                        break;
                     case "detailPublic":
                         getInfoPublic(request, response);
                         break;

@@ -38,25 +38,10 @@
             </div>
             <div class="grid">
                 <div class="grid-sizer"></div>
-                    <c:choose>
-                        <c:when test="${not empty requestScope.promotions}">
-                            <c:forEach var="promotion" items="${requestScope.promotions}">
-                                <div class="grid-item">
-                                    <div class="card">
-                                        <div class="card-image waves-effect waves-block waves-light">
-                                            <img class="activator" src="${pageContext.request.contextPath}/img/${promotion.image}">
-                                        </div>
-                                        <div class="card-content">
-                                            <span class="card-title grey-text text-darken-4">
-                                                ${promotion.title}<a href="${pageContext.request.contextPath}/sales.do?op=detailPublic&idPromotion=${promotion.idPromotion}"><i class="material-icons right">more_vert</i></a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </c:when>
-                    </c:choose>
+                <!--Generate grid-item-->
             </div>
+        
+        <ul class="pagination center" id="pagination"></ul>
     <style>
         * { box-sizing: border-box; }
 
@@ -79,7 +64,7 @@
         }
 
         /* ---- .grid-item ---- */
-
+        
         .grid-sizer,
         .grid-item {
             width: 33.333%;
@@ -93,21 +78,78 @@
             display: block;
             max-width: 100%;
         }
-
+        /* ---- .grid-item ---- */
+        .w{
+            color: white !important;
+        }
     </style>
         <script>
-            $(document).ready(function () {
-              var $grid = $('.grid').masonry({
-              itemSelector: '.grid-item',
-              percentPosition: true,
-              columnWidth: '.grid-sizer'
-            });
-        // layout Masonry after each image loads
-        $grid.imagesLoaded().progress( function() {
-          $grid.masonry('layout');
-        });  
-
+            let loader = new Loader();
+    var botn = 0;
+    var $page = $('.pagination');
+    var $grid;
+    $(document).ready(function () {
+        $grid = $('.grid').masonry({
+          itemSelector: '.grid-item',
+          percentPosition: true,
+          columnWidth: '.grid-sizer'
         });
+        pagination(1);
+    });
+    function pagination(page){
+        let promotion = [];
+        loader.in();
+        $.ajax({
+            type: "POST",
+            url: "${pageContext.request.contextPath}/sales.do?op=pagination",
+            data: {page: page},
+            success: function(response){
+                if(response === "0"){
+                    console.log("Revise los datos");
+                }else {
+                let cards = '';
+                let btns = '';
+                let json = JSON.parse(response);
+                promotion = json.promotions;
+                botn = json.btn;
+                $('.grid-item').remove();
+                $('.pag').remove();
+                promotion.forEach(function(_p,i){
+                    cards += `<div class="grid-item">
+                                    <div class="card">
+                                        <div class="card-image waves-effect waves-block waves-light">
+                                            <img class="activator" src="${pageContext.request.contextPath}/img/`+ _p["image"] +`">
+                                        </div>
+                                        <div class="card-content">
+                                            <span class="card-title grey-text text-darken-4">
+                                                `+ _p["title"] +`<a href="${pageContext.request.contextPath}/client/sales.do?op=detailP&idPromotion=`+ _p["idPromotion"] +`"><i class="material-icons right">more_vert</i></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    });
+                    for(var i = 1;i <= botn;i++){
+                        btns += `<li class="waves-effect btn pag"><a href="javascript:void(0)" class="w waves-light" onclick="pagination(`+ i +`)">`+ i +`</a></li>`;
+                    }
+                    let $b = $(btns);
+                    $page.append($b);
+                    let $c = $(cards);
+                    $grid.append($c).masonry('appended',$c);
+                    $grid.masonry('reloadItems');
+                }
+            }
+        }).done(function(){
+            $(".grid").imagesLoaded(function(){
+            $('.grid').masonry({
+                // options
+                itemSelector: '.grid-item',
+                columnWidth: '.grid-sizer',
+                percentPosition: true
+                });
+            });
+            loader.out();
+        });
+    }
         </script>
     </body>
 </html>

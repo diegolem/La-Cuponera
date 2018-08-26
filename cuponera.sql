@@ -703,13 +703,13 @@ DROP PROCEDURE if EXISTS pagination;
 DELIMITER ;;
 CREATE PROCEDURE pagination(IN _x INTEGER)
 BEGIN
-	DECLARE maxi INTEGER;
+	  DECLARE maxi INTEGER;
     DECLARE mini INTEGER;
     
-    SET maxi = _x*20;
-    SET mini = (_x*20) - 10;
+    SET maxi = _x*10;
+    SET mini = (_x*10) - 10;
     
-	SELECT promotion.title, promotion.image,promotion.id, CAST((SELECT COUNT(*) FROM promotion)/10 AS INT) AS 'Items' FROM promotion
+	SELECT promotion.title, promotion.image,promotion.id, CEIL((SELECT COUNT(*) FROM promotion)/10) AS 'Items' FROM promotion
     WHERE id_state = 2
 	ORDER BY promotion.limit_date DESC
 	LIMIT mini, maxi;
