@@ -7,18 +7,37 @@ package sv.edu.udb.www.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRHtmlExporter;
+import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.j2ee.servlets.ImageServlet;
+import org.jfree.util.Log;
+import org.primefaces.json.JSONObject;
 import sv.edu.udb.www.beans.Company;
 import sv.edu.udb.www.beans.Sales;
 import sv.edu.udb.www.beans.SalesState;
@@ -83,6 +102,9 @@ public class salesController extends HttpServlet {
                         break;
                     case "exchange":
                         exchange(request,response);
+                        break;
+                    case "cuponPdf":
+                        generarPdf(request, response);
                         break;
                     default:
                         tusCupones(request, response);
@@ -276,7 +298,9 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
                 }//fin for
                 //Verificando si el tamaño de transacciones es igual a la cantidad
                 if (ids.size() == cant) {
-                    out.print("1");
+                    JSONObject json = new JSONObject();
+                    json.put("cupones", ids);
+                    out.print(json.toString());
                 } else {
                     out.print("0");
                 }
@@ -286,6 +310,66 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
         }
     }
 
+    private void generarPdf(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException{
+        ServletOutputStream out = response.getOutputStream();
+        String tipo = request.getParameter("type");
+        
+        try {
+            Context init = new InitialContext();
+        
+            Context context = (Context) init.lookup("java:comp/env");
+        
+            DataSource dataSource =(DataSource)context.lookup("jdbc/mysql");
+            Connection conexion = dataSource.getConnection();
+            
+            String codes = "";
+            boolean first = true;
+            
+            for (Entry<String, String[]> paramEntry : request.getParameterMap().entrySet())
+                if(paramEntry.getKey().toLowerCase().startsWith("code"))
+                    for (String val : paramEntry.getValue()){
+                        codes += (first)? "'"+val+"'": ",'"+val+"'";
+                        first = false;
+                    }
+            
+            JasperReport reporte = (JasperReport)JRLoader.loadObjectFromFile(getServletContext().getRealPath("/jasper/FacturaCupones.jasper"));
+        
+            Map parameters = new HashMap();
+            parameters.put("codes", codes);
+            
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,parameters, conexion);
+            JRExporter exporter = null;
+
+            if (tipo.equals("pdf")) {
+                response.setContentType("application/pdf");
+                exporter = new JRPdfExporter();
+            } else {
+                response.setContentType("text/html;charset=UTF-8");
+                exporter = new JRHtmlExporter();
+            }
+            
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
+            exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI,
+            getServletContext().getContextPath() + "/jasperImage?rnd=" + Math.random() + "&image=");
+
+            exporter.setParameter(JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN,Boolean.FALSE);
+
+            request.getSession().setAttribute(ImageServlet.DEFAULT_JASPER_PRINT_SESSION_ATTRIBUTE, jasperPrint);
+            
+            conexion.close();
+            exporter.exportReport();
+        }
+        catch (Exception e)
+        {
+        e.printStackTrace();
+        Log.debug("Error", e);
+        }
+        finally {
+        out.close();
+        }
+    }
+    
     private void detailsCupon(HttpServletRequest request, HttpServletResponse response) throws SQLException {
             try {
             if (Validacion.esEnteroPositivo(request.getParameter("idSales"))) {

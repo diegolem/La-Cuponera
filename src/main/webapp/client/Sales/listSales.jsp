@@ -57,6 +57,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
+                                            <a onclick="seeInvoice('${sales.couponCode}')" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
@@ -93,6 +94,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
+                                            <a onclick="seeInvoice('${sales.couponCode}')" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
@@ -129,6 +131,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
+                                            <a onclick="seeInvoice('${sales.couponCode}')" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
@@ -137,13 +140,31 @@
                         </table>
                     </div>
             </div>
+             
+            <div id="modalInvoice" class="modal">
+                <div class="modal-content" id="modalInvoiceContent">
+                    
+                </div>
+            </div>
+
         </main>
         <script>
+            function seeInvoice(cupon){
+                
+                $.get("${pageContext.request.contextPath}/client/sales.do?op=cuponPdf&type=html&code="+cupon, function(data){
+                    var elems = $('#modalInvoice');
+                    var instance = M.Modal.getInstance(elems);
+                    instance.open();
+                    $('#modalInvoiceContent').html(data);
+                });
+            }
+            
                 $(document).ready(function(){
                     $('.tabs').tabs();
                     $('#tblSalesD').DataTable();
                     $('#tblSalesC').DataTable();
                     $('#tblSalesV').DataTable();
+                    $('.modal').modal();
                 });
         </script>
     </body>
