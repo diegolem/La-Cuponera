@@ -73,6 +73,7 @@
             </div>
         </main>
         <script>
+            let loader = new Loader();
             $(document).ready(function () {
             <c:if test="${not empty success}">
                 M.toast({html: '${success}'})
@@ -113,14 +114,14 @@
                 $('#mdlDelete #idPromotionDelete').val(id);
             }
 
-            function deletePromotion(id) {
+            function deletePromotion() {
                 if ($('#mdlDelete #idPromotionDelete').val() !== null) {
                     loader.in();
                     $.ajax({
                         url: "${pageContext.request.contextPath}/company/promotion.do?op=delete",
                         type: "GET",
                         data: {
-                            idPromotion: id
+                            idPromotion: $('#mdlDelete #idPromotionDelete').val()
                         },
                         success: function (response) {
                             let text = '', classes = '', callback;

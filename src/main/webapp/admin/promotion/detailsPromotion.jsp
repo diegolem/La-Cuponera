@@ -76,16 +76,18 @@
                         <li><b>Empresa: </b>${promotion.company.name}</li>
                     </ul>
                 </div>
-                <div class="center-align">
+                <center>
+                <div class="">
                     <img class="materialboxed" width="650" src="${pageContext.request.contextPath}/img/${promotion.image}">
                 </div>
+                </center>
             </div>
             <div id="mdlAccept" class="modal">
                 <div class="modal-content">
                     <h4 class="center purple-text text-darken-4">¿Realmente deseas aceptar esta oferta?</h4>
                     <input type="hidden" readonly="true" id="idPromotionAccept"/>
                 </div>
-                <div class="col s12  btn-cont">
+                <div class="col s12 btn-cont">
                     <button type="button" onclick="acceptPromotion()" class="waves-effect waves-light teal darken-1 btn"><i class="material-icons left">send</i>Aceptar</button>
                     <a href="#!" class="modal-close waves-effect waves-light red darken-3 btn"><i class="material-icons left">close</i>Cancelar</a>
                 </div>
