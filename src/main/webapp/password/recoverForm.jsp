@@ -33,7 +33,7 @@
         <div class="container">
             <h2 class="teal-text text-darken-2 center">Cambiar contraseña</h2>
 
-            <form action="${pageContext.request.contextPath}/password.do" class="row" method="POST">
+            <form action="${pageContext.request.contextPath}/password.do" name="frmReset" class="row" method="POST">
                 <div class="input-field col s10 m6 l6 offset-s1 offset-m3 offset-l3">
                     <input type="email" name="email" id="email" value="${requestScope.email}">
                     <label for="email">Correo electronico</label>
@@ -77,5 +77,56 @@
                 </div>
             </form>
         </div>
+
+        <script>
+            $.validator.setDefaults({
+                errorClass: 'invalid',
+                validClass: 'none',
+                errorPlacement: function (error, element) {
+                    $(element).parent().find('span.error-block.red-text').remove();
+                    $(element).parent().find('span.helper-text').remove();
+                    $(element).parent().append("<span class='helper-text' data-error='"+ error.text() +"'></span>");
+                }
+            });
+    
+            $.validator.addMethod('email', function (value, element) {
+                return this.optional(element) || /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(value);
+            }, 'Ingrese un email válido.');
+
+            $.validator.addMethod('passRule', function (value, element) {
+                return this.optional(element) || /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/.test(value);
+            }, 'Ingrese un email válido.');
+    
+            $(frmReset).validate({
+                rules: {
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: {
+                        required: true,
+                        passRule: true
+                    },
+                    conf_password: {
+                        equalTo: "#password"
+                    }
+                },
+                messages: {
+                    email: {
+                        required: "Debes ingresar un correo!"
+                    },
+                    password: {
+                        required: "Debes ingresar una nueva contraseña!",
+                        passRule: "La contraseña debe contener una longitud de minimo 8 caracteres, al menos una letra, un numero y un caracter especial!"
+                    },
+                    conf_password: {
+                        equalTo: "Las contraseñas no coinciden"
+                    }
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            })
+        </script>
     </body>
 </html>

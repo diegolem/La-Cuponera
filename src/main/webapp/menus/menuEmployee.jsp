@@ -15,7 +15,7 @@
     <nav class="light-blue darken-2">
         <div class="container">
             <a href="#" data-target="user_nav" class="sidenav-trigger "><i class="material-icons">menu</i></a>
-            <div class="nav-wrapper"><a class="brand-logo center"><c:out value="${title}" default="Cliente" /></a></div>
+            <div class="nav-wrapper"><a class="brand-logo center"><c:out value="${title}" default="Empleado" /></a></div>
         </div>
     </nav>
     <c:set var = "user" scope = "session" value = "${user}"/>
@@ -49,7 +49,7 @@
         </li>
         <li class="nav-item"><a href="${pageContext.request.contextPath}/employee/config.do"><i class="material-icons">settings</i>Mi cuenta</a></li> 
         <li  class="nav-item">
-            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesion"><i class="material-icons">exit_to_app</i>Cerrar Sesiï¿½n</a>
+            <a onclick="javascript:void(0)" href="login.do?op=logout" title="Cerrar Sesion"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a>
         </li>
     </ul>
 </header>

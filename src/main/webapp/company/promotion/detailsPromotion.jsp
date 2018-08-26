@@ -65,9 +65,11 @@
                         <li><b>Estado: </b>${promotion.promotionState.state}</li>
                     </ul>
                 </div>
-                <div class="center-align">
-                    <img class="materialboxed" width="650" src="${pageContext.request.contextPath}/img/${promotion.image}">
-                </div>    
+                <center>
+                    <div class="">
+                        <img class="materialboxed" width="650" src="${pageContext.request.contextPath}/img/${promotion.image}">
+                    </div>   
+                </center>
             </div>
         </main>
         <script>

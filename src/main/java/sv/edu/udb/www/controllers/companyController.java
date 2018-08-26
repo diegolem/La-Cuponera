@@ -43,8 +43,9 @@ public class companyController extends HttpServlet {
                 list(request, response);
                 return;
             }
-
+            
             if (_s.getAttribute("logged") != null) {
+                System.out.println(operation);
                 switch (operation) {
                     case "list":
                         list(request, response);
@@ -205,7 +206,7 @@ public class companyController extends HttpServlet {
             if (errorsList.size() > 0) {
                 request.setAttribute("errorsList", errorsList);
                 request.setAttribute("company", company);
-                request.getRequestDispatcher("/company.do?op=new").forward(request, response);
+                request.getRequestDispatcher("/admin/company.do?op=new").forward(request, response);
             } else {
                 String password = PasswordResetModel.generatePasswordWithoutEncrypt();
                 company.setPassword(PasswordResetModel.parsingPassword(password));

@@ -92,7 +92,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col s2">
+                        <div class="input-field col s12">
                             <input type="date" name="limitDate" id="limitDate" value="${company.getStringLimitDate()}">
                             <label for="limitDate">Fecha Límite</label>
                             <c:if test="${not empty requestScope.errorsList}">
