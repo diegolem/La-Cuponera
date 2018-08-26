@@ -159,7 +159,7 @@ public class userController extends HttpServlet {
     }
 
     private void newClient(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
-        request.setAttribute("title", "Agregar Cliente");
+        request.setAttribute("title", "Agregar Administrador");
         request.getRequestDispatcher("/admin/user/newClient.jsp").forward(request, response);
     }
 

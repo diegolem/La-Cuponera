@@ -33,11 +33,11 @@ public class Mail {
     private String affair;
 
     public Mail() {
-        properties.put("mail.smtp.host", "smtp.mailtrap.io");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.port", 25);
-        properties.put("mail.smtp.user", "f3b304e742ba85");
-        properties.put("mail.smtp.password", "6ca405416af632");
+        properties.put("mail.smtp.port", 587);
+        properties.put("mail.smtp.user", "ezic2017@gmail.com");
+        properties.put("mail.smtp.password", "qoskoflgewjcrrwx");
         properties.put("mail.smtp.auth", "true");
         session = Session.getDefaultInstance(properties);
     }
