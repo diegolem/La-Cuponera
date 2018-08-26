@@ -109,6 +109,9 @@ public class salesController extends HttpServlet {
                     case "cuponPdf":
                         generarPdf(request, response);
                         break;
+                    case "invoice":
+                        invoice(request, response);
+                        break;
                     default:
                         tusCupones(request, response);
                         break;
@@ -471,5 +474,10 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
         finally {
         out.close();
         }
+    }
+
+    private void invoice(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         request.setAttribute("code", request.getParameter("couponCode"));
+        request.getRequestDispatcher("/client/Sales/invoice.jsp").forward(request, response);
     }
 }

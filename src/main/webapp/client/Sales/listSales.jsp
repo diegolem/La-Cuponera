@@ -1,3 +1,5 @@
+
+
 <%-- 
     Document   : listPromotion
     Created on : 14-ago-2018, 22:14:26
@@ -57,7 +59,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a onclick="seeInvoice('${sales.couponCode}')" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
+                                            <a title="Ver factura" href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
@@ -94,7 +96,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a onclick="seeInvoice('${sales.couponCode}')" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
+                                            <a title="Ver factura" href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
@@ -131,7 +133,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a onclick="seeInvoice('${sales.couponCode}')" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
+                                            <a title="Ver factura" href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>

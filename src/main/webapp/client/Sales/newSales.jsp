@@ -187,11 +187,15 @@
                         url += "&code="+value;
                     });
                     
+                    var a = document.createElement("a");
+                        a.classList.add("hide");
+                        a.target = "_blank";
+                        a.href = url;
+                        a.click();
+                    
                     classes = 'green darken-2';
                     text = 'Compra exitosa';
-                    callback = function () {
-                        location.href = url;
-                    };
+                    callback = function () {};
                 }
                 
                 loader.out();
