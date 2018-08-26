@@ -131,7 +131,7 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a onclick="seeInvoice('${sales.couponCode}')" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
+                                            <a onclick="seeInvoice('${sales.couponCode}')" title="Mostrar factura" class="waves-effect waves-light btn modal-trigger"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
