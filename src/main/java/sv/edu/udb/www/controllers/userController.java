@@ -386,16 +386,10 @@ public class userController extends HttpServlet {
                 User client;
 
                 if ((client = users.getUser(idClient, true)) != null && client.getType().getIdUserType() == 1) {
-                    boolean next = true;
-
-                    if (!client.getSales().isEmpty() && !sales.deleteSales(client)) {
-                        next = false;
-                        out.print("0");
-                    }
-
-                    if (next && users.deleteUser(idClient)) {
+                    if (client.getSales().isEmpty() && users.deleteUser(idClient))
                         out.print("1");
-                    }
+                    else
+                        out.print("0");
 
                 } else {
                     out.print("0");
