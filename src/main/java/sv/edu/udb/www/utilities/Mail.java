@@ -33,11 +33,11 @@ public class Mail {
     private String affair;
 
     public Mail() {
-        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.host", "");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.port", 587);
-        properties.put("mail.smtp.user", "ezic2017@gmail.com");
-        properties.put("mail.smtp.password", "qoskoflgewjcrrwx");
+        properties.put("mail.smtp.port", 0);
+        properties.put("mail.smtp.user", "");
+        properties.put("mail.smtp.password", "");
         properties.put("mail.smtp.auth", "true");
         session = Session.getDefaultInstance(properties);
     }

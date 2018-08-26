@@ -214,7 +214,7 @@ public class userController extends HttpServlet {
             user.setIdConfirmation(UserModel.getIdConfirmation());
 
             Mail gmail = new Mail();
-            String url = request.getRequestURL().toString() + "?op=confirmation&id=" + user.getIdConfirmation();
+            String url = request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/user.do?op=confirmation&id=" + user.getIdConfirmation();
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
             gmail.setMessage("Bienvenido usuario <h3>" + user.getName() + " " + user.getLastName() + "</h3>"
@@ -315,7 +315,7 @@ public class userController extends HttpServlet {
 
             user.setIdConfirmation(UserModel.getIdConfirmation());
             Mail gmail = new Mail();
-            String url = request.getRequestURL().toString() + "?op=confirmation&id=" + user.getIdConfirmation();
+            String url = request.getServerName() + ":" + request.getServerPort() + request.getContextPath() +  "/user.do?op=confirmation&id=" + user.getIdConfirmation();
 
             gmail.setAddressee(user.getEmail());
             gmail.setAffair("Bienvenido a la cuponera");
@@ -386,16 +386,10 @@ public class userController extends HttpServlet {
                 User client;
 
                 if ((client = users.getUser(idClient, true)) != null && client.getType().getIdUserType() == 1) {
-                    boolean next = true;
-
-                    if (!client.getSales().isEmpty() && !sales.deleteSales(client)) {
-                        next = false;
-                        out.print("0");
-                    }
-
-                    if (next && users.deleteUser(idClient)) {
+                    if (client.getSales().isEmpty() && users.deleteUser(idClient))
                         out.print("1");
-                    }
+                    else
+                        out.print("0");
 
                 } else {
                     out.print("0");

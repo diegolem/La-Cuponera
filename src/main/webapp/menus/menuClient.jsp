@@ -33,20 +33,18 @@
         </li>
         <li class="nav-item">
             <a href="${pageContext.request.contextPath}/client/index.jsp">
-                <i class="material-icons">home</i>Inicio</a>
+                <i class="material-icons">home</i>Inicio
+            </a>
         </li>
-        <li class="no-padding">
-            <ul class="collapsible collapsible-accordion">
-                <li>
-                    <a class="collapsible-header"><i class="material-icons">local_offer</i> Cupones</a>
-                    <div class="collapsible-body">
-                        <ul>
-                            <li><a href="${pageContext.request.contextPath}/client/sales.do?op=listC">Mostrar <i class="material-icons left">remove_red_eye</i></a></li>
-                            <li><a href="${pageContext.request.contextPath}/client/sales.do?op=newC">Comprar <i class="material-icons left">add</i></a></li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/client/sales.do?op=listC">
+                <i class="material-icons">local_offer</i> Mis cupones
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="${pageContext.request.contextPath}/client/sales.do?op=newC">
+                <i class="material-icons">attach_money</i> Comprar cupones
+            </a>
         </li>
         <li>
             <div class="divider"></div>

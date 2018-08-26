@@ -108,7 +108,7 @@ public class passwordController extends HttpServlet {
                         passMdl.confirmRequest(_pr.getToken());
                         
                         request.getSession().setAttribute("msg", "Tu contraseña ha sido modificada exitosamente!");
-                        response.sendRedirect(request.getContextPath() + "/login.jsp");
+                        response.sendRedirect(request.getContextPath() + "/login");
                     }
                 } else {
                     errorsList.put("email", "El correo ingresado no coincide con el que se encuentra registrado en la peticion!");
@@ -166,7 +166,7 @@ public class passwordController extends HttpServlet {
 
         try {
             if (Validacion.isEmpty(request.getParameter("token"))) {
-                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                response.sendRedirect(request.getContextPath() + "/login");
             } else {
 
                 PasswordReset _pr = passMdl.getResetRequest(request.getParameter("token"));
@@ -174,13 +174,13 @@ public class passwordController extends HttpServlet {
                 if (_pr != null) {
                     if (_pr.isExpired()) {
                         request.getSession().setAttribute("error", "La peticion de recuperacion de contraseña a la que deseas acceder no existe!");
-                        response.sendRedirect(request.getContextPath() + "/login.jsp");
+                        response.sendRedirect(request.getContextPath() + "/login");
                     } else {
                         request.getRequestDispatcher("/password/recoverForm.jsp").forward(request, response);
                     }
                 } else {
                     request.getSession().setAttribute("error", "La peticion de recuperacion de contraseña a la que deseas acceder no existe!");
-                    response.sendRedirect(request.getContextPath() + "/login.jsp");
+                    response.sendRedirect(request.getContextPath() + "/login");
                 }
             }
         } catch (ServletException | IOException | SQLException ex) {
