@@ -195,7 +195,7 @@
                     
                     classes = 'green darken-2';
                     text = 'Compra exitosa';
-                    callback = function () {};
+                    callback = function () { location.href = "${pageContext.request.contextPath}/client/sales.do?op=listC" };
                 }
                 
                 loader.out();
