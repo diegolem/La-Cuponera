@@ -32,7 +32,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a href="${pageContext.request.contextPath}/client/index.jsp">
+            <a href="${pageContext.request.contextPath}/client/user.do">
                 <i class="material-icons">home</i>Inicio
             </a>
         </li>

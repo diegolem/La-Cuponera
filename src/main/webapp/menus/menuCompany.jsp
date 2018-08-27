@@ -33,7 +33,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a href="${pageContext.request.contextPath}/company/index.jsp">
+            <a href="${pageContext.request.contextPath}/company/user.do">
                 <i class="material-icons">home</i>Inicio</a>
         </li>
         <li class="no-padding">

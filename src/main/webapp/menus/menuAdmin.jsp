@@ -26,7 +26,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a href="${pageContext.request.contextPath}/admin/index.jsp">
+            <a href="${pageContext.request.contextPath}/admin/user.do">
                 <i class="material-icons">home</i>Inicio</a>
         </li>
         <li class="no-padding">

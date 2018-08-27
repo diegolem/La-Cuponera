@@ -34,7 +34,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a href="${pageContext.request.contextPath}/employee/index.jsp">
+            <a href="${pageContext.request.contextPath}/employee/user.do">
                 <i class="material-icons">home</i>Inicio</a>
         </li>
         <li class="no-padding">
