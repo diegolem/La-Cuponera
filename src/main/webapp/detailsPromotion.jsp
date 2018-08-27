@@ -58,7 +58,12 @@
                                 <li class="collection-item">
                                     <c:choose>
                                         <c:when test="${promotion.couponsAvailable eq 0}">
-                                            Los cupones se han agotado :(
+                                            <c:if test="${promotion.limitCant eq 0}">
+                                                Los cupones son ilimitados!!
+                                            </c:if>
+                                            <c:if test="${promotion.limitCant != 0}">
+                                                Los cupones se han agotado :(
+                                            </c:if>
                                         </c:when>
                                         <c:otherwise>
                                             <span>Solo quedan <b>${promotion.couponsAvailable} cupones restantes!!</b>, consigue el tuyo YA</span>
