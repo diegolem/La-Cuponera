@@ -97,7 +97,7 @@ CREATE TABLE `company` (
 
 LOCK TABLES `company` WRITE;
 /*!40000 ALTER TABLE `company` DISABLE KEYS */;
-INSERT INTO `company` VALUES ('ABC123','Variedades la Bendicion','San Salvador','Diego Lemus','2222-4444','prueba5@gmail.com',1,10,'e54fc6b51915e222ba6196747a19ebb8dfa651fd2b46a385a0ded647fbfefda0'),('EMP256','La Cabuda','La mascota','Guillermo Calderon','7878-8959','guillermo.calderon@udb.edu.sv',4,5,'e54fc6b51915e222ba6196747a19ebb8dfa651fd2b46a385a0ded647fbfefda0');
+INSERT INTO `company` VALUES ('ABC123','Variedades la Bendicion','San Salvador','Diego Lemus','2222-4444','prueba5@gmail.com',1,10,'688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6'),('EMP256','La Cabuda','La mascota','Guillermo Calderon','7878-8959','guillermo.calderon@udb.edu.sv',4,5,'688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6');
 /*!40000 ALTER TABLE `company` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +152,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'Carlos','Lemus','carlos@gmail.com','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92','ABC123'),(3,'Franklin','Esquivel','frank.esquivel115@gmail.com','c474bb57efcab739de87a69acbaf4ff9d202f817f1fbc73a65b99bcfc35bf4b2','ABC123');
+INSERT INTO `employee` VALUES (1,'Carlos','Lemus','carlos@gmail.com','688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6','ABC123'),(3,'Franklin','Esquivel','frank.esquivel115@gmail.com','688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6','ABC123');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -241,13 +241,13 @@ CREATE TABLE `promotion` (
 
 LOCK TABLES `promotion` WRITE;
 /*!40000 ALTER TABLE `promotion` DISABLE KEYS */;
-INSERT INTO `promotion` VALUES (1, 'Gran venta de animales', '3.00', '2.00', '2018-08-22', '2018-08-24', '2018-08-31', 12, '<p>asdf</p>', 'sdaf', 'ofertaanimal.png', 6, 6, '12.00', '1.20', 'ABC123', 2, ''),
-(2, 'RegaShoes', '10.00', '9.00', '2018-08-22', '2018-08-31', '2018-08-31', 100, '<p>Vamos a regalar zapatos, ven y canjea el cupon y encuentra tus zapatos ideales</p>', 'Valido solo por las tardes', 'Suburbia-zapatos1.jpg', 6, 94, '54.00', '5.40', 'ABC123', 2, ''),
+INSERT INTO `promotion` VALUES (1, 'Gran venta de animales', '3.00', '2.00', '2018-08-26', '2018-08-30', '2018-08-31', 12, '<p>asdf</p>', 'sdaf', 'ofertaanimal.png', 6, 6, '12.00', '1.20', 'ABC123', 2, ''),
+(2, 'RegaShoes', '10.00', '9.00', '2018-08-26', '2018-08-30', '2018-08-31', 100, '<p>Vamos a regalar zapatos, ven y canjea el cupon y encuentra tus zapatos ideales</p>', 'Valido solo por las tardes', 'Suburbia-zapatos1.jpg', 6, 94, '54.00', '5.40', 'ABC123', 2, ''),
 (5, 'Banquete para 6', '16.00', '15.00', '2018-08-26', '2018-09-02', '2018-09-03', 25, '<p><span class=\"ql-font-serif\">Te tenemos una oferta solo para ti!, un banquete familiar para 6 personas por un precio increible al presentar la factura en tu restaurante mas cercano</span></p>', 'No hay detalles extra', 'banquet.jpg', 2, 23, '30.00', '3.00', 'ABC123', 2, ''),
 (6, 'Hamburguesas Gigas', '8.00', '6.00', '2018-08-26', '2018-08-30', '2018-08-31', 40, '<p>Ven y disfruta de unas ricas hamburguesas al mejor precio que te puedas imaginar en nuestros establecimientos, te esperamos!!</p>', 'La oferta sera valida solamente si se presenta la factura de compra', 'hamburofert.jpg', 0, 40, '0.00', '0.00', 'ABC123', 1, ''),
 (7, 'Ropa para bebes', '5.00', '4.00', '2018-08-26', '2018-09-04', '2018-09-05', 15, '<p>Ven y disfruta las grandes ofertas que tenemos para tu bebe con los mejores estilos para toda clase de ocasion, que esperas compra ya tu cupon!!</p>', 'Presentar factura en caja para hacer efectivo el canje', 'ofertabebes.jpg', 0, 15, '0.00', '0.00', 'ABC123', 2, ''),
 (8, 'Vacaciones CaribeÃ±as', '800.00', '794.00', '2018-08-26', '2018-09-02', '2018-09-03', 20, '<p>Ven y disfruta un viaje unico con toda tu familia por la riviera maya y las bellas playas del caribe, ven que esperas la playa te esta esperando!	</p>', 'La oferta es valida para 4 personas', 'ofertacaribe.jpg', 0, 20, '0.00', '0.00', 'ABC123', 1, ''),
-(9, 'Black Friday - Ropa', '20.00', '18.00', '2018-08-26', '2018-08-30', '2018-08-31', 0, '<p>Ven y disfruta de los mejores precios en la mejor semana para comprar lo que quieras con tus amigos o familia, ven ya te esperamos!</p>', 'Debes presentar tu factura de compra para obtener un 10% en tu gasto total', 'ofertaropa2.jpg', 0, 0, '0.00', '0.00', 'ABC123', 2, ''),
+(9, 'Black Friday - Ropa', '20.00', '18.00', '2018-08-26', '2018-08-30', '2018-08-31', 0, '<p>Ven y disfruta de los mejores precios en la mejor semana para comprar lo que quieras con tus amigos o familia, ven ya te esperamos!</p>', 'Debes presentar tu factura de compra para obtener un 10% en tu gasto total', 'ofertaropa.jpg', 0, 0, '0.00', '0.00', 'ABC123', 2, ''),
 (10, 'Servicio de Veterinaria', '3.00', '2.00', '2018-08-26', '2018-08-28', '2018-08-29', 10, '<p>Trae a tu mascota a nuestra clinica tenemos el mejor personal especializado de la zona para el tratamiento correcto o problema que tenga tu mascota</p>', 'El 5% se aplica al total de la consulta', 'ofertveter.jpg', 0, 10, '0.00', '0.00', 'ABC123', 2, ''),
 (11, 'Bahia Principe', '250.00', '200.00', '2018-08-26', '2018-09-02', '2018-09-03', 30, '<p>El hotel Bahia Principe te ofrece en esta ocasion como especial de agosto una oferta que no podras rechazar ya que al pagar 1 oferta puede venir un acompaÃ±ante GRATIS!! contigo para mas informacion llamar al Tel. 2222-6969</p>', 'No hay detalles extra', 'vacaciones.jpg', 0, 30, '0.00', '0.00', 'ABC123', 2, ''),
 (12, 'Rebajas Video oca', '10.00', '8.00', '2018-08-26', '2018-08-29', '2018-08-30', 0, '<p>En Video Oca te ofrecemos el mejor equipo electronico a los mejores precios, solamente con la presentacion de la factura de pago tienes el 5% de descuento en TODO lo que compres, que esperas compra uno YA!!</p>', 'Valido solo para articulos web', 'webofrett.jpg', 0, 0, '0.00', '0.00', 'ABC123', 2, ''),
@@ -401,7 +401,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Alberto','Lemus','albeto@gmai.com','ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f',1,'12345678-9','1234-123456-123-1',1,NULL),(2,'Leonardo','Lopez','lopezleonardo282@gmail.com','ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f',1,'78945612-8','1234-123456-123-2',1,''),(3,'Guillermo','Calderon','mochila@gmail.com','d17804966de62c4e0cec29504b08b6a23bb86ae089558fbeaae50d921a6a7464',1,'58748548-0','1234-123450-123-1',1,'');
+INSERT INTO `user` VALUES (1,'Alberto','Lemus','albeto@gmai.com','688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6',1,'12345678-9','1234-123456-123-1',1,NULL),(2,'Leonardo','Lopez','lopezleonardo282@gmail.com','688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6',1,'78945612-8','1234-123456-123-2',1,''),(3,'Guillermo','Calderon','mochila@gmail.com','688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6',1,'58748548-0','1234-123450-123-1',1,'');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -704,19 +704,19 @@ DELIMITER ;
 
 DROP PROCEDURE if EXISTS pagination;
 DELIMITER ;;
-CREATE PROCEDURE pagination(IN _x INTEGER)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pagination`(IN _x INTEGER)
 BEGIN
-	  DECLARE maxi INTEGER;
+	DECLARE maxi INTEGER;
     DECLARE mini INTEGER;
     
     SET maxi = _x*10;
     SET mini = (_x*10) - 10;
     
-	SELECT promotion.title, promotion.image,promotion.id, CEIL((SELECT COUNT(*) FROM promotion)/10) AS 'Items' FROM promotion
+	SELECT promotion.title, promotion.image,promotion.id, CEIL((SELECT COUNT(*) FROM promotion WHERE id_state = 2)/10) AS 'Items' FROM promotion
     WHERE id_state = 2
 	ORDER BY promotion.limit_date DESC
-	LIMIT mini, maxi;
-END ;;
+	LIMIT mini,maxi;
+END;;
 DELIMITER ;
 
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;

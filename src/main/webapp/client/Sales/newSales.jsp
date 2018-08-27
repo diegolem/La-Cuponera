@@ -15,16 +15,11 @@
     <body>
         <jsp:include page="../../menus/menuClient.jsp"/>
         <main class="col s12"> 
-            <c:if test="${empty requestScope.promotions}">
-                <div class="alert lighten-2 white-text red darken-4 center">
-                    No hay Promociones aprobadas!!
-                </div>
-            </c:if>
             <div class="grid">
                 <div class="grid-sizer"></div>
                 <!--Generate grid-item-->
             </div>
-        
+        <div id="sinpromos"></div>
         <ul class="pagination center" id="pagination"></ul>
             
     </main>
@@ -114,7 +109,10 @@
                 botn = json.btn;
                 $('.grid-item').remove();
                 $('.pag').remove();
-                promotion.forEach(function(_p,i){
+                if(promotion.length === 0){
+                    $('#sinpromos').html('<div class="alert lighten-2 white-text red darken-4 center">No hay Promociones aprobadas!!</div>');
+                }else{
+                    promotion.forEach(function(_p,i){
                     cards += `<div class="grid-item">
                                     <div class="card">
                                         <div class="card-image waves-effect waves-block waves-light">
@@ -125,12 +123,15 @@
                                                 `+ _p["title"] +`<a href="${pageContext.request.contextPath}/client/sales.do?op=detailP&idPromotion=`+ _p["idPromotion"] +`"><i class="material-icons right">more_vert</i></a>
                                             </span>
                                             <p class='center-align'>
-                                                <a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(`+ _p["idPromotion"] +`, '`+ _p["company"]["idCompany"] +`')">Comprar</a>
+                                                <a href="${pageContext.request.contextPath}/client/sales.do?op=detailP&idPromotion=`+ _p["idPromotion"] +`" class="blue darken-2 waves-effect waves-light btn btnReserve">Comprar</a>
                                             </p>
                                         </div>
                                     </div>
                                 </div>`;
                     });
+                    //<a href="#mdlBuy1" class="blue darken-2 waves-effect waves-light btn btnReserve modal-trigger" onclick="setId(`+ _p["idPromotion"] +`, '`+ _p["company"]["idCompany"] +`')">Comprar</a>
+                    //modal trigger
+                    //onclick="setId(`+ _p["idPromotion"] +`, '`+ _p["company"]["idCompany"] +`')"
                     for(var i = 1;i <= botn;i++){
                         btns += `<li class="waves-effect btn pag light-blue darken-2"><a href="javascript:void(0)" class="w waves-light" onclick="pagination(`+ i +`)">`+ i +`</a></li>`;
                     }
@@ -139,8 +140,10 @@
                     let $c = $(cards);
                     $grid.append($c).masonry('appended',$c);
                     $grid.masonry('reloadItems');
-                }
-            }
+                }//fin else
+                    
+                }//fin else response
+            }//fin del success
         }).done(function(){
             $(".grid").imagesLoaded(function(){
             $('.grid').masonry({

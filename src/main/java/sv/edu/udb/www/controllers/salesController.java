@@ -224,8 +224,8 @@ private void obtenerPorUsuerio(HttpServletRequest request, HttpServletResponse r
             HttpSession session = request.getSession(true);
             User user = (User) session.getAttribute("user");
             request.setAttribute("salesDisponible", sales.getSales(user.getIdUser(), true,"Disponible"));
-            request.setAttribute("salesVencidos", sales.getSales(user.getIdUser(), true,"Canjeado"));
-            request.setAttribute("salesCanjeados", sales.getSales(user.getIdUser(), true,"Vencido"));
+            request.setAttribute("salesVencidos", sales.getSales(user.getIdUser(), true,"Vencido"));
+            request.setAttribute("salesCanjeados", sales.getSales(user.getIdUser(), true,"Canjeado"));
             request.setAttribute("title", "Lista de tus cupones");
             request.getRequestDispatcher("/client/Sales/listSales.jsp").forward(request, response);
         } catch (ServletException | IOException ex) {
