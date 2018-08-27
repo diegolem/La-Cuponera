@@ -47,7 +47,12 @@
                                 <li class="collection-item">
                                     <c:choose>
                                         <c:when test="${promotion.couponsAvailable eq 0}">
-                                            Los cupones se han agotado :(
+                                            <c:if test="${promotion.limitCant eq 0}">
+                                                Los cupones son ilimitados!!
+                                            </c:if>
+                                            <c:if test="${promotion.limitCant != 0}">
+                                                Los cupones se han agotado :(
+                                            </c:if>
                                         </c:when>
                                         <c:otherwise>
                                             <span>Solo quedan <b>${promotion.couponsAvailable} cupones restantes!!</b>, consigue el tuyo YA</span>
@@ -72,7 +77,7 @@
                     <!--Modal Structure-->
                     <div id="mdlBuy1" class="modal">
                         <div class="modal-content">
-                            <h4 class="center purple-text text-darken-4">¿Cuantos cupones desea comprar?</h4>
+                            <h4 class="center light-blue-text text-darken-4">¿Cuantos cupones desea comprar?</h4>
                             <div class="row">
                                 <div class="input-field col s12">
                                     <input type="hidden" readonly="true" id="idCt"/>
@@ -141,16 +146,16 @@
                         text = 'Ha ocurrido un error en el proceso de compra';
                         classes = 'red lighten-1';
                         callback = function () {};
-                    } else if (response === "1") {
+                    }else if (response === "-2") {
+                        text = 'Por favor revise los datos';
+                        classes = 'red lighten-1';
+                        callback = function () {};
+                    }else{
                         classes = 'green darken-2';
                         text = 'Compra exitosa';
                         callback = function () {
                             location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC';
                         };
-                    } else if (response === "-2") {
-                        text = 'Por favor revise los datos';
-                        classes = 'red lighten-1';
-                        callback = function () {};
                     }
                     loader.out();
                     M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});

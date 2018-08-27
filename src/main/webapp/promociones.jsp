@@ -29,12 +29,8 @@
             </nav>
         </div>
         <div class="col s12">
-            <h4 class="center purple-text text-darken-4">Promociones disponibles</h4>
-            <c:if test="${empty requestScope.promotions}">
-                <div class="alert lighten-2 white-text red darken-4 center">
-                    No hay Promociones aprobadas!!
-                </div>
-            </c:if>
+            <h4 class="center teal-text text-darken-4">Promociones disponibles</h4>
+            <div id="sinpromos"></div>
             </div>
             <div class="grid">
                 <div class="grid-sizer"></div>
@@ -114,7 +110,10 @@
                 botn = json.btn;
                 $('.grid-item').remove();
                 $('.pag').remove();
-                promotion.forEach(function(_p,i){
+                    if(promotion.length === 0){
+                    $('#sinpromos').html('<div class="alert lighten-2 white-text red darken-4 center">No hay Promociones aprobadas!!</div>');
+                }else{
+                        promotion.forEach(function(_p,i){
                     cards += `<div class="grid-item">
                                     <div class="card">
                                         <div class="card-image waves-effect waves-block waves-light">
@@ -122,7 +121,7 @@
                                         </div>
                                         <div class="card-content">
                                             <span class="card-title grey-text text-darken-4">
-                                                `+ _p["title"] +`<a href="${pageContext.request.contextPath}/client/sales.do?op=detailP&idPromotion=`+ _p["idPromotion"] +`"><i class="material-icons right">more_vert</i></a>
+                                                `+ _p["title"] +`<a href="${pageContext.request.contextPath}/sales.do?op=detailPublic&idPromotion=`+ _p["idPromotion"] +`"><i class="material-icons right">more_vert</i></a>
                                             </span>
                                         </div>
                                     </div>
@@ -136,8 +135,9 @@
                     let $c = $(cards);
                     $grid.append($c).masonry('appended',$c);
                     $grid.masonry('reloadItems');
-                }
-            }
+                    }//fin de else
+                }//fin else response
+            }//fin de success
         }).done(function(){
             $(".grid").imagesLoaded(function(){
             $('.grid').masonry({
