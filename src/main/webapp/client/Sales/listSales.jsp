@@ -59,7 +59,8 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a title="Ver factura" href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
+                                            <a title="pdf" target="_blank" href="${pageContext.request.contextPath}/client/sales.do?op=cuponPdf&type=pdf&code=${sales.couponCode}" ¿ class="waves-effect waves-light btn-small"><i class="material-icons centered">picture_as_pdf</i></a>
+                                            <a title="Ver factura" target="_blank"  href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
@@ -96,7 +97,8 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a title="Ver factura" href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
+                                            <a title="pdf" target="_blank" href="${pageContext.request.contextPath}/client/sales.do?op=cuponPdf&type=pdf&code=${sales.couponCode}" ¿ class="waves-effect waves-light btn-small"><i class="material-icons centered">picture_as_pdf</i></a>
+                                            <a title="Ver factura" target="_blank"  href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>
@@ -133,7 +135,8 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <a title="Ver factura" href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
+                                            <a title="pdf" target="_blank" href="${pageContext.request.contextPath}/client/sales.do?op=cuponPdf&type=pdf&code=${sales.couponCode}" ¿ class="waves-effect waves-light btn-small"><i class="material-icons centered">picture_as_pdf</i></a>
+                                            <a title="Ver factura" target="_blank"  href="${pageContext.request.contextPath}/client/sales.do?op=invoice&couponCode=${sales.couponCode}" class="waves-effect waves-light btn-small"><i class="material-icons centered">new_releases</i></a>
                                             <a title="Detalles" href="${pageContext.request.contextPath}/client/sales.do?op=details&idSales=${sales.idSales}" class="waves-effect waves-light btn-small"><i class="material-icons centered">line_weight</i></a>
                                         </td>
                                     </tr>

@@ -150,12 +150,24 @@
                         text = 'Por favor revise los datos';
                         classes = 'red lighten-1';
                         callback = function () {};
-                    }else{
+                    } else {
+                        var sales = jQuery.parseJSON( response );
+
+                        var url = "${pageContext.request.contextPath}/client/sales.do?op=cuponPdf&type=pdf";
+
+                        $.each(sales.cupones, function( key, value ) {
+                            url += "&code="+value;
+                        });
+
+                        var a = document.createElement("a");
+                            a.classList.add("hide");
+                            a.target = "_blank";
+                            a.href = url;
+                            a.click();
+
                         classes = 'green darken-2';
                         text = 'Compra exitosa';
-                        callback = function () {
-                            location.href = '${pageContext.request.contextPath}/client/sales.do?op=listC';
-                        };
+                        callback = function () { location.href = "${pageContext.request.contextPath}/client/sales.do?op=listC" };
                     }
                     loader.out();
                     M.toast({html: text, classes, displayLength: 1500, completeCallback: callback});
