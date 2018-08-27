@@ -35,7 +35,7 @@ public class Mail {
     public Mail() {
         properties.put("mail.smtp.host", "");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.port", 0);
+        properties.put("mail.smtp.port", 587);
         properties.put("mail.smtp.user", "");
         properties.put("mail.smtp.password", "");
         properties.put("mail.smtp.auth", "true");

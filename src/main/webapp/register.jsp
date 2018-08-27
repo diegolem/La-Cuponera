@@ -70,6 +70,7 @@
         </div>
         <script>
             $(document).ready(function () {
+                let loader = new Loader();
                 $.validator.setDefaults({
                     errorClass: 'invalid',
                     validClass: 'none',
@@ -132,27 +133,30 @@
                     },
                     submitHandler: function (form) {
                         var formData = $(form).serializeArray();
+                        loader.in();
                         $.ajax({
                             url: "${pageContext.request.contextPath}/user.do",
                             data: formData,
                             type: 'POST',
                             success: function (response) {
                                 console.log(response);
-                                if (response == "0") {
-                                    M.toast({html: 'Algunos datos ingresados pueden ser incorrectos'})
-                                } else if (response == "1") {
+                                if (parseInt(response) === 0) {
+                                    M.toast({html: 'Algunos datos ingresados pueden ser incorrectos'});
+                                } else if (parseInt(response) === 1) {
                                     M.toast({html: 'Se ha registrado al usuario. Revisar correo', completeCallback: function () {
                                             $(form)[0].reset();
                                         }});
-                                } else if (response == "-1") {
+                                } else if (parseInt(response) === -1) {
                                     M.toast({html: 'Correo electrónico no existe'});
-                                } else if (response == "-2") {
+                                } else if (parseInt(response) === -2) {
                                     M.toast({html: 'Ha ocurrido un error'});
                                 }
                             },
                             error: function (err) {
                                 M.toast({html: "En este momento no se puede establecer la conexión con el servidor. Inténtelo más tarde... <i class='material-icons right'>error</i>", classes: "red darken-5"});
                             }
+                        }).done(function(){
+                            loader.out();
                         });
                         return false;
                     }
